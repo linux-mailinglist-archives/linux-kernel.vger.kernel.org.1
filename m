@@ -2,150 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F332130457B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3683B30457F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392673AbhAZRjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:39:18 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:42048 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730808AbhAZHuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:50:52 -0500
-Received: from dread.disaster.area (pa49-180-243-77.pa.nsw.optusnet.com.au [49.180.243.77])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 05DF38278DE;
-        Tue, 26 Jan 2021 18:49:57 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1l4J6q-002Wuh-24; Tue, 26 Jan 2021 18:49:56 +1100
-Date:   Tue, 26 Jan 2021 18:49:56 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Luis Lozano <llozano@chromium.org>, iant@google.com
-Subject: Re: [BUG] copy_file_range with sysfs file as input
-Message-ID: <20210126074956.GF4626@dread.disaster.area>
-References: <CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com>
- <20210126013414.GE4626@dread.disaster.area>
- <CANMq1KAgD_98607w308h3QSGaiRTkyVThmWmUuExxqh3r+tZsA@mail.gmail.com>
+        id S2392719AbhAZRj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:39:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729094AbhAZIAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:00:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 419AC206D7;
+        Tue, 26 Jan 2021 07:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611647974;
+        bh=ndO0PMKXJOqvpOvK3ZfF6AN3TVTIqf62iPD8PKPIV64=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nfa38lZYBYPy3CRuYp5nri0FGpaDkLPA0mMhc2zNJAAR/oTwAlu388u7agEK2/ZQj
+         iOaPKSv4RKXM+f62m//GrWChQtRXA2qNV1KvxE1M6h752qq0G7l3KzzKx5ar3pSgJg
+         zrw/QTXEfAjfn7eocwlP34P9iPkxN+infrtdfJOh6Dvhgm3/gxEYc6GRozPcnSOtUc
+         e6RJcKV9WQvkjz99JKbFxq/11a5f8QgWiP7J6wdECOHg7UAE0V+EKbW/n/UYFyiK/g
+         kitr/0ux0fe3koWJxE271FwtJO8clhldffSDWc+Bk9/kqKVuRB74LorFDplsyixq+b
+         Jkyg74UKbUp7Q==
+Date:   Tue, 26 Jan 2021 13:29:29 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Vivek Aknurwar <viveka@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jeevan Shriram <jshriram@codeaurora.org>
+Subject: Re: [PATCH v4 3/5] clk: qcom: clk-alpha-pll: Add support for Lucid
+ 5LPE PLL
+Message-ID: <20210126075929.GM2771@vkoul-mobl>
+References: <20210118044321.2571775-1-vkoul@kernel.org>
+ <20210118044321.2571775-4-vkoul@kernel.org>
+ <YA79UPODso3cmMFU@builder.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANMq1KAgD_98607w308h3QSGaiRTkyVThmWmUuExxqh3r+tZsA@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=juxvdbeFDU67v5YkIhU0sw==:117 a=juxvdbeFDU67v5YkIhU0sw==:17
-        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8 a=GcyzOjIWAAAA:8
-        a=J2zK9Hhgt6MEY7-RQMQA:9 a=CjuIK1q_8ugA:10 a=2fKfcJrRRacA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22 a=hQL3dl6oAZ8NdCsdz28n:22
+In-Reply-To: <YA79UPODso3cmMFU@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:50:50AM +0800, Nicolas Boichat wrote:
-> On Tue, Jan 26, 2021 at 9:34 AM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Mon, Jan 25, 2021 at 03:54:31PM +0800, Nicolas Boichat wrote:
-> > > Hi copy_file_range experts,
-> > >
-> > > We hit this interesting issue when upgrading Go compiler from 1.13 to
-> > > 1.15 [1]. Basically we use Go's `io.Copy` to copy the content of
-> > > `/sys/kernel/debug/tracing/trace` to a temporary file.
-> > >
-> > > Under the hood, Go now uses `copy_file_range` syscall to optimize the
-> > > copy operation. However, that fails to copy any content when the input
-> > > file is from sysfs/tracefs, with an apparent size of 0 (but there is
-> > > still content when you `cat` it, of course).
-> > >
-> > > A repro case is available in comment7 (adapted from the man page),
-> > > also copied below [2].
-> > >
-> > > Output looks like this (on kernels 5.4.89 (chromeos), 5.7.17 and
-> > > 5.10.3 (chromeos))
-> > > $ ./copyfrom /sys/kernel/debug/tracing/trace x
-> > > 0 bytes copied
-> >
-> > That's basically telling you that copy_file_range() was unable to
-> > copy anything. The man page says:
-> >
-> > RETURN VALUE
-> >        Upon  successful  completion,  copy_file_range() will return
-> >        the number of bytes copied between files.  This could be less
-> >        than the length originally requested.  If the file offset
-> >        of fd_in is at or past the end of file, no bytes are copied,
-> >        and copy_file_range() returns zero.
-> >
-> > THe man page explains it perfectly.
+On 25-01-21, 11:18, Bjorn Andersson wrote:
+> On Sun 17 Jan 22:43 CST 2021, Vinod Koul wrote:
 > 
-> I'm not that confident the explanation is perfect ,-)
+> > From: Vivek Aknurwar <viveka@codeaurora.org>
+> > 
+> > Lucid 5LPE is a slightly different Lucid PLL with different offsets and
+> > porgramming sequence so add support for these
+> > 
+> > Signed-off-by: Vivek Aknurwar <viveka@codeaurora.org>
+> > Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
+> > [vkoul: rebase and tidy up for upstream]
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >  drivers/clk/qcom/clk-alpha-pll.c | 173 +++++++++++++++++++++++++++++++
+> >  drivers/clk/qcom/clk-alpha-pll.h |   4 +
+> >  2 files changed, 177 insertions(+)
+> > 
+> > diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+> > index a30ea7b09224..f9c48da21bd1 100644
+> > --- a/drivers/clk/qcom/clk-alpha-pll.c
+> > +++ b/drivers/clk/qcom/clk-alpha-pll.c
+> > @@ -156,6 +156,12 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
+> >  /* LUCID PLL specific settings and offsets */
+> >  #define LUCID_PCAL_DONE		BIT(27)
+> >  
+> > +/* LUCID 5LPE PLL specific settings and offsets */
+> > +#define LUCID_5LPE_PCAL_DONE		BIT(11)
+> > +#define LUCID_5LPE_ALPHA_PLL_ACK_LATCH	BIT(13)
+> > +#define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
+> > +#define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
+> > +
+> >  #define pll_alpha_width(p)					\
+> >  		((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ?	\
+> >  				 ALPHA_REG_BITWIDTH : ALPHA_REG_16BIT_WIDTH)
+> > @@ -1604,3 +1610,170 @@ const struct clk_ops clk_alpha_pll_agera_ops = {
+> >  	.set_rate = clk_alpha_pll_agera_set_rate,
+> >  };
+> >  EXPORT_SYMBOL_GPL(clk_alpha_pll_agera_ops);
+> > +
+> > +static int alpha_pll_lucid_5lpe_enable(struct clk_hw *hw)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	u32 val;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* If in FSM mode, just vote for it */
+> > +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
+> > +		ret = clk_enable_regmap(hw);
+> > +		if (ret)
+> > +			return ret;
+> > +		return wait_for_pll_enable_lock(pll);
+> > +	}
+> > +
+> > +	/* Check if PLL is already enabled, return if enabled */
+> > +	ret = trion_pll_is_enabled(pll, pll->clkr.regmap);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_RUN);
+> > +
+> > +	ret = wait_for_pll_enable_lock(pll);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Enable the PLL outputs */
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Enable the global PLL outputs */
+> > +	return regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
+> > +}
+> > +
+> > +static void alpha_pll_lucid_5lpe_disable(struct clk_hw *hw)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	u32 val;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* If in FSM mode, just unvote it */
+> > +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
+> > +		clk_disable_regmap(hw);
+> > +		return;
+> > +	}
+> > +
+> > +	/* Disable the global PLL output */
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* Disable the PLL outputs */
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* Place the PLL mode in STANDBY */
+> > +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_STANDBY);
+> > +}
+> > +
+> > +/*
+> > + * The Lucid 5LPE PLL requires a power-on self-calibration which happens
+> > + * when the PLL comes out of reset. Calibrate in case it is not completed.
+> > + */
+> > +static int alpha_pll_lucid_5lpe_prepare(struct clk_hw *hw)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	struct clk_hw *p;
+> > +	u32 val;
+> > +	int ret;
+> > +
+> > +	/* Return early if calibration is not needed. */
+> > +	regmap_read(pll->clkr.regmap, PLL_MODE(pll), &val);
 > 
-> How does one define "EOF"? The read manpage
-> (https://man7.org/linux/man-pages/man2/read.2.html) defines it as a
-> zero return value.
-
-And so does copy_file_range(). That's the -API definition-, it does
-not define the kernel implementation of how to decide when the file
-is at EOF.
-
-> I don't think using the inode file size is
-> standard.
-
-It is the standard VFS filesystem definition of EOF.
-
-Indeed:
-
-copy_file_range()
-  vfs_copy_file_range()
-    generic_copy_file_checks()
-    .....
-
-        /* Shorten the copy to EOF */
-        size_in = i_size_read(inode_in);
-        if (pos_in >= size_in)
-                count = 0;
-        else
-                count = min(count, size_in - (uint64_t)pos_in);
-
-That inode size check for EOF is -exactly- what is triggering here,
-and a copy of zero length returns 0 bytes having done nothing.
-
-The page cache read path does similar things in
-generic_file_buffered_read() to avoid truncate races exposing
-stale/bad data to userspace:
-
-
-                /*
-                 * i_size must be checked after we know the pages are Uptodate.
-                 *
-                 * Checking i_size after the check allows us to calculate
-                 * the correct value for "nr", which means the zero-filled
-                 * part of the page is not copied back to userspace (unless
-                 * another truncate extends the file - this is desired though).
-                 */
-                isize = i_size_read(inode);
-                if (unlikely(iocb->ki_pos >= isize))
-                        goto put_pages;
-
-> > 'cat' "works" in this situation because it doesn't check the file
-> > size and just attempts to read unconditionally from the file. Hence
-> > it happily returns non-existent stale data from busted filesystem
-> > implementations that allow data to be read from beyond EOF...
+> I doubt this will ever fail, but static analysis tools would complain
+> about val possibly being uninitialized after this.
 > 
-> `cp` also works, so does `dd` and basically any other file operation.
+> And the return value is checked in the other functions.
 
-They do not use a syscall interface that can offload work to
-filesystems, low level block layer software, hardware and/or remote
-systems. copy_file_range() is restricted to regular files and does
-complex stuff that read() and friends will never do, so we have
-strictly enforced rules to prevent people from playing fast and
-loose and silently corrupting user data with it....
+Yes agreed, will update this. Somehow I dont this my checked W=1
+complained about this, maybe some others would..
 
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+~Vinod
