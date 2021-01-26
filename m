@@ -2,67 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6443045D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F793045BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393783AbhAZR4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:56:40 -0500
-Received: from m12-14.163.com ([220.181.12.14]:35218 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390435AbhAZI6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:58:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=OZJSc
-        d3nHQP6Nw7DZOfFY+swFW54pECiOh30Eg8HCkc=; b=gvWVW+K+gIrNMU57KKzmr
-        /V1WSV9/haqnvYwSwAg1R8duVIZ9xRaB+1CzrVdXLnDlO9tCrrCmPp9kCf+aaeCY
-        Im9ZNIYEkhxwUFVpJ1QIZnJY7rfBmiMA4PfTNfN4pE/0zIE6IYkAr1+gY9KokEvv
-        YbITSkQNieGW7Pl4V5dPgM=
-Received: from COOL-20201218BF.ccdomain.com (unknown [218.94.48.178])
-        by smtp10 (Coremail) with SMTP id DsCowABHDNhh1Q9gP9Sqhw--.18850S2;
-        Tue, 26 Jan 2021 16:40:14 +0800 (CST)
-From:   mateng <ayowoe@163.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, mateng <mateng@yulong.com>
-Subject: [PATCH] misc/vmw_vmci: fix typo
-Date:   Tue, 26 Jan 2021 16:40:10 +0800
-Message-Id: <20210126084010.1941-1-ayowoe@163.com>
-X-Mailer: git-send-email 2.29.2.windows.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowABHDNhh1Q9gP9Sqhw--.18850S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XF45ZFW8GFW7GF45uFyDJrb_yoW3GFg_W3
-        48Xr4Iqr48KFnFkw18CF1fWa4rtFs5ur13GF1ag3y3JFya9r1fJr1qvFy3Wa1jyrW7KF17
-        Gr1UCFWIyw13KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUebtxDUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5d1r40rh6rljoofrz/1tbiWw4mKlSIo28N5wAAsj
+        id S2393533AbhAZRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:52:18 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:47112 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390422AbhAZInk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:43:40 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UMy60v3_1611650556;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMy60v3_1611650556)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 26 Jan 2021 16:42:40 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     njavali@marvell.com
+Cc:     GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] scsi: qla2xxx: Simplify the calculation of variables
+Date:   Tue, 26 Jan 2021 16:42:34 +0800
+Message-Id: <1611650554-33019-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: mateng <mateng@yulong.com>
+Fix the following coccicheck warnings:
 
-change 'addres' to 'address'
+./drivers/scsi/qla2xxx/qla_nvme.c:288:24-26: WARNING !A || A && B is
+equivalent to !A || B.
 
-Signed-off-by: mateng <mateng@yulong.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
 ---
- drivers/misc/vmw_vmci/vmci_queue_pair.h | 2 +-
+ drivers/scsi/qla2xxx/qla_nvme.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.h b/drivers/misc/vmw_vmci/vmci_queue_pair.h
-index 00017fc..c4e6e92 100644
---- a/drivers/misc/vmw_vmci/vmci_queue_pair.h
-+++ b/drivers/misc/vmw_vmci/vmci_queue_pair.h
-@@ -104,7 +104,7 @@ struct vmci_qp_dtch_info {
- struct vmci_qp_page_store {
- 	/* Reference to pages backing the queue pair. */
- 	u64 pages;
--	/* Length of pageList/virtual addres range (in pages). */
-+	/* Length of pageList/virtual address range (in pages). */
- 	u32 len;
- };
+diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+index eab559b..38196b2 100644
+--- a/drivers/scsi/qla2xxx/qla_nvme.c
++++ b/drivers/scsi/qla2xxx/qla_nvme.c
+@@ -285,7 +285,7 @@ static int qla_nvme_ls_req(struct nvme_fc_local_port *lport,
+ 	srb_t           *sp;
  
+ 
+-	if (!fcport || (fcport && fcport->deleted))
++	if (!fcport || fcport->deleted)
+ 		return rval;
+ 
+ 	vha = fcport->vha;
 -- 
-1.9.1
-
+1.8.3.1
 
