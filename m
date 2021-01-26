@@ -2,161 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58198303CE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0517D303CE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404690AbhAZK7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:59:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
+        id S2404729AbhAZK7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:59:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbhAZDqc (ORCPT
+        with ESMTP id S1732382AbhAZDvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 22:46:32 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FC0C061574;
-        Mon, 25 Jan 2021 19:45:52 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id u20so6178887qku.7;
-        Mon, 25 Jan 2021 19:45:51 -0800 (PST)
+        Mon, 25 Jan 2021 22:51:42 -0500
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26144C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 19:51:02 -0800 (PST)
+Received: by mail-vk1-xa2b.google.com with SMTP id u22so3612931vke.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 19:51:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=u+F7qjMVkKy+Z/mTlAsnRGcIPEVHPoI7X+UjyEAMBy8=;
-        b=JkpNujUg4hjRouN6pl6/AQ1uia3Vl5jlYv7qjTJCaxmNC9JbjSh/5DfSswulPM+9mr
-         LtjbiD9w28zln3dTymX9YTMTLyT8kxjekiOQvSo28/UPU8QRbcyidxy5aYDmGRPmGgJg
-         Ead0Y23ohH/R1ytYNB14fmANrS8Cy5afHQLI2ucCEqnJliOF506TLfxpFDaqgvN6Wtur
-         XdU8+cMc4dTZ5l0WJjG7Hy/FBdPGlttzwjkjcCVDsw0Kbw/gqVaBlDOmJjlYN4bn6nkR
-         HZgv4zFBe+P25L/pigy0gfd0THKJLA/T7VlN4H9EkmHXH1fck6UwqjgqRm9leHOoqRLw
-         orkg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ERr5chMqnNNOJKWjJQq+7FvSss//dhrARZABMDducAA=;
+        b=W/5lZiBQNy1JWJYiV5a6JWLJcRKAUyoKq3slnRqZSP4vOjPev+cn+lNyupPDziwn9w
+         6+WUe48shBn7tR9tR/udXYSJT0Dww3knoEu2UWFmh1ZQQlAQst0b15RVbB0Hrl/7QD3D
+         mRUVvAHou5iwmkNVsSVglunqWxGATL+TT9hgU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u+F7qjMVkKy+Z/mTlAsnRGcIPEVHPoI7X+UjyEAMBy8=;
-        b=W8391kYz1/V8JhbfgJfX2Ul7ndbF9ET4usrbXPw7KyilbHC8MyE6epNRYYDkGq9yZY
-         TywxOOdoAm/MYoR+cWWpJrC42NJLIpWiycC0MQQGOPVAnG+62DlsJCWDZxGpLTodO+I4
-         WNZyJZ6aG+hJByhxs12dmbKBNmJwVTQ4/orGkNDP85OeSFOU9I/EB6rOXgkOluUelnS4
-         kRUUygarjb/pp0W0q3Liq2TIBBTGsJRc9hlnq3FX4MrCu3iZNK3MGu3QeLjJ23rnd2aj
-         akjp3xJz6aNnJtyG8GzOJjWZgOF2jDtoy3mOzDTSWu12WVOmOy1J9hZMLCE/YgLS9KyO
-         6xeg==
-X-Gm-Message-State: AOAM531dJpXLhr723piQYz8ZkPt60uIknjfBKR/mbfDLrYYPVWChYRNT
-        j/2j/6FYYmpaYsEqqfyomPyiCcbQwBsdyg==
-X-Google-Smtp-Source: ABdhPJwpIYYsN7+FoSV73wY12VTrXEJKc5inFk/jjpyOi9VF8PwYt8XqOaFPYaIPFFftclhKxgsBEQ==
-X-Received: by 2002:a37:9ad0:: with SMTP id c199mr4087192qke.112.1611632751332;
-        Mon, 25 Jan 2021 19:45:51 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id j66sm13470125qkf.78.2021.01.25.19.45.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 19:45:51 -0800 (PST)
-Subject: Re: [PATCH V6 0/6] dt: build overlays
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
-        Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org
-References: <cover.1611312122.git.viresh.kumar@linaro.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <2d31e19c-7a4e-e848-aacc-8bbaa0916b0a@gmail.com>
-Date:   Mon, 25 Jan 2021 21:45:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ERr5chMqnNNOJKWjJQq+7FvSss//dhrARZABMDducAA=;
+        b=HhjQM36mlRvqSnjtkXDFSBCACmxX7Jgmffcfsl/aWgITOTM4Gq0/63jLMMjjMTF0Jg
+         zAuk48ivDuEPp+xviGDf3eO/8VjFKtU2LiD8dOAgNjVE9aYcRlISP+Cjmq+WvIjRkEFH
+         pnGqDEKuEG6WvkWvQDz0UoKOv5KvS0I49Ox0zH7DPvNhNGKSLqW714CcVhuhBEk5rM87
+         o2acM96RCKrNX4C3HymmqQOP3pMe1eW5ODmp4ZK4GZKfPNbTL6Hn5zlwp6eyYsQ1rP9b
+         9FbHHwub5kVRB5L4IK2khr8rth+hg7DSorh7Oo0gYeYZWfwVDDFqPDX4okQwHVpaB/aM
+         GX1w==
+X-Gm-Message-State: AOAM5329piurDY1Fru8U6brBJK8y+1T0cs3DR9+/i3S9RkMMqLvzeY7d
+        70RtaIIhRHcSAFlk+uolwaCmIN9a+E/zM7cMns+n9A==
+X-Google-Smtp-Source: ABdhPJz69r02bEWD3eKp0baSYASMm3Qknvcg9NadY9ZzXeYK9s/g659l+yUCcvs8dDhMVq9K3yZ9udvKzrJCk0SJcmw=
+X-Received: by 2002:ac5:ce9b:: with SMTP id 27mr3045021vke.9.1611633061185;
+ Mon, 25 Jan 2021 19:51:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cover.1611312122.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com>
+ <20210126013414.GE4626@dread.disaster.area>
+In-Reply-To: <20210126013414.GE4626@dread.disaster.area>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Tue, 26 Jan 2021 11:50:50 +0800
+Message-ID: <CANMq1KAgD_98607w308h3QSGaiRTkyVThmWmUuExxqh3r+tZsA@mail.gmail.com>
+Subject: Re: [BUG] copy_file_range with sysfs file as input
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Luis Lozano <llozano@chromium.org>, iant@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/22/21 4:50 AM, Viresh Kumar wrote:
-> Hi Frank/Rob,
-> 
-> This patchset makes necessary changes to the kernel to add support for
-> building overlays (%.dtbo) and the required fdtoverlay tool. This also
-> builds static_test.dtb using most of the existing overlay tests present
-> in drivers/of/unittest-data/ for better test coverage.
-> 
-> Note that in order for anyone to test this stuff, you need to manually
-> run the ./update-dtc-source.sh script once to fetch the necessary
-> changes from the external DTC project (i.e. fdtoverlay.c and this[1]
-> patch).
-> 
+On Tue, Jan 26, 2021 at 9:34 AM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Mon, Jan 25, 2021 at 03:54:31PM +0800, Nicolas Boichat wrote:
+> > Hi copy_file_range experts,
+> >
+> > We hit this interesting issue when upgrading Go compiler from 1.13 to
+> > 1.15 [1]. Basically we use Go's `io.Copy` to copy the content of
+> > `/sys/kernel/debug/tracing/trace` to a temporary file.
+> >
+> > Under the hood, Go now uses `copy_file_range` syscall to optimize the
+> > copy operation. However, that fails to copy any content when the input
+> > file is from sysfs/tracefs, with an apparent size of 0 (but there is
+> > still content when you `cat` it, of course).
+> >
+> > A repro case is available in comment7 (adapted from the man page),
+> > also copied below [2].
+> >
+> > Output looks like this (on kernels 5.4.89 (chromeos), 5.7.17 and
+> > 5.10.3 (chromeos))
+> > $ ./copyfrom /sys/kernel/debug/tracing/trace x
+> > 0 bytes copied
+>
+> That's basically telling you that copy_file_range() was unable to
+> copy anything. The man page says:
+>
+> RETURN VALUE
+>        Upon  successful  completion,  copy_file_range() will return
+>        the number of bytes copied between files.  This could be less
+>        than the length originally requested.  If the file offset
+>        of fd_in is at or past the end of file, no bytes are copied,
+>        and copy_file_range() returns zero.
+>
+> THe man page explains it perfectly.
 
-> Also note that Frank has already shared his concerns towards the error
-> reporting done by fdtoverlay tool [2], and David said it is not that
-> straight forward to make such changes in fdtoverlay. I have still
-> included the patch in this series for completeness.
+I'm not that confident the explanation is perfect ,-)
 
-I started to reply to this email with questions for David about how to
-improve the fdtoverlay error reporting.  But then decided that instead
-of trying to paraphrase the comments in v4 of this patch series, it
-would be more efficient to ask in the v4 thread.  So my questions are
-over there...
+How does one define "EOF"? The read manpage
+(https://man7.org/linux/man-pages/man2/read.2.html) defines it as a
+zero return value. I don't think using the inode file size is
+standard. Seems like the kernel is not even trying to read from the
+source file here.
 
--Frank
+In any case, I can fix this issue by dropping the count check here:
+https://elixir.bootlin.com/linux/latest/source/fs/read_write.c#L1445 .
+I'll send a patch so that we can discuss based on that.
 
-> 
-> FWIW, with fdtoverlay we generate a new build warning now, not sure why
-> though:
-> 
-> drivers/of/unittest-data/tests-interrupts.dtsi:20.5-28: Warning (interrupts_property): /testcase-data/testcase-device2:#interrupt-cells: size is (4), expected multiple of 8
-> 
-> V6:
-> - Create separate rules for dtbo-s and separate entries in .gitignore in
->   4/6 (Masahiro).
-> - A new file layout for handling all overlays for existing and new tests
->   5/6 (Frank).
-> - Include overlay.dts as well now in 6/6 (Frank).
-> 
-> V5:
-> 
-> - Don't reuse DTC_SOURCE for fdtoverlay.c in patch 1/5 (Frank).
-> 
-> - Update .gitignore and scripts/Makefile.dtbinst, drop dtbo-y syntax and
->   DTC_FLAGS += -@ in patch 4/5 (Masahiro).
-> 
-> - Remove the intermediate dtb, rename output to static_test.dtb, don't
->   use overlay.dtb and overlay_base.dtb for static builds, improved
->   layout/comments in Makefile for patch 5/5 (Frank).
-> 
+> Look at the trace file you are
+> trying to copy:
+>
+> $ ls -l /sys/kernel/debug/tracing/trace
+> -rw-r--r-- 1 root root 0 Jan 19 12:17 /sys/kernel/debug/tracing/trace
+> $ cat /sys/kernel/debug/tracing/trace
+> tracer: nop
+> #
+> # entries-in-buffer/entries-written: 0/0   #P:8
+> #
+> #                              _-----=> irqs-off
+> #                             / _----=> need-resched
+> #                            | / _---=> hardirq/softirq
+> #                            || / _--=> preempt-depth
+> #                            ||| /     delay
+> #           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+> #              | |       |   ||||       |         |
+>
+> Yup, the sysfs file reports it's size as zero length, so the CFR
+> syscall is saying "there's nothing to copy from this empty file" and
+> so correctly is returning zero without even trying to copy anything
+> because the file offset is at EOF...
+>
+> IOWs, there's no copy_file_range() bug here - it's behaving as
+> documented.
+>
+> 'cat' "works" in this situation because it doesn't check the file
+> size and just attempts to read unconditionally from the file. Hence
+> it happily returns non-existent stale data from busted filesystem
+> implementations that allow data to be read from beyond EOF...
+
+`cp` also works, so does `dd` and basically any other file operation.
+
+(and I wouldn't call procfs, sysfs, debugfs and friends "busted", they
+are just... special)
+
+
+>
+> Cheers,
+>
+> Dave.
 > --
-> Viresh
-> 
-> [1] https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
-> [2] https://lore.kernel.org/lkml/74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com/
-> 
-> Viresh Kumar (6):
->   scripts: dtc: Fetch fdtoverlay.c from external DTC project
->   scripts: dtc: Build fdtoverlay tool
->   scripts: dtc: Remove the unused fdtdump.c file
->   kbuild: Add support to build overlays (%.dtbo)
->   of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
->   of: unittest: Statically apply overlays using fdtoverlay
-> 
->  .gitignore                                    |   1 +
->  Makefile                                      |   5 +-
->  drivers/of/unittest-data/Makefile             |  51 ++++++
->  drivers/of/unittest-data/overlay_base.dts     |  90 +---------
->  drivers/of/unittest-data/overlay_common.dtsi  |  91 ++++++++++
->  drivers/of/unittest-data/static_base.dts      |   5 +
->  drivers/of/unittest-data/testcases.dts        |  17 +-
->  .../of/unittest-data/testcases_common.dtsi    |  18 ++
->  scripts/Makefile.dtbinst                      |   3 +
->  scripts/Makefile.lib                          |   5 +
->  scripts/dtc/Makefile                          |   6 +-
->  scripts/dtc/fdtdump.c                         | 163 ------------------
->  scripts/dtc/update-dtc-source.sh              |   3 +-
->  13 files changed, 187 insertions(+), 271 deletions(-)
->  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
->  create mode 100644 drivers/of/unittest-data/static_base.dts
->  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
->  delete mode 100644 scripts/dtc/fdtdump.c
-> 
-
+> Dave Chinner
+> david@fromorbit.com
