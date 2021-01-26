@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512C8303A9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30281303AD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404217AbhAZKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:43:38 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45960 "EHLO
+        id S2404613AbhAZKy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:54:29 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34250 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730878AbhAZCFm (ORCPT
+        with ESMTP id S1729110AbhAZDK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:05:42 -0500
+        Mon, 25 Jan 2021 22:10:58 -0500
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
         by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10Q0GdCH124859;
         Mon, 25 Jan 2021 18:16:39 -0600
@@ -66,4 +66,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<<< No Message Collected >>>
+Hi Rob,
+
+On 1/25/21 6:04 PM, Rob Herring wrote:
+> On Fri, Jan 15, 2021 at 02:58:19PM -0600, Suman Anna wrote:
+>> The '#address-cells' property looks to be a required property for
+>> interrupt controller nodes as indicated by a warning message seen
+>> when building dtbs with W=2. Adding the property to the PRUSS INTC
+>> dts nodes though fails the dtbs_check. Add this property to the
+>> PRUSS INTC binding to make it compliant with both dtbs_check and
+>> building dtbs.
+>>
+>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>> ---
+>> Hi Rob,
+>>
+>> This patch is also part of our effort to get rid of the warnings seen
+>> around interrupt providers on TI K3 dtbs [1]. I needed this in the PRUSS
+>> INTC bindings to not get a warning with dtbs_check while also ensuring
+>> no warnings while building dtbs with W=2.
+>>
+>> I would have expected the '#address-cells' requirement to be inherited
+>> automatically. And looking through the schema files, I actually do not
+>> see the interrupt-controller.yaml included automatically anywhere. You
+>> had asked us to drop the inclusion in this binding in our first version
+>> with YAML [3]. Am I missing something, and how do we ensure that this
+>> is enforced automatically for everyone?
+> 
+> interrupt-controller.yaml is applied to any node named 
+> 'interrupt-controller'. More generally, if 'compatible' is not present, 
+> then we look at $nodename for the default 'select'. In your case, you 
+> didn't name the node appropriately.
+
+Thanks for the clarification. Yeah, I didn't add anything specifically, since
+the expectation is interrupt-controller. Should I be adding that to this binding?
+
+>  
+> We can't check this in interrupt-controller.yaml because #address-cells 
+> is not always 0. GICv3 is one notable exception.
+> 
+>>
+>> regards
+>> Suman
+>>
+>> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115083003.27387-1-lokeshvutla@ti.com/
+> 
+> I've commented on this thread now in regards to #address-cells.
+
+I suppose I still need this patch to be defined to unblock the ICSSG nodes
+getting accepted by our dts maintainer. Care to give your Reviewed-by for the
+change? Or I can spin a v2 with $nodename added as well if that's needed too.
+
+regards
+Suman
+
+> 
+> Rob
+> 
+>> [2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210114194805.8231-1-s-anna@ti.com/
+>> [3] https://patchwork.kernel.org/comment/23484523/
+>>
+>>  .../bindings/interrupt-controller/ti,pruss-intc.yaml        | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+
