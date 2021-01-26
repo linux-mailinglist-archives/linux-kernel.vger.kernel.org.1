@@ -2,125 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0DB303B6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5141303B61
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392281AbhAZLVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:21:13 -0500
-Received: from mga11.intel.com ([192.55.52.93]:35240 "EHLO mga11.intel.com"
+        id S2392269AbhAZLUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:20:01 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:36088 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390190AbhAZIlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:41:09 -0500
-IronPort-SDR: hgpmuC9E7i9cj+3YMB5x3UV8jNH+XPIr7LozaNELpX8yVENWfiZdhaqiQ0KJXb2HfVaxEUY0sf
- Y7h+G8Vn3nXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="176357423"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="176357423"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 00:38:05 -0800
-IronPort-SDR: 1d9CLidnFpCJ+x7uxzkeQmk0n5naV+VadWcUvdkWpRRML1ryGTjUzELBuhOLcP4LdTjA/yLTXB
- BMzmT9WIYtwQ==
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="577731243"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 00:38:02 -0800
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH 3/3] soundwire: bus: clear parity interrupt before the mask is enabled
-Date:   Tue, 26 Jan 2021 16:37:46 +0800
-Message-Id: <20210126083746.3238-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
-References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
+        id S2390306AbhAZIir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:38:47 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l4JrB-0000Yx-Vl; Tue, 26 Jan 2021 09:37:50 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     robh+dt@kernel.org, wim@linux-watchdog.org, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 1/8] dt-binding: watchdog: add more Rockchip compatibles to snps,dw-wdt.yaml
+Date:   Tue, 26 Jan 2021 09:37:49 +0100
+Message-ID: <2221632.MzOyzyC30C@diego>
+In-Reply-To: <d6814912-ebbe-642d-161f-a005f40634d6@roeck-us.net>
+References: <20201218120534.13788-1-jbx6244@gmail.com> <11680602.O9o76ZdvQC@phil> <d6814912-ebbe-642d-161f-a005f40634d6@roeck-us.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hi Guenter,
 
-We recently added the ability to discard bus clash interrupts reported
-on startup. These bus clash interrupts can happen randomly on some
-platforms and don't seem to be valid. A master-level quirk helped
-squelch those spurious errors.
+Am Dienstag, 26. Januar 2021, 05:55:59 CET schrieb Guenter Roeck:
+> On 1/25/21 3:40 PM, Heiko Stuebner wrote:
+> > Am Samstag, 23. Januar 2021, 18:34:01 CET schrieb Guenter Roeck:
+> >> On Fri, Dec 18, 2020 at 01:05:27PM +0100, Johan Jonker wrote:
+> >>> The watchdog compatible strings are suppose to be SoC orientated.
+> >>> In the more recently added Rockchip SoC dtsi files only
+> >>> the fallback string "snps,dw-wdt" is used, so add the following
+> >>> compatible strings:
+> >>>
+> >>> "rockchip,px30-wdt", "snps,dw-wdt"
+> >>> "rockchip,rk3228-wdt", "snps,dw-wdt"
+> >>> "rockchip,rk3308-wdt", "snps,dw-wdt"
+> >>> "rockchip,rk3328-wdt", "snps,dw-wdt"
+> >>> "rockchip,rk3399-wdt", "snps,dw-wdt"
+> >>> "rockchip,rv1108-wdt", "snps,dw-wdt"
+> >>>
+> >>> make ARCH=arm dtbs_check
+> >>> DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> >>>
+> >>> make ARCH=arm64 dtbs_check
+> >>> DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> >>>
+> >>> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> >>> Acked-by: Rob Herring <robh@kernel.org>
+> >>> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> >>
+> >> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> > 
+> > just to clarify, do you expect me to pick up the dt-binding patch
+> > with the devicetree patches or do you want to take this individual
+> > patch through the watchdog tree instead?
+> > 
+> 
+> You'd have to ask Wim since he takes care of actually sending pull requests.
+> But didn't you say earlier that you wanted to apply the rest of the series
+> after this one is applied through the watchdog tree ?
 
-Additional tests on a new platform with the Maxim 98373 amplifier
-showed a rare case where the parity interrupt is also thrown on
-startup, at the same time as bus clashes. This issue only seems to
-happen infrequently and was only observed during suspend-resume stress
-tests while audio is streaming. We could make the problem go away by
-adding a Slave-level quirk, but there is no evidence that the issue is
-actually a Slave problem: the parity is provided by the Master, which
-could also set an invalid parity in corner cases.
+Yep that was my intent, though somehow I mistook you as also being
+a watchdog maintainer, hence the confusion.
 
-This patch suggests an additional bus-level quirk for parity, which is
-only applied when the codec device is not known to have an issue with
-parity. The initial parity error will be ignored, but a trace will be
-logged to help identify potential root causes (likely a combination of
-issues on both master and slave sides influenced by board-specific
-electrical parameters).
+So I'll wait for Wim to apply this patch and then I'll take the rest of
+the series.
 
-BugLink: https://github.com/thesofproject/linux/issues/2533
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c       | 9 +++++++++
- drivers/soundwire/intel.c     | 3 ++-
- include/linux/soundwire/sdw.h | 1 +
- 3 files changed, 12 insertions(+), 1 deletion(-)
+Thanks
+Heiko
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index d394905936e4..57581fdb2ea9 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1256,6 +1256,15 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 			sdw_write_no_pm(slave, SDW_SCP_INT1, SDW_SCP_INT1_BUS_CLASH);
- 		}
- 	}
-+	if ((slave->bus->prop.quirks & SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY) &&
-+	    !(slave->prop.quirks & SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY)) {
-+		/* Clear parity interrupt before enabling interrupt mask */
-+		status = sdw_read_no_pm(slave, SDW_SCP_INT1);
-+		if (status & SDW_SCP_INT1_PARITY) {
-+			dev_warn(&slave->dev, "PARITY error detected before INT mask is enabled\n");
-+			sdw_write_no_pm(slave, SDW_SCP_INT1, SDW_SCP_INT1_PARITY);
-+		}
-+	}
- 
- 	/*
- 	 * Set SCP_INT1_MASK register, typically bus clash and
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index f7ba1a77a1df..c1fdc85d0a74 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1286,7 +1286,8 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
- 	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
- 		prop->hw_disabled = true;
- 
--	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH;
-+	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH |
-+		SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY;
- 
- 	return 0;
- }
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index a2766c3b603d..30415354d419 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -426,6 +426,7 @@ struct sdw_master_prop {
- };
- 
- #define SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH	BIT(0)
-+#define SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY	BIT(1)
- 
- int sdw_master_read_prop(struct sdw_bus *bus);
- int sdw_slave_read_prop(struct sdw_slave *slave);
--- 
-2.17.1
+
+> >>> ---
+> >>>  Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 6 ++++++
+> >>>  1 file changed, 6 insertions(+)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> >>> index f7ee9229c..b58596b18 100644
+> >>> --- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> >>> +++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> >>> @@ -18,10 +18,16 @@ properties:
+> >>>        - const: snps,dw-wdt
+> >>>        - items:
+> >>>            - enum:
+> >>> +              - rockchip,px30-wdt
+> >>>                - rockchip,rk3066-wdt
+> >>>                - rockchip,rk3188-wdt
+> >>> +              - rockchip,rk3228-wdt
+> >>>                - rockchip,rk3288-wdt
+> >>> +              - rockchip,rk3308-wdt
+> >>> +              - rockchip,rk3328-wdt
+> >>>                - rockchip,rk3368-wdt
+> >>> +              - rockchip,rk3399-wdt
+> >>> +              - rockchip,rv1108-wdt
+> >>>            - const: snps,dw-wdt
+> >>>  
+> >>>    reg:
+> >>
+> > 
+> > 
+> > 
+> > 
+> 
+> 
+
+
+
 
