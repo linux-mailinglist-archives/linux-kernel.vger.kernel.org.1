@@ -2,187 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3683B30457F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D29304582
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392719AbhAZRj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:39:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729094AbhAZIAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:00:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 419AC206D7;
-        Tue, 26 Jan 2021 07:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611647974;
-        bh=ndO0PMKXJOqvpOvK3ZfF6AN3TVTIqf62iPD8PKPIV64=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nfa38lZYBYPy3CRuYp5nri0FGpaDkLPA0mMhc2zNJAAR/oTwAlu388u7agEK2/ZQj
-         iOaPKSv4RKXM+f62m//GrWChQtRXA2qNV1KvxE1M6h752qq0G7l3KzzKx5ar3pSgJg
-         zrw/QTXEfAjfn7eocwlP34P9iPkxN+infrtdfJOh6Dvhgm3/gxEYc6GRozPcnSOtUc
-         e6RJcKV9WQvkjz99JKbFxq/11a5f8QgWiP7J6wdECOHg7UAE0V+EKbW/n/UYFyiK/g
-         kitr/0ux0fe3koWJxE271FwtJO8clhldffSDWc+Bk9/kqKVuRB74LorFDplsyixq+b
-         Jkyg74UKbUp7Q==
-Date:   Tue, 26 Jan 2021 13:29:29 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Vivek Aknurwar <viveka@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jeevan Shriram <jshriram@codeaurora.org>
-Subject: Re: [PATCH v4 3/5] clk: qcom: clk-alpha-pll: Add support for Lucid
- 5LPE PLL
-Message-ID: <20210126075929.GM2771@vkoul-mobl>
-References: <20210118044321.2571775-1-vkoul@kernel.org>
- <20210118044321.2571775-4-vkoul@kernel.org>
- <YA79UPODso3cmMFU@builder.lan>
+        id S1729362AbhAZRjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:39:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731533AbhAZIBo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:01:44 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0861C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:00:54 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPzgj5C9Vz9sSs;
+        Tue, 26 Jan 2021 19:00:49 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611648051;
+        bh=H6AIkwMVmcNUMqcYZNv6i2PDekiR2N8Weacqx/lRuso=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QQTzeZSPVt19G/EhuC1FNOJtoSRF/Mti55ip2ymssvbOek3ahUG0OqvmXDJHARrWg
+         3LE6XcdMcsqm5nBfwPT0QRl7gA/ZDQzyK+UxjkyOqgHjtcN+vBrcuGPe4/rZMLqM+n
+         KWvwwFkFEjDHtL8CNRyZz+8fdzMEv3hEOtDaH6ThrHzfjbh2Xww1XJlX/bh7HOKHxw
+         ZsTEisEiCc+z1JphEcuZjRw807Cvoc2GyHIPucDCiGxDivMuJsvJvT8qOCxMlvXck0
+         6iivf67MVoFFJtQEnXcsW/wC01B0CRw4BhqPlcER30rp2yfiC8p9VgmdQMWRCvUdyM
+         v63/tLblRvX8A==
+Date:   Tue, 26 Jan 2021 19:00:30 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: Dealing with complex patch series in linux-next
+Message-ID: <20210126190030.109f24d7@canb.auug.org.au>
+In-Reply-To: <20210125094323.gz7g5p6xeifolf5v@wittgenstein>
+References: <20210125094323.gz7g5p6xeifolf5v@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YA79UPODso3cmMFU@builder.lan>
+Content-Type: multipart/signed; boundary="Sig_/dwYo/3GJS.IXDhHaYhCUWEA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-01-21, 11:18, Bjorn Andersson wrote:
-> On Sun 17 Jan 22:43 CST 2021, Vinod Koul wrote:
-> 
-> > From: Vivek Aknurwar <viveka@codeaurora.org>
-> > 
-> > Lucid 5LPE is a slightly different Lucid PLL with different offsets and
-> > porgramming sequence so add support for these
-> > 
-> > Signed-off-by: Vivek Aknurwar <viveka@codeaurora.org>
-> > Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
-> > [vkoul: rebase and tidy up for upstream]
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >  drivers/clk/qcom/clk-alpha-pll.c | 173 +++++++++++++++++++++++++++++++
-> >  drivers/clk/qcom/clk-alpha-pll.h |   4 +
-> >  2 files changed, 177 insertions(+)
-> > 
-> > diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> > index a30ea7b09224..f9c48da21bd1 100644
-> > --- a/drivers/clk/qcom/clk-alpha-pll.c
-> > +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> > @@ -156,6 +156,12 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
-> >  /* LUCID PLL specific settings and offsets */
-> >  #define LUCID_PCAL_DONE		BIT(27)
-> >  
-> > +/* LUCID 5LPE PLL specific settings and offsets */
-> > +#define LUCID_5LPE_PCAL_DONE		BIT(11)
-> > +#define LUCID_5LPE_ALPHA_PLL_ACK_LATCH	BIT(13)
-> > +#define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
-> > +#define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
-> > +
-> >  #define pll_alpha_width(p)					\
-> >  		((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ?	\
-> >  				 ALPHA_REG_BITWIDTH : ALPHA_REG_16BIT_WIDTH)
-> > @@ -1604,3 +1610,170 @@ const struct clk_ops clk_alpha_pll_agera_ops = {
-> >  	.set_rate = clk_alpha_pll_agera_set_rate,
-> >  };
-> >  EXPORT_SYMBOL_GPL(clk_alpha_pll_agera_ops);
-> > +
-> > +static int alpha_pll_lucid_5lpe_enable(struct clk_hw *hw)
-> > +{
-> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +	u32 val;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* If in FSM mode, just vote for it */
-> > +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
-> > +		ret = clk_enable_regmap(hw);
-> > +		if (ret)
-> > +			return ret;
-> > +		return wait_for_pll_enable_lock(pll);
-> > +	}
-> > +
-> > +	/* Check if PLL is already enabled, return if enabled */
-> > +	ret = trion_pll_is_enabled(pll, pll->clkr.regmap);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_RUN);
-> > +
-> > +	ret = wait_for_pll_enable_lock(pll);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Enable the PLL outputs */
-> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Enable the global PLL outputs */
-> > +	return regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
-> > +}
-> > +
-> > +static void alpha_pll_lucid_5lpe_disable(struct clk_hw *hw)
-> > +{
-> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +	u32 val;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	/* If in FSM mode, just unvote it */
-> > +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
-> > +		clk_disable_regmap(hw);
-> > +		return;
-> > +	}
-> > +
-> > +	/* Disable the global PLL output */
-> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	/* Disable the PLL outputs */
-> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	/* Place the PLL mode in STANDBY */
-> > +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_STANDBY);
-> > +}
-> > +
-> > +/*
-> > + * The Lucid 5LPE PLL requires a power-on self-calibration which happens
-> > + * when the PLL comes out of reset. Calibrate in case it is not completed.
-> > + */
-> > +static int alpha_pll_lucid_5lpe_prepare(struct clk_hw *hw)
-> > +{
-> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +	struct clk_hw *p;
-> > +	u32 val;
-> > +	int ret;
-> > +
-> > +	/* Return early if calibration is not needed. */
-> > +	regmap_read(pll->clkr.regmap, PLL_MODE(pll), &val);
-> 
-> I doubt this will ever fail, but static analysis tools would complain
-> about val possibly being uninitialized after this.
-> 
-> And the return value is checked in the other functions.
+--Sig_/dwYo/3GJS.IXDhHaYhCUWEA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yes agreed, will update this. Somehow I dont this my checked W=1
-complained about this, maybe some others would..
+Hi Christian,
 
--- 
-~Vinod
+On Mon, 25 Jan 2021 10:43:23 +0100 Christian Brauner <christian.brauner@ubu=
+ntu.com> wrote:
+>
+> After having received another round of acks on the idmapped mounts
+> series and other fses about to move forward with porting I moved forward
+> with merging [1] into my for-next branch which is tracked by sfr in
+> linux-next.
+> Given the nature of the series I expected there to be a good chunk of
+> merge conflicts including some non-trivial ones. But there proved to be
+> too many conflicts or at least a few ones that sfr couldn't handle
+> without more insight into the series. So after talking to sfr this
+> morning we decided to drop the tree for today.
+
+OK, so tomorrow, I will try merging your tree really early.  This will,
+at least, spread the conflict pain out for me (yesterday it hit all at
+once at 4pm and added an hour to my day before I gave up).  Lets see
+how that goes.
+
+Unless someone comes up with a better suggestion, of course :-)
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dwYo/3GJS.IXDhHaYhCUWEA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAPzB4ACgkQAVBC80lX
+0GwO+Qf/bddgWmiMWClpz+v4qxnZKL2wMxc2CkwDfqER6EMwl4FEBIg4ZgOZ+a0i
+KdEGtdAiAkbxHRleyWBwm3jlWpZq2UkuhKkf1Rm2EgmdzZ8uetZhAHQ12JnGwPtq
+GmELdu+69usk0uQMiePNXcOr8H9SzmWONMNa1FIo8esbrWyrTPSRLypq56vOcZAR
+ygQ3gm8pcWjj8apnoKWhloPrubWUBXhwVwYt3kbHSb8OmtMx4qqN6PCwNpyxJQg4
+m2/othbbqWuflr/pARPSSxcVEQhldtR6vLmxBN0edv/YcJIVWqSO/nE+5oppu0O3
+d8S9TCUy2HoC+3qZA4xboV4CFo0pDg==
+=hkfw
+-----END PGP SIGNATURE-----
+
+--Sig_/dwYo/3GJS.IXDhHaYhCUWEA--
