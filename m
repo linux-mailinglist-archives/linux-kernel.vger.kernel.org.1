@@ -2,87 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E93303BE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1109E303BF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405306AbhAZLnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:43:42 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:1524 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727404AbhAZLGa (ORCPT
+        id S2405471AbhAZLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392195AbhAZLPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:06:30 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10QB0KJD002174;
-        Tue, 26 Jan 2021 06:05:38 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 368ehahqmx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 06:05:37 -0500
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 10QB5a5V028976
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 26 Jan 2021 06:05:36 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 26 Jan
- 2021 06:05:35 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Tue, 26 Jan 2021 06:05:35 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 10QB5PQf007159;
-        Tue, 26 Jan 2021 06:05:33 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <lars@metafoo.de>,
-        <linux-fpga@vger.kernel.org>, <mdf@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2 3/3] dt-bindings: clock: adi,axi-clkgen: add compatible string for ZynqMP support
-Date:   Tue, 26 Jan 2021 13:08:26 +0200
-Message-ID: <20210126110826.24221-4-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210126110826.24221-1-alexandru.ardelean@analog.com>
-References: <20210126110826.24221-1-alexandru.ardelean@analog.com>
+        Tue, 26 Jan 2021 06:15:44 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB41C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:15:04 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id ke15so22345592ejc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:15:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Fal6U4PDNcYYqkpLjGA7YKgQHbc+tdNcYU+0SG4xNWs=;
+        b=I8pUBeN0C0kksUYa74WX8vZLjhLFjzyfgXlFq40db+CE4gX4Ukrja2LtCnl3wP2ACR
+         CwrFHnKe/OXsGFF4L6zdRJ+mutTUYWfuQRPBP0uSa4OIPe2BmLbuhajeCnrbbrqj53DD
+         9+bCz1sq2DxVS8nR+Yvujal/UW+qwHobxlmoiMFG9Kh4EakCM0wEeBFm8dDOjLroW6nq
+         gtW3XDYevKAHrw2jYOMaMOnnQVXOJyJqL++qxtR8I0YwlFvn9vqqVfHve58S0q+rE7eW
+         HSUG4mkoYLhI9zKRqnZrg2IAW+Up+TGH6uuR8UKq/DPnURGvKk7ECbFvRc8Vbav+xatL
+         qH7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Fal6U4PDNcYYqkpLjGA7YKgQHbc+tdNcYU+0SG4xNWs=;
+        b=LzdNh9OehZ8810jc9bf5TDzP03skqhPjD+HZyrwld/KWBf5fsFXdf6UWUK5VcfrD4z
+         4MKLIvnDhCLZZFIWA3sazOakPVBuGrGfupU07MNR/XaouMKGJlsxwd5jFkNQf9tG1paS
+         hVU6U9/c9MW9j+zkamWbYzi49HLQDLlxJ4exQNWWdtte8c5fGhsxChHMmQKkT+dRetlO
+         a8FkzOpzcPb/bN6ul0e2Z9iWEDV9tqO5kr9mOlMiMPa8vtg8xap8CVdKmnlW2Njmje3g
+         HRBNRPB6Qr9QRjsDszKh1RTO6iAappmxIgdO3thjOE6qQosquQ8usghUAUNFM+qMqpH9
+         lgrQ==
+X-Gm-Message-State: AOAM533BnAfhPtZ+zelpneb3rY4HF8Rd4mzeoQs92GAYPMFtGn+yzih/
+        GmouzkqfUl83vsAGp7VhnMNzqA==
+X-Google-Smtp-Source: ABdhPJyTqZwwWFE1qjJwQPesEkgMftkUVX3xvNbuz6Vt5rQ2ammt2BJe6x6nFborSoQgU6ZpkjsVpQ==
+X-Received: by 2002:a17:906:60c3:: with SMTP id f3mr3057881ejk.65.1611659702874;
+        Tue, 26 Jan 2021 03:15:02 -0800 (PST)
+Received: from ?IPv6:240e:304:2c80:dde0:4886:bf9:d177:bf2c? ([240e:304:2c80:dde0:4886:bf9:d177:bf2c])
+        by smtp.gmail.com with ESMTPSA id b17sm2002740edv.56.2021.01.26.03.14.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 03:15:02 -0800 (PST)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+raid@molgen.mpg.de
+References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+ <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
+ <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
+ <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
+ <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
+ <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
+ <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
+ <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
+ <d95aa962-9750-c27c-639a-2362bdb32f41@cloud.ionos.com>
+ <30576384-682c-c021-ff16-bebed8251365@molgen.mpg.de>
+ <cdc0b03c-db53-35bc-2f75-93bbca0363b5@molgen.mpg.de>
+ <bc342de0-98d2-1733-39cd-cc1999777ff3@molgen.mpg.de>
+ <c3390ab0-d038-f1c3-5544-67ae9c8408b1@cloud.ionos.com>
+ <a27c5a64-62bf-592c-e547-1e8e904e3c97@molgen.mpg.de>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <6c7008df-942e-13b1-2e70-a058e96ab0e9@cloud.ionos.com>
+Date:   Tue, 26 Jan 2021 12:14:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-26_06:2021-01-25,2021-01-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 spamscore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 clxscore=1015 phishscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101260058
+In-Reply-To: <a27c5a64-62bf-592c-e547-1e8e904e3c97@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The axi-clkgen driver now supports ZynqMP (UltraScale) as well, however the
-driver needs to use different PFD & VCO limits.
+Hi Donald,
 
-For ZynqMP, these needs to be selected by using the
-'adi,zynqmp-axi-clkgen-2.00.a' string.
+On 1/26/21 10:50, Donald Buczek wrote:
+[...]
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml | 1 +
- 1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>> index 2d21c298ffa7..f40429843906 100644
+>>> --- a/drivers/md/md.c
+>>> +++ b/drivers/md/md.c
+>>> @@ -4687,11 +4687,13 @@ action_store(struct mddev *mddev, const char 
+>>> *page, size_t len)
+>>>               clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>>           if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
+>>>               mddev_lock(mddev) == 0) {
+>>> +            set_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
+>>>               flush_workqueue(md_misc_wq);
+>>>               if (mddev->sync_thread) {
+>>>                   set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+>>>                   md_reap_sync_thread(mddev);
+>>>               }
+>>> +            clear_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
+>>>               mddev_unlock(mddev);
+>>>           }
+>>>       } else if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
+>>
+>> Yes, it could break the deadlock issue, but I am not sure if it is the 
+>> right way given we only set ALLOW_SB_UPDATE in suspend which makes 
+>> sense since the io will be quiesced, but write idle action can't 
+>> guarantee the  similar thing.
+> 
+> Thinking (and documenting) MD_ALLOW_SB_UPDATE as "the holder of 
+> reconfig_mutex promises not to make any changes which would exclude 
+> superblocks from being written" might make it easier to accept the usage.
 
-diff --git a/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml b/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-index 0d06387184d6..983033fe5b17 100644
---- a/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-+++ b/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-@@ -20,6 +20,7 @@ properties:
-   compatible:
-     enum:
-       - adi,axi-clkgen-2.00.a
-+      - adi,zynqmp-axi-clkgen-2.00.a
- 
-   clocks:
-     description:
--- 
-2.17.1
+I am not sure it is safe to set the flag here since write idle can't 
+prevent IO from fs while mddev_suspend can guarantee that.
 
+> 
+>> I prefer to make resync thread not wait forever here.
+>>
+
+[...]
+
+>>
+>> -        sh = raid5_get_active_stripe(conf, new_sector, previous,
+>> +        sh = raid5_get_active_stripe(conf, new_sector, previous, 0,
+> 
+> 
+> Mistake here (fourth argument added instead of third)
+
+Thanks for checking.
+
+[...]
+
+> Unfortunately, this patch did not fix the issue.
+> 
+>      root@sloth:~/linux# cat /proc/$(pgrep md3_resync)/stack
+>      [<0>] raid5_get_active_stripe+0x1e7/0x6b0
+>      [<0>] raid5_sync_request+0x2a7/0x3d0
+>      [<0>] md_do_sync.cold+0x3ee/0x97c
+>      [<0>] md_thread+0xab/0x160
+>      [<0>] kthread+0x11b/0x140
+>      [<0>] ret_from_fork+0x22/0x30
+> 
+> which is ( according to objdump -d -Sl drivers/md/raid5.o ) at 
+> https://elixir.bootlin.com/linux/v5.11-rc5/source/drivers/md/raid5.c#L735
+> 
+> Isn't it still the case that the superblocks are not written, therefore 
+> stripes are not processed, therefore number of active stripes are not 
+> decreasing? Who is expected to wake up conf->wait_for_stripe waiters?
+
+Hmm, how about wake the waiter up in the while loop of raid5d?
+
+@@ -6520,6 +6532,11 @@ static void raid5d(struct md_thread *thread)
+                         md_check_recovery(mddev);
+                         spin_lock_irq(&conf->device_lock);
+                 }
++
++               if ((atomic_read(&conf->active_stripes)
++                    < (conf->max_nr_stripes * 3 / 4) ||
++                    (test_bit(MD_RECOVERY_INTR, &mddev->recovery))))
++                       wake_up(&conf->wait_for_stripe);
+         }
+         pr_debug("%d stripes handled\n", handled);
+
+If the issue still appears then I will change the waiter to break just 
+if MD_RECOVERY_INTR is set, something like.
+
+wait_event_lock_irq(conf->wait_for_stripe,
+	(test_bit(MD_RECOVERY_INTR, &mddev->recovery) && sync_req) ||
+	 /* the previous condition */,
+	*(conf->hash_locks + hash));
+
+Thanks,
+Guoqing
