@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30380304299
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900B330429C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391856AbhAZPaC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 10:30:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbhAZJdW (ORCPT
+        id S2406352AbhAZPaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:30:13 -0500
+Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:56364 "EHLO
+        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391257AbhAZJcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:33:22 -0500
-Received: from cc-smtpout1.netcologne.de (cc-smtpout1.netcologne.de [IPv6:2001:4dd0:100:1062:25:2:0:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F27C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:32:04 -0800 (PST)
-Received: from cc-smtpin1.netcologne.de (cc-smtpin1.netcologne.de [89.1.8.201])
-        by cc-smtpout1.netcologne.de (Postfix) with ESMTP id DD3AA13A1F;
-        Tue, 26 Jan 2021 10:31:13 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by cc-smtpin1.netcologne.de (Postfix) with ESMTP id CF7C111E75;
-        Tue, 26 Jan 2021 10:31:13 +0100 (CET)
-Received: from [89.1.203.165] (helo=cc-smtpin1.netcologne.de)
-        by localhost with ESMTP (eXpurgate 4.19.0)
-        (envelope-from <kurt@garloff.de>)
-        id 600fe161-031e-7f0000012729-7f000001c664-1
-        for <multiple-recipients>; Tue, 26 Jan 2021 10:31:13 +0100
-Received: from nas2.garloff.de (xdsl-89-1-203-165.nc.de [89.1.203.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by cc-smtpin1.netcologne.de (Postfix) with ESMTPSA;
-        Tue, 26 Jan 2021 10:31:08 +0100 (CET)
-Received: from [192.168.155.24] (ap4.garloff.de [192.168.155.15])
-        by nas2.garloff.de (Postfix) with ESMTPSA id F049FB3B13A5;
-        Tue, 26 Jan 2021 10:31:07 +0100 (CET)
-To:     Denis Efremov <efremov@linux.com>, Jiri Kosina <jikos@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Wim Osterholt <wim@djo.tudelft.nl>
-References: <20160610230255.GA27770@djo.tudelft.nl>
- <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm>
- <20160614184308.GA6188@djo.tudelft.nl>
- <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm>
- <20160615132040.GZ14480@ZenIV.linux.org.uk>
- <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm>
- <20160615224722.GA9545@djo.tudelft.nl>
- <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm>
- <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm>
- <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
- <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm>
- <5cb57175-7f0b-5536-925d-337241bcda93@linux.com>
- <nycvar.YFH.7.76.2101211122290.5622@cbobk.fhfr.pm>
- <nycvar.YFH.7.76.2101211543230.5622@cbobk.fhfr.pm>
- <e503292b-5f51-eac5-771f-e35991d1084c@linux.com>
- <nycvar.YFH.7.76.2101211603590.5622@cbobk.fhfr.pm>
- <nycvar.YFH.7.76.2101221209060.5622@cbobk.fhfr.pm>
- <5ef748c9-9ab9-9a7e-6ae9-6e4a292b6842@linux.com>
-From:   Kurt Garloff <kurt@garloff.de>
-Subject: Re: [PATCH] floppy: reintroduce O_NDELAY fix
-Message-ID: <f822ebde-89d6-dbbf-ae4e-b06a4aadedf5@garloff.de>
-Date:   Tue, 26 Jan 2021 10:31:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 26 Jan 2021 04:32:51 -0500
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id A3C6BBEC6C
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:31:42 +0000 (GMT)
+Received: (qmail 27702 invoked from network); 26 Jan 2021 09:31:42 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Jan 2021 09:31:42 -0000
+Date:   Tue, 26 Jan 2021 09:31:40 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
+        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Larabel <Michael@phoronix.com>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] x86,sched: On AMD EPYC set freq_max = max_boost
+ in schedutil invariant formula
+Message-ID: <20210126093140.GB3592@techsingularity.net>
+References: <20210122204038.3238-1-ggherdovich@suse.cz>
+ <20210122204038.3238-2-ggherdovich@suse.cz>
+ <YA6YEK4/rjtPLdkG@hirez.programming.kicks-ass.net>
+ <1611652167.11983.65.camel@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <5ef748c9-9ab9-9a7e-6ae9-6e4a292b6842@linux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <1611652167.11983.65.camel@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Denis, Jiri, Jens,
+On Tue, Jan 26, 2021 at 10:09:27AM +0100, Giovanni Gherdovich wrote:
+> On Mon, 2021-01-25 at 11:06 +0100, Peter Zijlstra wrote:
+> > On Fri, Jan 22, 2021 at 09:40:38PM +0100, Giovanni Gherdovich wrote:
+> > > 1. PROBLEM DESCRIPTION (over-utilization and schedutil)
+> > > 
+> > > The problem happens on CPU-bound workloads spanning a large number of cores.
+> > > In this case schedutil won't select the maximum P-State. Actually, it's
+> > > likely that it will select the minimum one.
+> > > 
+> > > A CPU-bound workload puts the machine in a state generally called
+> > > "over-utilization": an increase in CPU speed doesn't result in an increase of
+> > > capacity. The fraction of time tasks spend on CPU becomes constant regardless
+> > > of clock frequency (the tasks eat whatever we throw at them), and the PELT
+> > > invariant util goes up and down with the frequency (i.e. it's not invariant
+> > > anymore).
+> > >                                       v5.10          v5.11-rc4
+> > >                                       ~~~~~~~~~~~~~~~~~~~~~~~~
+> > > CPU activity (mpstat)                 80-90%         80-90%
+> > > schedutil requests (tracepoint)       always P0      mostly P2
+> > > CPU frequency (HW feedback)           ~2.2 GHz       ~1.5 GHz
+> > > PELT root rq util (tracepoint)        ~825           ~450
+> > > 
+> > > mpstat shows that the workload is CPU-bound and usage doesn't change with
+> > 
+> > So I'm having trouble with calling a 80%-90% workload CPU bound, because
+> > clearly there's a ton of idle time.
+> 
+> Yes you're right. There is considerable idle time and calling it CPU-bound is
+> a bit of a stretch.
+> 
+> Yet I don't think I'm completely off the mark. The busy time is the same with
+> the machine running at 1.5 GHz and at 2.2 GHz (it just takes longer to
+> finish). To me it seems like the CPU is the bottleneck, with some overhead on
+> top.
+> 
 
-Am 26.01.21 um 09:21 schrieb Denis Efremov:
-> On 1/22/21 2:13 PM, Jiri Kosina wrote:
->> From: Jiri Kosina <jkosina@suse.cz>
->>
->> This issue was originally fixed in 09954bad4 ("floppy: refactor open() 
->> flags handling").
->>
->> The fix as a side-effect, however, introduce issue for open(O_ACCMODE) 
->> that is being used for ioctl-only open. I wrote a fix for that, but 
->> instead of it being merged, full revert of 09954bad4 was performed, 
->> re-introducing the O_NDELAY / O_NONBLOCK issue, and it strikes again.
->>
->> This is a forward-port of the original fix to current codebase; the 
->> original submission had the changelog below:
->>
->> ====
->> Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
->> side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
->> this is being used setfdprm userspace for ioctl-only open().
->>
->> Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE) 
->> modes, while still keeping the original O_NDELAY bug fixed.
->>
->> Cc: stable@vger.kernel.org
->> Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
->> Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
->> Reported-and-tested-by: Kurt Garloff <kurt@garloff.de>
->> Fixes: 09954bad4 ("floppy: refactor open() flags handling")
->> Fixes: f2791e7ead ("Revert "floppy: refactor open() flags handling"")
->> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> Applied. I'll send it to Jens soon with a couple of cleanup patches.
->
-> https://github.com/evdenis/linux-floppy/commit/e32f6163c47efbdbad06258560aa00d1c7e5b699
+I think this is an important observation because while the load may not
+be fully CPU-bound, it's still at the point where race-to-idle by running
+at a higher frequency is relevant. During the busy time, the results
+(and Michael's testing) indicate that the higher frequency may still be
+justified. I agree that there is a "a 'problem' between schedutil and
+cpufreq, they don't use the same f_max at all times", fixing that mid
+-rc may not be appropriate because it's a big change in an rc window.
 
-Great, thanks.
-
-Due to libblkid (rightfully) using O_NONBLOCK these days when probing
-devices, the floppy driver does spit loads of
-[    9.533513] floppy0: disk absent or changed during operation
-[    9.534989] blk_update_request: I/O error, dev fd0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-[    9.537206] Buffer I/O error on dev fd0, logical block 0, async page read
-[    9.546837] floppy0: disk absent or changed during operation
-[    9.548389] blk_update_request: I/O error, dev fd0, sector 0 op 0x0:(READ) flags 0x80700 phys_seg 1
-and fails a mount prior to being opened without O_NONBLOCK at least once.
-(Reproduction is easy with qemu-kvm.)
-
-The patch addresses it and I would suggest it to also be backported and
-applied to the active stable kernel trees.
-
-Thanks,
+So, should this patch be merged for 5.11 as a stopgap, fix up
+schedutil/cpufreq and then test both AMD and Intel chips reporting the
+correct max non-turbo and max-turbo frequencies? That would give time to
+give some testing in linux-next before merging to reduce the chance
+something else falls out.
 
 -- 
-Kurt Garloff <kurt@garloff.de>, Cologne, Germany
-
-
+Mel Gorman
+SUSE Labs
