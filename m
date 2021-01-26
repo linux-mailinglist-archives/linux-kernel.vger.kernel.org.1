@@ -2,155 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B33F30314E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3B0303161
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727152AbhAZBc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 20:32:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
+        id S1732083AbhAZBkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 20:40:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729457AbhAZBaI (ORCPT
+        with ESMTP id S1729826AbhAZBer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:30:08 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0EFC061D7E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:18:10 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id kx7so706276pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:18:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iWbVQO5R0FpQjPeleTL5ZQxXMwOKE8gz64YVQB09gIE=;
-        b=M8/QV0mlc2v2R8DUyzcSmv2ah8W3t/Zyct7N54o+QNG5dYc72k3Goi4nwckpZUxBKY
-         OLzUjzQ069Xg0Mwox3AdKaNd2sH8efxb8MswfwAeVssIrhd+5npraQUBmohEdUUtPBi+
-         tnkK7aKAGBIFCJRX+MW31GV68uGwQMAPlaYME=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iWbVQO5R0FpQjPeleTL5ZQxXMwOKE8gz64YVQB09gIE=;
-        b=JctyLGLrSJInia/sVIraDbyPgL9IJ8h2seKekYrNKxhoIs9R12HlF68l2lJri3jQ+1
-         6QmkDjuM4s2NS+mwWgkrq6x1qUPGQlN9l1vNEXPP2C5k4AiP832hMY1hkcPfcbD2FOxL
-         ljWB6UGZ8EcPTW8zC32ppdTe4smDEQYJ7S0+t8NgdFnHICOP5WNYZOOAv3o2mth1WKbC
-         tlb3QUeLxiYYupiS/Ncn+dh47BOubw2Q/tJzeUP5vRaQ4QL/MrtwcQil/1Z36O/fLpNo
-         1ixjybo7v0Yp3RGzdiGDwYGgxGEnaBHzrVZkPZ5Hy0lRqKS7SyzsBH1vx8MmZH3v1/B+
-         5tbQ==
-X-Gm-Message-State: AOAM5335FhUewjRyxt32FdeCpdOVS6zLipc35b+eSxDlEjPh67eOlRu/
-        krQiQxWl7/qS/25/I0FO5j4sGQ==
-X-Google-Smtp-Source: ABdhPJyjPaSweKNxNtO2gkziAaXPMrY4Rp0Kuls26ijdkAvAyf1Ku0oC++DgRuy/WatKIEzuLxGMZA==
-X-Received: by 2002:a17:90a:d255:: with SMTP id o21mr3117952pjw.151.1611623889956;
-        Mon, 25 Jan 2021 17:18:09 -0800 (PST)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:50cc:9282:4fdd:3979])
-        by smtp.gmail.com with ESMTPSA id k9sm522248pji.8.2021.01.25.17.18.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 17:18:09 -0800 (PST)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Cc:     fshao@chromium.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        hoegsberg@chromium.org, boris.brezillon@collabora.com,
-        hsinyi@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v11 0/4] drm/panfrost: Add support for mt8183 GPU
-Date:   Tue, 26 Jan 2021 09:17:55 +0800
-Message-Id: <20210126011759.1605641-1-drinkcat@chromium.org>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+        Mon, 25 Jan 2021 20:34:47 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on20702.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::702])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D023C0698CC;
+        Mon, 25 Jan 2021 17:21:29 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TrXAFv09KZLS6+tMX5WRGKqqeY6Zfx0F/lBmPBrj0g+NgAGRUTG33Oa2BsQSo7iM8b2w38/ozvyQ3QIg5r96RIBbTCoW86FFW+WmTCyHYocrCoikDtm2LKoKuLx458pN6FIWiN76hmJ0oYGPdlgKHd6onzxpyt9CHj30MslXWJ+q1VO4fjfdAGXqkPiTy3XhyOi7BMRULkpjckKpu3iV8CdeMVyufRI/QsqbNxu8760hVKcinfZa5+Eh18eioCCTpBqGw5ZJUNt3VvPC8v0l0b/pi9mY1oM5wl+evDpRJT9l1MVLFN0eV6XV8WDKdCVc61GTe4/5fkcgRk5L+ZpdNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tPzgVaOwCGeNDgoqp1nDc20TcW78pTcwMsQO3SGfMSM=;
+ b=eKFcnCKdZHu2WRlNoKGdJRNfvIW8TCifxKnK9r/E3KbSqCnrwJ9SSPpuTh/bIEXW4Qf92m0J3AbCzq+X0eyj7ie6xO/O+TQs0I/aLjDbcuNpR+RTJGwNd2/R0gkz86Ptas+FDfEoqknAQhZbDvdtBxA5BDkOpb00GEEnCoK89zgHCSTr50jWCf8tEkwJkwKwCo5sXUugmqQyS90JgcuFtzlXUziC3aJ5CuhhVwpSWr+x+nPqb2pV8Kprk2rIcZU1SQdnn/uTK9hiI7rhuWCxRwL6GLchQmAbZInuubLEcezbdWyidESy2QIp+03HYzhajzmJMRkficJmywzeVUW/6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tPzgVaOwCGeNDgoqp1nDc20TcW78pTcwMsQO3SGfMSM=;
+ b=FRUCdsfKCjQcljmnvxH2njUVhB4PWT/ISj7i13DpbgnGccw2d9XcJCHd9Y90o4CEnqvcBJK0fQpn5yujqKjlSowHtX6dzITyMbjhJC+6nnWhR/zDUf8oOxl3jhyZskAhRushN1rZ3gDXLMCezhGoxVx6OHbrvkvFV5nOWYFZBvk=
+Received: from (2603:10b6:301:7c::11) by
+ MWHPR2101MB0873.namprd21.prod.outlook.com (2603:10b6:301:7e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.6; Tue, 26 Jan
+ 2021 01:21:14 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3825.003; Tue, 26 Jan 2021
+ 01:21:14 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+CC:     "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: RE: [PATCH v5 10/16] x86/hyperv: implement and use
+ hv_smp_prepare_cpus
+Thread-Topic: [PATCH v5 10/16] x86/hyperv: implement and use
+ hv_smp_prepare_cpus
+Thread-Index: AQHW7yP27+zNdKWlU02NgaE0dmDREqo5JKOw
+Date:   Tue, 26 Jan 2021 01:21:14 +0000
+Message-ID: <MWHPR21MB159345C90D79F300DA05C588D7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210120120058.29138-1-wei.liu@kernel.org>
+ <20210120120058.29138-11-wei.liu@kernel.org>
+In-Reply-To: <20210120120058.29138-11-wei.liu@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-26T01:21:12Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3b94c419-7738-4b95-91c9-ea76089aaef7;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [66.75.126.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: d81e41d5-9eb6-474c-b12a-08d8c198ac44
+x-ms-traffictypediagnostic: MWHPR2101MB0873:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR2101MB08737C1F3F8F86A9729E4B09D7BC9@MWHPR2101MB0873.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2043;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: smjODyt3LtXSunW6KCooZpgHV6GAypoXTK0F2b4SgIvlbYA1DFcP17toBybMgyEpq2ueqaVVfS9SmC9GqYvDsmTISwXnaJjr8wgkrf75DnjRnERxPuQpbueS3N3+M+PPi/OMXv4NVWuiGmMTC0kRqSY8lTUwdCDoVvxXZayjKNMkO3KcU4J+kVemwmVTM5qhyD/fZT45HWf6O29ekD2+E9nAl9QJ/Rdm7i6a8cRoEXuR740RqaqpMlQ6TQYNFFOYQ4RFOj+mvVW28IJqPAb9JYxNTQMSVhQUwdzjgDKALhRFmI4xmleHwNLgbEtdaGc7DRjxFvSBMs699kPpRRqcfa1HUQ814NRg7s+RcX0lBhuvK3GY1uy54rtKJQqwxAfCVgWzRzv31cptTuSsy5Ssm8n/ijiebytF1Zli0GZVL/szAvpKN+4C/29FmmHX16qrw1Jm9e9c/01nRNpFMVJFA9xUHm8EkXB6eoiKNttRK5pWIg/Z2bHTVaQK5aSKMQiegOiqeISvn2pEvlMOQglcQg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(396003)(376002)(39860400002)(478600001)(52536014)(66446008)(71200400001)(55016002)(8936002)(7416002)(54906003)(4326008)(66946007)(76116006)(64756008)(110136005)(83380400001)(9686003)(66476007)(66556008)(86362001)(7696005)(6506007)(8990500004)(82960400001)(82950400001)(33656002)(8676002)(26005)(186003)(316002)(10290500003)(5660300002)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?oJJFEM0XJhtL/oA8Db6TNZgU3LP+vxAXIToaCTBFowdo8lcFTxjTqdiO+Jym?=
+ =?us-ascii?Q?AdPcLfitshHjl1zHByjU5QP5hrNrfWyei/PTQ+6+YtN2X4kXVf0XbUKNaUIn?=
+ =?us-ascii?Q?Vht4UlF+88pfhGuY1w/t5Huf64UvgRcgJMwjJiAvCsDxM/eqN1+RADGtz95d?=
+ =?us-ascii?Q?+obIFdeyniP7gfjh1nN4FfkOSsiPpyiUaj2u+PrXqAwwMAaw522nYGzO7hR+?=
+ =?us-ascii?Q?EKT0CyoY4ZLpftM2nhVHmx2y0dUCs1rneM4A9cy/Sz2NMOLqA9pfwhtEbld0?=
+ =?us-ascii?Q?F4W9s+fiEaenINvo7hFYRLWVUtJ/tDEqXXK6GO4lPpyGKB2VYo5lya8o1NPa?=
+ =?us-ascii?Q?xlbdTH1Dl42S0aOvqTOI+psQti52FWGGHYWD7T1Ayt/AbbQcRSiG+BFNUDX5?=
+ =?us-ascii?Q?8Qo22DJdvVkBM5DpNT6za3Voq23y1I2RoIjwXfUBs7MPjrmZPHFJmKVqnJsK?=
+ =?us-ascii?Q?vT9ZWhBho7wmAvIg1KYe7VaUaJVPhqfOrSICshJiFs7tJFK4BIWx3VgLQytL?=
+ =?us-ascii?Q?bcwMERWuD1VTNhTPJLjKC1f2vhWWia4DmIDwCxGzPhvWc8edsmMr+f0ucKKw?=
+ =?us-ascii?Q?ZKOCweTKuc+RP0R1om7k121M/CuwgDgxN4cM1rg+ZYLK9GdZLYxjnW/cERVq?=
+ =?us-ascii?Q?ECN5u8QR4BfalF2o08DXlIvCs7vJcnThHQ53CWrEhaV43Vks9Rf7BmFUOb2F?=
+ =?us-ascii?Q?ZP+ecQnqcmdqi0zkOaZo0metKVGckMSDssKd+f3FiKToTcKBn0ClcGex0vbV?=
+ =?us-ascii?Q?tXweyIl4dIqSNBuaN9Cj+10XC32Cb4QyVYEDVhQMwl3w4vOKkmcCuG6W0dkH?=
+ =?us-ascii?Q?djSW94s7DNHdLwYKtaQ67jlXf5S0PjGrjNMvjY0E8vcg29FyFFZyLNe6Clms?=
+ =?us-ascii?Q?4j4owS5Qh0DZ1oftYgD8yLURfjWOSRorzuuSlfRnaSVsHnzAHg82rd5n8Acz?=
+ =?us-ascii?Q?1Br+dbd1DoBiKVfLCD9T5q2G/bQqjy0tffc3oO45YzHJcZzWhg95PHBy/o6g?=
+ =?us-ascii?Q?DApYvxMN9OFwj8R71tgqXzu1G1xvd0a5b4dssV6cfh2wuaOGuUWcM+78C2Ca?=
+ =?us-ascii?Q?vUe2rBhq?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d81e41d5-9eb6-474c-b12a-08d8c198ac44
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2021 01:21:14.0708
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: d0ODB7oa/4kd6lUTvR1RdS5Rkh1uBURAo89mO/dfxqsCEJtukwvTqEUfEQQJ+6OdUL1MkilmiOFNgbQn7hjlVAEWPLjLjnKa3P+55WIcA1g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2101MB0873
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 A=
+M
+>=20
+> Microsoft Hypervisor requires the root partition to make a few
+> hypercalls to setup application processors before they can be used.
+>=20
+> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+> CPU hotplug and unplug is not yet supported in this setup, so those
+> paths remain untouched.
+>=20
+> v3: Always call native SMP preparation function.
+> ---
+>  arch/x86/kernel/cpu/mshyperv.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>=20
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyper=
+v.c
+> index c376d191a260..13d3b6dd21a3 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -31,6 +31,7 @@
+>  #include <asm/reboot.h>
+>  #include <asm/nmi.h>
+>  #include <clocksource/hyperv_timer.h>
+> +#include <asm/numa.h>
+>=20
+>  /* Is Linux running as the root partition? */
+>  bool hv_root_partition;
+> @@ -212,6 +213,32 @@ static void __init hv_smp_prepare_boot_cpu(void)
+>  	hv_init_spinlocks();
+>  #endif
+>  }
+> +
+> +static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
+> +{
+> +#ifdef CONFIG_X86_64
+> +	int i;
+> +	int ret;
+> +#endif
+> +
+> +	native_smp_prepare_cpus(max_cpus);
+> +
+> +#ifdef CONFIG_X86_64
+> +	for_each_present_cpu(i) {
+> +		if (i =3D=3D 0)
+> +			continue;
+> +		ret =3D hv_call_add_logical_proc(numa_cpu_node(i), i, cpu_physical_id(=
+i));
+> +		BUG_ON(ret);
+> +	}
+> +
+> +	for_each_present_cpu(i) {
+> +		if (i =3D=3D 0)
+> +			continue;
+> +		ret =3D hv_call_create_vp(numa_cpu_node(i), hv_current_partition_id, i=
+, i);
+> +		BUG_ON(ret);
+> +	}
+> +#endif
+> +}
+>  #endif
+>=20
+>  static void __init ms_hyperv_init_platform(void)
+> @@ -368,6 +395,8 @@ static void __init ms_hyperv_init_platform(void)
+>=20
+>  # ifdef CONFIG_SMP
+>  	smp_ops.smp_prepare_boot_cpu =3D hv_smp_prepare_boot_cpu;
+> +	if (hv_root_partition)
+> +		smp_ops.smp_prepare_cpus =3D hv_smp_prepare_cpus;
+>  # endif
+>=20
+>  	/*
+> --
+> 2.20.1
 
-Follow-up on the v5 [1], things have gotten significantly
-better in the last 9 months, thanks to the efforts on Bifrost
-support by the Collabora team (and probably others I'm not
-aware of).
-
-I've been testing this series on a MT8183/kukui device, with a
-chromeos-5.10 kernel [2], and got basic Chromium OS UI up with
-mesa 20.3.2 (lots of artifacts though).
-
-devfreq is currently not supported, as we'll need:
- - Clock core support for switching the GPU core clock (see 2/4).
- - Platform-specific handling of the 2-regulator (see 3/4).
-
-Since the latter is easy to detect, patch 3/4 just disables
-devfreq if the more than one regulator is specified in the
-compatible matching table.
-
-[1] https://patchwork.kernel.org/project/linux-mediatek/cover/20200306041345.259332-1-drinkcat@chromium.org/
-[2] https://crrev.com/c/2608070
-
-Changes in v11:
- - binding: power-domain-names not power-domainS-names
- - mt8183*.dts: remove incorrect supply-names
-
-Changes in v10:
- - Fix the binding to make sure sram-supply property can be provided.
-
-Changes in v9:
- - Explain why devfreq needs to be disabled for GPUs with >1
-   regulators.
-
-Changes in v8:
- - Use DRM_DEV_INFO instead of ERROR
-
-Changes in v7:
- - Fix GPU ID in commit message
- - Fix GPU ID in commit message
-
-Changes in v6:
- - Rebased, actually tested with recent mesa driver.
- - Add gpu regulators to kukui dtsi as well.
- - Power domains are now attached to spm, not scpsys
- - Drop R-B.
- - devfreq: New change
- - Context conflicts, reflow the code.
- - Use ARRAY_SIZE for power domains too.
-
-Changes in v5:
- - Rename "2d" power domain to "core2"
- - Rename "2d" power domain to "core2" (keep R-B again).
- - Change power domain name from 2d to core2.
-
-Changes in v4:
- - Add power-domain-names description
-   (kept Alyssa's reviewed-by as the change is minor)
- - Add power-domain-names to describe the 3 domains.
-   (kept Alyssa's reviewed-by as the change is minor)
- - Add power domain names.
-
-Changes in v3:
- - Match mt8183-mali instead of bifrost, as we require special
-   handling for the 2 regulators and 3 power domains.
-
-Changes in v2:
- - Use sram instead of mali_sram as SRAM supply name.
- - Rename mali@ to gpu@.
-
-Nicolas Boichat (4):
-  dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
-  arm64: dts: mt8183: Add node for the Mali GPU
-  drm/panfrost: devfreq: Disable devfreq when num_supplies > 1
-  drm/panfrost: Add mt8183-mali compatible string
-
- .../bindings/gpu/arm,mali-bifrost.yaml        |  28 +++++
- arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   5 +
- .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   5 +
- arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
- drivers/gpu/drm/panfrost/panfrost_devfreq.c   |   9 ++
- drivers/gpu/drm/panfrost/panfrost_drv.c       |  10 ++
- 6 files changed, 162 insertions(+)
-
--- 
-2.30.0.280.ga3ce27912f-goog
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
