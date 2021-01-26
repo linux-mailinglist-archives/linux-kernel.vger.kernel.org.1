@@ -2,345 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C19E303CA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069EA303C75
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392171AbhAZLOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:14:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732423AbhAZHmk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:42:40 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C9CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:41:55 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id z22so31821123ioh.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:41:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yTEzEls579DZ3BH7hVcyPhp2fOCUcEmP44D/dLy0dWM=;
-        b=lhkvH0huBJvc9H+HHJT5oD2JJfLRkNYrzMGtQpHmHbrcyuVVO75mflEeMeVGM5SLeV
-         Nvz2LpNpnG4NLXQS3PzviLTmcoJ28ZzcjvSuunpWVNA8XdJ5QA/GD6hAbJMtxdnbxWmo
-         TblN5TW94Rysnh9stZJyH71Ylpu5BK5dkAgLs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yTEzEls579DZ3BH7hVcyPhp2fOCUcEmP44D/dLy0dWM=;
-        b=G+odOz6QDo6OgC6O/8j9kM4KjIZyUUmuCTaSTq6nvPHM6G/NuA2Q3fohvbevas+jRF
-         4BciZ5kxJz0gTV9fxypaXhiiS49dlPP5M2i9ZP/HAJWpbITyt4VOw/iOFI3J3KbpnkoY
-         XMSfCzCgMbhSUI8h5JQOJbD4BGuMBlynuPlopfoNosefxoB2ShLjJVKaMQ9Hs3YWjLNx
-         2TnlX1/otuR0mtLPYpqPeP/cM0FKfdRikCdA3oKPmYSVwFlpPWQcz0MkVXrxn+4nE2Kz
-         MSVES8apx82ZBL6kD/cvdRPltBOUWQNwmBkgdDSoC1aRccwUxEYVdsXDKPd9X97REXWb
-         4b6A==
-X-Gm-Message-State: AOAM532AlDT67f7TngYvwlJZxO6v/MGeCi4GaizswCyEo/Z/4NCktyev
-        1SZnvIqU0ZTmP/MBwrm7U2VktbsOct0WHf0TGlKzqw==
-X-Google-Smtp-Source: ABdhPJwlpBCKAL7fXLH9DDApVCKASF37ZecJUvGno+yw0iUERuo8IehQdIP5bitm9orrlTzk/WX0NRpPQ8lzpIqZxIQ=
-X-Received: by 2002:a05:6638:b12:: with SMTP id a18mr3834357jab.114.1611646915306;
- Mon, 25 Jan 2021 23:41:55 -0800 (PST)
+        id S2392438AbhAZLY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:24:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390885AbhAZJGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:06:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BE8E230FC;
+        Tue, 26 Jan 2021 09:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611651969;
+        bh=G5+l47/40WQqE8sMD8qHB812E6j2RpLT91B3pVSXqyw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F3YdcChjzZ4m2PRiMIxSJqeqyrGB5esbPCu1IPZXWNcqzInT6iM+95xJBgi+ACP/W
+         Tqb4fbpwdB3exg7MXjJJrxcPcgg+xu7v/ru3/k6wv7+Qd4Su7128UJE6ngK8OS1wi/
+         pL9SnZq4oiXBaKBQBfpEtjK8bx0qZhVFsztxUiH2w/TCIVUdISTfptJny9laJ0b7Mh
+         ddFng6XXSQEp9ZAXJMg2PUfl724HZAR5ehOnRmmzu4qrVqBpYbSSVD8wcSUWYY4BuW
+         xpwgNu/xJ4sBwhhLkTsABgJYZ7idXfozIDFvfjtvcF+BnGCFHey9XGnTte01GJLVf5
+         9lblsQQWpidSA==
+Received: by pali.im (Postfix)
+        id CD203FA4; Tue, 26 Jan 2021 10:06:06 +0100 (CET)
+Date:   Tue, 26 Jan 2021 10:06:06 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jun Li <jun.li@nxp.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] usb: host: xhci-plat: fix support for
+ XHCI_SKIP_PHY_INIT quirk
+Message-ID: <20210126090606.svpamobnrbdxyhgg@pali>
+References: <20201221150903.26630-1-pali@kernel.org>
+ <20201223161847.10811-1-pali@kernel.org>
+ <20201224055836.GB27629@b29397-desktop>
+ <20210113232057.niqamgsqlaw7gojw@pali>
+ <88b48c61-65e4-cc24-d90d-5fba92f05f27@linux.intel.com>
+ <20210125142028.th4sscs27arhihm2@pali>
+ <TY2PR01MB369295E3D3BF6D5700EC50CCD8BC0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com> <1610351031-21133-6-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1610351031-21133-6-git-send-email-yongqiang.niu@mediatek.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 26 Jan 2021 15:41:29 +0800
-Message-ID: <CAJMQK-g_+7h0vo7758aoY6304pqULJpHgSWE3HhvF8FWjkze_w@mail.gmail.com>
-Subject: Re: [PATCH v3, 05/15] drm/mediatek: add component POSTMASK
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <TY2PR01MB369295E3D3BF6D5700EC50CCD8BC0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 3:44 PM Yongqiang Niu
-<yongqiang.niu@mediatek.com> wrote:
->
-> This patch add component POSTMASK,
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/Makefile            |   1 +
->  drivers/gpu/drm/mediatek/mtk_disp_postmask.c | 160 +++++++++++++++++++++++++++
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c  |   2 +
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h  |   1 +
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c       |   4 +-
->  drivers/gpu/drm/mediatek/mtk_drm_drv.h       |   1 +
->  6 files changed, 168 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_postmask.c
->
-> diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediatek/Makefile
-> index 17a08e2..ce5ad59 100644
-> --- a/drivers/gpu/drm/mediatek/Makefile
-> +++ b/drivers/gpu/drm/mediatek/Makefile
-> @@ -3,6 +3,7 @@
->  mediatek-drm-y := mtk_disp_color.o \
->                   mtk_disp_gamma.o \
->                   mtk_disp_ovl.o \
-> +                 mtk_disp_postmask.o \
->                   mtk_disp_rdma.o \
->                   mtk_drm_crtc.o \
->                   mtk_drm_ddp.o \
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_postmask.c b/drivers/gpu/drm/mediatek/mtk_disp_postmask.c
-> new file mode 100644
-> index 0000000..736224c
-> --- /dev/null
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_postmask.c
-> @@ -0,0 +1,160 @@
-> +/*
-> + * SPDX-License-Identifier:
-> + *
-> + * Copyright (c) 2020 MediaTek Inc.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/component.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/soc/mediatek/mtk-cmdq.h>
-> +
-> +#include "mtk_drm_crtc.h"
-> +#include "mtk_drm_ddp_comp.h"
-> +
-> +#define DISP_POSTMASK_EN                       0x0000
-> +#define POSTMASK_EN                                    BIT(0)
-> +#define DISP_POSTMASK_CFG                      0x0020
-> +#define POSTMASK_RELAY_MODE                            BIT(0)
-> +#define DISP_POSTMASK_SIZE                     0x0030
-> +
-> +struct mtk_disp_postmask_data {
-> +       u32 reserved;
-> +};
-> +
+On Tuesday 26 January 2021 04:27:37 Yoshihiro Shimoda wrote:
+> Hi Pali,
+> 
+> > From: Pali Rohár, Sent: Monday, January 25, 2021 11:20 PM
+> > On Friday 15 January 2021 15:32:30 Mathias Nyman wrote:
+> > > On 14.1.2021 1.20, Pali Rohár wrote:
+> > > > On Thursday 24 December 2020 05:59:05 Peter Chen wrote:
+> > > >> On 20-12-23 17:18:47, Pali Rohár wrote:
+> > > >>> Currently init_quirk callbacks for xhci platform drivers are called
+> > > >>> xhci_plat_setup() function which is called after chip reset completes.
+> > > >>> It happens in the middle of the usb_add_hcd() function.
+> > > >>>
+> > > >>> But XHCI_SKIP_PHY_INIT quirk is checked in the xhci_plat_probe() function
+> > > >>> prior calling usb_add_hcd() function. Therefore this XHCI_SKIP_PHY_INIT
+> > > >>> currently does nothing as prior xhci_plat_setup() it is not set.
+> > > >>>
+> > > >>> Quirk XHCI_SKIP_PHY_INIT is only setting hcd->skip_phy_initialization value
+> > > >>> which really needs to be set prior calling usb_add_hcd() as this function
+> > > >>> at its beginning skips PHY init if this member is set.
+> > > >>>
+> > > >>> This patch fixes implementation of the XHCI_SKIP_PHY_INIT quirk by calling
+> > > >>> init_quirk callbacks (via xhci_priv_init_quirk()) prior checking if
+> > > >>> XHCI_SKIP_PHY_INIT is set. Also checking if either xhci->quirks or
+> > > >>> priv->quirks contains this XHCI_SKIP_PHY_INIT quirk.
+> > > >>>
+> > > >>> Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > >>>
+> > > >>> ---
+> > > >>> Changes in v2:
+> > > >>> * Check also xhci->quirks as xhci_priv_init_quirk() callbacks are setting xhci->quirks
+> > > >>> * Tested with "usb: host: xhci: mvebu: make USB 3.0 PHY optional for Armada 3720" patch
+> > > >>> * Removed Fixes: line
+> > > >>> ---
+> > > >>>  drivers/usb/host/xhci-plat.c | 16 ++++++++--------
+> > > >>>  1 file changed, 8 insertions(+), 8 deletions(-)
+> > > >>>
+> > > >>> diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+> > > >>> index 4d34f6005381..0eab7cb5a767 100644
+> > > >>> --- a/drivers/usb/host/xhci-plat.c
+> > > >>> +++ b/drivers/usb/host/xhci-plat.c
+> > > >>> @@ -89,13 +89,6 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
+> > > >>>  /* called during probe() after chip reset completes */
+> > > >>>  static int xhci_plat_setup(struct usb_hcd *hcd)
+> > > >>>  {
+> > > >>> -	int ret;
+> > > >>> -
+> > > >>> -
+> > > >>> -	ret = xhci_priv_init_quirk(hcd);
+> > > >>> -	if (ret)
+> > > >>> -		return ret;
+> > > >>> -
+> > > >>>  	return xhci_gen_setup(hcd, xhci_plat_quirks);
+> > > >>>  }
+> > > >>>
+> > > >>> @@ -330,7 +323,14 @@ static int xhci_plat_probe(struct platform_device *pdev)
+> > > >>>
+> > > >>>  	hcd->tpl_support = of_usb_host_tpl_support(sysdev->of_node);
+> > > >>>  	xhci->shared_hcd->tpl_support = hcd->tpl_support;
+> > > >>> -	if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
+> > > >>> +
+> > > >>> +	if (priv) {
+> > > >>> +		ret = xhci_priv_init_quirk(hcd);
+> > > >>> +		if (ret)
+> > > >>> +			goto disable_usb_phy;
+> > > >>> +	}
+> > > >>> +
+> > > >>> +	if ((xhci->quirks & XHCI_SKIP_PHY_INIT) || (priv && (priv->quirks & XHCI_SKIP_PHY_INIT)))
+> > > >>>  		hcd->skip_phy_initialization = 1;
+> > > >>
+> > > >> I am not sure if others agree with you move the position of
+> > > >> xhci_priv_init_quirk, Let's see Mathias opinion.
+> > > >
+> > > > Hello! Do you have an opinion how to handle this issue? As currently it
+> > > > is needed for another patch which is fixing issue/regression in xhci-mvebu:
+> > > >
+> <snip>
+> > > >
+> > >
+> > > I can see the benefit in this.
+> > > In the xhci-plat case usb_create_hcd and usb_add_hcd are separate steps, and
+> > > we could both copy the xhci_plat_priv .quirks and run the .init_qurks before
+> > > adding the hcd.
+> > > I guess the current way is inherited from pci case where the earliest place
+> > > to do this after hcd is created is the hcd->driver->reset callback (which is
+> > > set to xhci_pci_setup() or xhci_plat_setup()).
+> > >
+> > > xhci-rcar.c is using the .init_quirk to load firmware, we need to check with
+> > > them if this change is ok. (added Yoshihiro Shimoda to cc)
+> > 
+> > Yoshihiro, is this change OK?
+> > 
+> > Can we move forward? I really need to now how to handle regression in
+> > xhci-mvebu driver. And one option is with this patch...
+> 
+> Thank you for asking me about this topic. I tested the patch, but unfortunately,
+> this patch is possible to break a rcar platform because a phy initialization is
+> needed before the firmware loading if the platform uses the phy. (Note that
+> upstream code (salvator-common.dtsi) doesn't use the phy for xhci. But,
+> if we use the phy on other board with this patch, the xhci will not work.)
+> 
+> So, I think we need to add a new function pointer for your case.
 
-Will there be more data and config for different soc in the future? If
-not, it can be put in mtk_drm_ddp_comp.c and use struct
-mtk_ddp_comp_dev, like ddp_dither or ddp_aal.
+Ok, thank you for testing! I will try to come up with other solution to
+mentioned mvebu-xhci issue.
 
-
-> +/**
-> + * struct mtk_disp_postmask - DISP_postmask driver structure
-> + * @ddp_comp - structure containing type enum and hardware resources
-> + * @crtc - associated crtc to report irq events to
-> + */
-> +struct mtk_disp_postmask {
-> +       struct mtk_ddp_comp                     ddp_comp;
-> +       const struct mtk_disp_postmask_data     *data;
-> +};
-> +
-> +static inline struct mtk_disp_postmask *comp_to_postmask(struct mtk_ddp_comp *comp)
-> +{
-> +       return container_of(comp, struct mtk_disp_postmask, ddp_comp);
-> +}
-> +
-> +static void mtk_postmask_config(struct mtk_ddp_comp *comp, unsigned int w,
-> +                             unsigned int h, unsigned int vrefresh,
-> +                             unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
-> +{
-> +       mtk_ddp_write(cmdq_pkt, w << 16 | h, comp, DISP_POSTMASK_SIZE);
-> +       mtk_ddp_write(cmdq_pkt, POSTMASK_RELAY_MODE, comp, DISP_POSTMASK_CFG);
-> +}
-> +
-> +static void mtk_postmask_start(struct mtk_ddp_comp *comp)
-> +{
-> +       writel(POSTMASK_EN, comp->regs + DISP_POSTMASK_EN);
-> +}
-> +
-> +static void mtk_postmask_stop(struct mtk_ddp_comp *comp)
-> +{
-> +       writel_relaxed(0x0, comp->regs + DISP_POSTMASK_EN);
-> +}
-> +
-> +static const struct mtk_ddp_comp_funcs mtk_disp_postmask_funcs = {
-> +       .config = mtk_postmask_config,
-> +       .start = mtk_postmask_start,
-> +       .stop = mtk_postmask_stop,
-> +};
-> +
-> +static int mtk_disp_postmask_bind(struct device *dev, struct device *master, void *data)
-> +{
-> +       struct mtk_disp_postmask *priv = dev_get_drvdata(dev);
-> +       struct drm_device *drm_dev = data;
-> +       int ret;
-> +
-> +       ret = mtk_ddp_comp_register(drm_dev, &priv->ddp_comp);
-> +       if (ret < 0) {
-> +               dev_err(dev, "Failed to register component %pOF: %d\n",
-> +                       dev->of_node, ret);
-> +               return ret;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static void mtk_disp_postmask_unbind(struct device *dev, struct device *master,
-> +                                 void *data)
-> +{
-> +       struct mtk_disp_postmask *priv = dev_get_drvdata(dev);
-> +       struct drm_device *drm_dev = data;
-> +
-> +       mtk_ddp_comp_unregister(drm_dev, &priv->ddp_comp);
-> +}
-> +
-> +static const struct component_ops mtk_disp_postmask_component_ops = {
-> +       .bind   = mtk_disp_postmask_bind,
-> +       .unbind = mtk_disp_postmask_unbind,
-> +};
-> +
-> +static int mtk_disp_postmask_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       struct mtk_disp_postmask *priv;
-> +       int comp_id;
-> +       int ret;
-> +
-> +       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +       if (!priv)
-> +               return -ENOMEM;
-> +
-> +       comp_id = mtk_ddp_comp_get_id(dev->of_node, MTK_DISP_POSTMASK);
-> +       if (comp_id < 0) {
-> +               dev_err(dev, "Failed to identify by alias: %d\n", comp_id);
-> +               return comp_id;
-> +       }
-> +
-> +       ret = mtk_ddp_comp_init(dev, dev->of_node, &priv->ddp_comp, comp_id,
-> +                               &mtk_disp_postmask_funcs);
-> +       if (ret) {
-> +               if (ret != -EPROBE_DEFER)
-> +                       dev_err(dev, "Failed to initialize component: %d\n",
-> +                               ret);
-> +
-> +               return ret;
-> +       }
-> +
-> +       priv->data = of_device_get_match_data(dev);
-> +
-> +       platform_set_drvdata(pdev, priv);
-> +
-> +       pm_runtime_enable(dev);
-> +
-> +       ret = component_add(dev, &mtk_disp_postmask_component_ops);
-> +       if (ret)
-> +               dev_err(dev, "Failed to add component: %d\n", ret);
-> +
-> +       return ret;
-> +}
-> +
-> +static int mtk_disp_postmask_remove(struct platform_device *pdev)
-> +{
-> +       pm_runtime_disable(&pdev->dev);
-> +
-> +       component_del(&pdev->dev, &mtk_disp_postmask_component_ops);
-> +
-> +       return 0;
-> +}
-> +
-> +static const struct of_device_id mtk_disp_postmask_driver_dt_match[] = {
-> +       {},
-> +};
-> +MODULE_DEVICE_TABLE(of, mtk_disp_postmask_driver_dt_match);
-> +
-> +struct platform_driver mtk_disp_postmask_driver = {
-> +       .probe          = mtk_disp_postmask_probe,
-> +       .remove         = mtk_disp_postmask_remove,
-> +       .driver         = {
-> +               .name   = "mediatek-disp-postmask",
-> +               .owner  = THIS_MODULE,
-> +               .of_match_table = mtk_disp_postmask_driver_dt_match,
-> +       },
-> +};
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> index a715127..bc6b10a 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -354,6 +354,7 @@ static void mtk_dither_stop(struct mtk_ddp_comp *comp)
->         [MTK_DISP_MUTEX] = "mutex",
->         [MTK_DISP_OD] = "od",
->         [MTK_DISP_BLS] = "bls",
-> +       [MTK_DISP_POSTMASK] = "postmask",
->  };
->
->  struct mtk_ddp_comp_match {
-> @@ -384,6 +385,7 @@ struct mtk_ddp_comp_match {
->         [DDP_COMPONENT_OVL_2L0] = { MTK_DISP_OVL_2L,    0, NULL },
->         [DDP_COMPONENT_OVL_2L1] = { MTK_DISP_OVL_2L,    1, NULL },
->         [DDP_COMPONENT_OVL_2L2] = { MTK_DISP_OVL_2L,    2, NULL },
-> +       [DDP_COMPONENT_POSTMASK0]       = { MTK_DISP_POSTMASK,  0, NULL },
->         [DDP_COMPONENT_PWM0]    = { MTK_DISP_PWM,       0, NULL },
->         [DDP_COMPONENT_PWM1]    = { MTK_DISP_PWM,       1, NULL },
->         [DDP_COMPONENT_PWM2]    = { MTK_DISP_PWM,       2, NULL },
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> index 178fae9..0b23b5c 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> @@ -29,6 +29,7 @@ enum mtk_ddp_comp_type {
->         MTK_DISP_UFOE,
->         MTK_DSI,
->         MTK_DPI,
-> +       MTK_DISP_POSTMASK,
->         MTK_DISP_PWM,
->         MTK_DISP_MUTEX,
->         MTK_DISP_OD,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> index b6e963e..bc205e9 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> @@ -533,7 +533,7 @@ static int mtk_drm_probe(struct platform_device *pdev)
->                 private->comp_node[comp_id] = of_node_get(node);
->
->                 /*
-> -                * Currently only the COLOR, GAMMA, OVL, RDMA, DSI, and DPI blocks have
-> +                * Currently only the COLOR, GAMMA, OVL, POSTMASK, RDMA, DSI, and DPI blocks have
->                  * separate component platform drivers and initialize their own
->                  * DDP component structure. The others are initialized here.
->                  */
-> @@ -541,6 +541,7 @@ static int mtk_drm_probe(struct platform_device *pdev)
->                     comp_type == MTK_DISP_GAMMA ||
->                     comp_type == MTK_DISP_OVL ||
->                     comp_type == MTK_DISP_OVL_2L ||
-> +                   comp_type == MTK_DISP_POSTMASK ||
->                     comp_type == MTK_DISP_RDMA ||
->                     comp_type == MTK_DSI ||
->                     comp_type == MTK_DPI) {
-> @@ -654,6 +655,7 @@ static SIMPLE_DEV_PM_OPS(mtk_drm_pm_ops, mtk_drm_sys_suspend,
->         &mtk_disp_color_driver,
->         &mtk_disp_gamma_driver,
->         &mtk_disp_ovl_driver,
-> +       &mtk_disp_postmask_driver,
->         &mtk_disp_rdma_driver,
->         &mtk_dpi_driver,
->         &mtk_drm_platform_driver,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-> index bbd362b..8a9544b 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-> @@ -50,6 +50,7 @@ struct mtk_drm_private {
->  extern struct platform_driver mtk_disp_color_driver;
->  extern struct platform_driver mtk_disp_gamma_driver;
->  extern struct platform_driver mtk_disp_ovl_driver;
-> +extern struct platform_driver mtk_disp_postmask_driver;
->  extern struct platform_driver mtk_disp_rdma_driver;
->  extern struct platform_driver mtk_dpi_driver;
->  extern struct platform_driver mtk_dsi_driver;
-> --
-> 1.8.1.1.dirty
->
+> Best regards,
+> Yoshihiro Shimoda
+> 
+> > > Their firmware would be loaded before phy parts are initialized, usb bus
+> > > registered, or roothub device allocated.
+> > >
+> > > Thanks
+> > > -Mathias
