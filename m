@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDCB304F0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173F1304EFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731038AbhA0BjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:39:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389203AbhAZSj5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:39:57 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3F1C061354
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:36:10 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id h9so7317812wrr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:36:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Yw3RM/yk9wzBes8csZwbs5/wVqbQMigeWCray2zWeak=;
-        b=ie2rsto3zADnlUTfWtARNuIyll2roERNJspYxOrwMT/xghOeCNGeovsPo1kCxY40ZH
-         rIByKI3Vfv6AmHSKqVdSIXwGv9w0J2YZXsvdFGRvGLdcw5dh+XA/R0vCyAxEfvJAhJtq
-         46bqPKpqu3pXVDjojhTThjzM/5b+9Ux6GqDcQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yw3RM/yk9wzBes8csZwbs5/wVqbQMigeWCray2zWeak=;
-        b=efEF8oTcqJqbN+tM8GmN8jAdvdlQ95GHq4KIYdHtE4MByAXdaCkHysO3KuYlV/R0NR
-         5iOA1hIr5iFdweihnYuoG/6gOENNPvBl/Rx7G62G+LWVItU8XkVsvs7Nf4gVV4uuMI6U
-         3sTwCZfUtPxhS/vY18Co5HIVoD++RkvY4HHqUEXwjGn/iR673M8czevicjVxI1vv9yCX
-         GhYAkvXiZamC+GryV/9boM/2nz5ncS/00OqTXsPV3cRqB1NDAqhjjHqCmFoRSQgwQNg5
-         sxivaSrfDqP8bUtZuSUP/+IuRa+m5nSMWmJLx+YKKDEAVI+0CVdnMlOPEDKMNVlxHfJK
-         LYXw==
-X-Gm-Message-State: AOAM532+SkTw5sXMWbMbsuwce7R13Wh8oPxpZTSn6CYxdVwj0+u7oMXo
-        EMQD5SaMa+SZguyuz7Kp8LVZgg==
-X-Google-Smtp-Source: ABdhPJxstY9iqwYrPWlri/zeLYeb1fuAmLaClTHd9h+nlUtHSMnOmK7VdpQ3UeS9xuhA+5qKdY31iA==
-X-Received: by 2002:a5d:554e:: with SMTP id g14mr7586403wrw.305.1611686169726;
+        id S2405054AbhA0BcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:32:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:52234 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727886AbhAZSgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:36:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98ABB113E;
         Tue, 26 Jan 2021 10:36:09 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:deb:d0ec:3143:2380])
-        by smtp.gmail.com with ESMTPSA id d13sm28339354wrx.93.2021.01.26.10.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 10:36:09 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@chromium.org>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next v6 4/5] selftests/bpf: Use vmlinux.h in socket_cookie_prog.c
-Date:   Tue, 26 Jan 2021 19:35:58 +0100
-Message-Id: <20210126183559.1302406-4-revest@chromium.org>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-In-Reply-To: <20210126183559.1302406-1-revest@chromium.org>
-References: <20210126183559.1302406-1-revest@chromium.org>
+Received: from C02TD0UTHF1T.local (unknown [10.57.45.247])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EABA83F66B;
+        Tue, 26 Jan 2021 10:36:07 -0800 (PST)
+Date:   Tue, 26 Jan 2021 18:36:02 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>
+Subject: Re: Preemptible idr_alloc() in QRTR code
+Message-ID: <20210126183534.GA90035@C02TD0UTHF1T.local>
+References: <20210126104734.GB80448@C02TD0UTHF1T.local>
+ <20210126145833.GM308988@casper.infradead.org>
+ <20210126162154.GD80448@C02TD0UTHF1T.local>
+ <YBBKla3I2TxMFIvZ@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBBKla3I2TxMFIvZ@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When migrating from the bpf.h's to the vmlinux.h's definition of struct
-bps_sock, an interesting LLVM behavior happened. LLVM started producing
-two fetches of ctx->sk in the sockops program this means that the
-verifier could not keep track of the NULL-check on ctx->sk. Therefore,
-we need to extract ctx->sk in a variable before checking and
-dereferencing it.
+On Tue, Jan 26, 2021 at 11:00:05AM -0600, Bjorn Andersson wrote:
+> On Tue 26 Jan 10:21 CST 2021, Mark Rutland wrote:
+> 
+> > On Tue, Jan 26, 2021 at 02:58:33PM +0000, Matthew Wilcox wrote:
+> > > On Tue, Jan 26, 2021 at 10:47:34AM +0000, Mark Rutland wrote:
+> > > > Hi,
+> > > > 
+> > > > When fuzzing arm64 with Syzkaller, I'm seeing some splats where
+> > > > this_cpu_ptr() is used in the bowels of idr_alloc(), by way of
+> > > > radix_tree_node_alloc(), in a preemptible context:
+> > > 
+> > > I sent a patch to fix this last June.  The maintainer seems to be
+> > > under the impression that I care an awful lot more about their
+> > > code than I do.
+> > > 
+> > > https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
+> > 
+> > Ah; I hadn't spotted the (glaringly obvious) GFP_ATOMIC abuse, thanks
+> > for the pointer, and sorry for the noise.
+> > 
+> 
+> I'm afraid this isn't as obvious to me as it is to you. Are you saying
+> that one must not use GFP_ATOMIC in non-atomic contexts?
+> 
+> That said, glancing at the code I'm puzzled to why it would use
+> GFP_ATOMIC.
 
-Acked-by: KP Singh <kpsingh@kernel.org>
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- .../testing/selftests/bpf/progs/socket_cookie_prog.c  | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+I'm also not entirely sure about the legitimacy of GFP_ATOMIC outside of
+atomic contexts -- I couldn't spot any documentation saying that wasn't
+legitimate, but Matthew's commit message implies so, and it sticks out
+as odd.
 
-diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-index 81e84be6f86d..fbd5eaf39720 100644
---- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-@@ -1,12 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2018 Facebook
- 
--#include <linux/bpf.h>
--#include <sys/socket.h>
-+#include "vmlinux.h"
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
-+#define AF_INET6 10
-+
- struct socket_cookie {
- 	__u64 cookie_key;
- 	__u32 cookie_value;
-@@ -41,7 +42,7 @@ int set_cookie(struct bpf_sock_addr *ctx)
- SEC("sockops")
- int update_cookie(struct bpf_sock_ops *ctx)
- {
--	struct bpf_sock *sk;
-+	struct bpf_sock *sk = ctx->sk;
- 	struct socket_cookie *p;
- 
- 	if (ctx->family != AF_INET6)
-@@ -50,10 +51,10 @@ int update_cookie(struct bpf_sock_ops *ctx)
- 	if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
- 		return 1;
- 
--	if (!ctx->sk)
-+	if (!sk)
- 		return 1;
- 
--	p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-+	p = bpf_sk_storage_get(&socket_cookies, sk, 0, 0);
- 	if (!p)
- 		return 1;
- 
--- 
-2.30.0.280.ga3ce27912f-goog
+> > It looks like Eric was after a fix that trivially backported to v4.7
+> > (and hence couldn't rely on xarray) but instead it just got left broken
+> > for months. :/
+> > 
+> > Bjorn, is this something you care about? You seem to have the most
+> > commits to the file, and otherwise the official maintainer is Dave
+> > Miller per get_maintainer.pl.
+> 
+> I certainly care about qrtr working and remember glancing at Matthew's
+> patch, but seems like I never found time to properly review it.
+> 
+> > It is very tempting to make the config option depend on BROKEN...
+> 
+> I hear you and that would be bad, so I'll make sure to take a proper
+> look at this and Matthew's patch.
 
+Thanks! I'm happy to try/test patches if that's any help. My main
+concern here is that this can be triggered on arbitrary platforms so
+long as the driver is built in (e.g. my Syzkaller instance is hitting
+this within a VM).
+
+Thanks,
+Mark.
