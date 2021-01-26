@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E158A303E1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C70303E10
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391989AbhAZNHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:07:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
+        id S2404087AbhAZMz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:55:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391982AbhAZMtB (ORCPT
+        with ESMTP id S2403770AbhAZMt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:49:01 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AE2C035434
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:46:10 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id m13so1877112wro.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:46:10 -0800 (PST)
+        Tue, 26 Jan 2021 07:49:28 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF3BC061A29
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:37 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id u14so2336387wml.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hwOEDN9pFoMRn0bPIH5AwWEBMRWoq5VkGdsYNSR9FGE=;
-        b=cZz01X+VWuBj+9uDKkkXPXM9//fkRR9GHvUotrvnK/n1yjzEnawXB+dGxsS7z9inSF
-         WgG0hLmw8aPkRHv2dpc44VQiBduw1TiWcMJP3SJBGYIs7h3MQ441bXddZcUs0LI6hr+L
-         /jOxSZcoUciHMHscXa1VxI9h9IsFwA20YgG3ApzWADK/Ks5WmuiVESxKQrjI52wsgxjz
-         /+D/Uk6PjuvauamZ7S6/332je+0L8ICB5iLI8emZUdBKZzxo4fsE1pKTt8BMHnxKtKdt
-         Vf9+KwYyK135SHqf8I6fWJkHsF3QmX7LsVpgIIIYzcLiQ0ay4mUcrqpt4n/KLGDWeH/L
-         qfCQ==
+        bh=tMPWL4xcF1JuemrxQOYLmhlUXhHVXt9aCwFIvLWAmvg=;
+        b=NPJrLaJ+ieP70+yUH0QEuQwSl/cJVDPNtryk+LPPOU4ry0VjoWJADw8ppN74mpelqa
+         v7DZOil5sBeBMS9JjBEIZySg0hBo4Qkm6npFjH57DCrM2MdPuXoVOMWKVsEOq07C3L1o
+         bFftf5O4HyIWE8HbRhxXrz64hiVWg2MfcYJljZJ8iAyDlKuqFiAJjB+eVnd4EFsXrJaw
+         TDs1+Nqqno78NLwdMDvF8e8D9CZgBVmJP2urdcU8Khx8BIz6Kr+Ch+xifOvLCzKrbfu0
+         u/M4eJPU1Yxiaq/L/Kd+eZFu+rCuTdpmsqXUzKgH12cGzzjU/hJMxVzheaJjLPOLVJLi
+         fCew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hwOEDN9pFoMRn0bPIH5AwWEBMRWoq5VkGdsYNSR9FGE=;
-        b=uEVT3qbDEu5CYwN4oGWbpyuub68PpYfxE5vVmhnORRmdwFNQ1gTphqlS/9JhEbYCew
-         3ZvPgkxUNYXfjgXMuhbYAkAgBUQWMXvgEQRLLTVfw99URbd56oatEigFVZQ2d5uKDRV7
-         zyOKkkYBsiJJNh/N2I3sWArlkgpZp8VRKp6E/DLvNpfLUympvap4aBMbOru++mSgDBey
-         xv/waHcte1ymo1xvzxwnVa7bHNw1jZH1e6J5NUKs8Qn2YEF8Q/X0hDUmwCdjEJr3b8r5
-         KkiDbfe2sg4wZRZ0sFOm/nM6l2p7CuV4xX2wx58JG+5OaMXciVrT6cQaUz0u6DFK2M4a
-         2RKQ==
-X-Gm-Message-State: AOAM533mhvYqbiChm7+5hFOEtdG38nKDrWwCGuSD/iDWZkAK2Iimpmt1
-        QH1rU4Hbd8HabI9mgWBQvlBQ45+cZ5N4XXtm
-X-Google-Smtp-Source: ABdhPJzSQDfP81pbHTeNqSO7T6XdRtI37YTtqJ1RLv7NXMg826rJtq9xTgY1rh1yu6cBbuWypkDCeg==
-X-Received: by 2002:a5d:6347:: with SMTP id b7mr5805047wrw.233.1611665169480;
-        Tue, 26 Jan 2021 04:46:09 -0800 (PST)
+        bh=tMPWL4xcF1JuemrxQOYLmhlUXhHVXt9aCwFIvLWAmvg=;
+        b=Bn2KjUdccpyIu2Vad75qREzHPw7EwNvy6q/eQiHZ49irPCERfyqSSbWgHcVk5EhVBe
+         qM6aKPHjUzr4m74DVcyRefRQGNibtRXyQGJHIHUTSRCYgzk6QB5xyiD389+qyTaMrc7F
+         k8KcWW3vdYo0ZDxOgozhIv09xK5dMNg1q57w8B6kIuDr4mq033OcGfKNL2eUUIjz5917
+         PcDhB4xPBZj7IEUlWl+EnWbwQ4YszXzxG0cZcieAO/N/cM/dVHbDT6EM0gz7mhhBBZ2/
+         9Puc9U/2c7t8EDZC43OVVf/AY2uaajUUd8aWY0MQOAQBoH7u7T+754RI3zImaYfUNe3l
+         RKbg==
+X-Gm-Message-State: AOAM533mQfgjD52cXaX0KHSdkW4FvxZ5V0D3pp+S15uwjv2mqIoDEfzY
+        K90thrs15ranxktjFiSJ8Vq/Tw==
+X-Google-Smtp-Source: ABdhPJwHKbeLsVd+Hxqfezp4jl3v4stixH8G3pUHkseIsG2FSuSpZibIrfyILM1amXTlIQK/o8JB/g==
+X-Received: by 2002:a1c:f312:: with SMTP id q18mr4526261wmq.79.1611665256744;
+        Tue, 26 Jan 2021 04:47:36 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id i131sm3263073wmi.25.2021.01.26.04.46.08
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:46:08 -0800 (PST)
+        Tue, 26 Jan 2021 04:47:36 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 21/21] clk: zynqmp: divider: Add missing description for 'max_div'
-Date:   Tue, 26 Jan 2021 12:45:40 +0000
-Message-Id: <20210126124540.3320214-22-lee.jones@linaro.org>
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 01/20] RDMA/hw/hfi1/intr: Fix some kernel-doc formatting issues
+Date:   Tue, 26 Jan 2021 12:47:13 +0000
+Message-Id: <20210126124732.3320971-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126124540.3320214-1-lee.jones@linaro.org>
-References: <20210126124540.3320214-1-lee.jones@linaro.org>
+In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
+References: <20210126124732.3320971-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -70,31 +69,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/clk/zynqmp/divider.c:46: warning: Function parameter or member 'max_div' not described in 'zynqmp_clk_divider'
+ drivers/infiniband/hw/hfi1/intr.c:99: warning: Function parameter or member 'msg' not described in 'format_hwmsg'
+ drivers/infiniband/hw/hfi1/intr.c:99: warning: Function parameter or member 'msgl' not described in 'format_hwmsg'
+ drivers/infiniband/hw/hfi1/intr.c:99: warning: Function parameter or member 'hwmsg' not described in 'format_hwmsg'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'hwerrs' not described in 'hfi1_format_hwerrors'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'hwerrmsgs' not described in 'hfi1_format_hwerrors'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'nhwerrmsgs' not described in 'hfi1_format_hwerrors'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'msg' not described in 'hfi1_format_hwerrors'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'msgl' not described in 'hfi1_format_hwerrors'
 
-Cc: Michael Turquette <mturquette@baylibre.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: Rajan Vaja <rajan.vaja@xilinx.com>
-Cc: linux-clk@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/clk/zynqmp/divider.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/hfi1/intr.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
-index 66da02b83d393..e9bf7958b8218 100644
---- a/drivers/clk/zynqmp/divider.c
-+++ b/drivers/clk/zynqmp/divider.c
-@@ -35,6 +35,7 @@
-  * @is_frac:	The divider is a fractional divider
-  * @clk_id:	Id of clock
-  * @div_type:	divisor type (TYPE_DIV1 or TYPE_DIV2)
-+ * @max_div:	maximum supported divisor (fetched from firmware)
+diff --git a/drivers/infiniband/hw/hfi1/intr.c b/drivers/infiniband/hw/hfi1/intr.c
+index 387305b768e94..5ba5c11459e79 100644
+--- a/drivers/infiniband/hw/hfi1/intr.c
++++ b/drivers/infiniband/hw/hfi1/intr.c
+@@ -91,9 +91,9 @@ static void add_full_mgmt_pkey(struct hfi1_pportdata *ppd)
+ 
+ /**
+  * format_hwmsg - format a single hwerror message
+- * @msg message buffer
+- * @msgl length of message buffer
+- * @hwmsg message to add to message buffer
++ * @msg: message buffer
++ * @msgl: length of message buffer
++ * @hwmsg: message to add to message buffer
   */
- struct zynqmp_clk_divider {
- 	struct clk_hw hw;
+ static void format_hwmsg(char *msg, size_t msgl, const char *hwmsg)
+ {
+@@ -104,11 +104,11 @@ static void format_hwmsg(char *msg, size_t msgl, const char *hwmsg)
+ 
+ /**
+  * hfi1_format_hwerrors - format hardware error messages for display
+- * @hwerrs hardware errors bit vector
+- * @hwerrmsgs hardware error descriptions
+- * @nhwerrmsgs number of hwerrmsgs
+- * @msg message buffer
+- * @msgl message buffer length
++ * @hwerrs: hardware errors bit vector
++ * @hwerrmsgs: hardware error descriptions
++ * @nhwerrmsgs: number of hwerrmsgs
++ * @msg: message buffer
++ * @msgl: message buffer length
+  */
+ void hfi1_format_hwerrors(u64 hwerrs, const struct hfi1_hwerror_msgs *hwerrmsgs,
+ 			  size_t nhwerrmsgs, char *msg, size_t msgl)
 -- 
 2.25.1
 
