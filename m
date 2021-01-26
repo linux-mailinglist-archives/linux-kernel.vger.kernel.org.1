@@ -2,152 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4579303C3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D806303C3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405043AbhAZL3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:29:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389763AbhAZJnv (ORCPT
+        id S2405088AbhAZL3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:29:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731145AbhAZJp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:43:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611654145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ELbqYkM15Es76ozmIJcHhdpfubxI1cLD4ywGKoPzIA=;
-        b=EYVz9BxrcNAQGJP8r6dyoUmSsXoztCfAZPh5YM/FedNHNdlQBEluqdkcPCW7yuD/kXffYN
-        60ZR+uFDOfocbAH4hqkDg8iwAH5FUP0ZIUw+f0R26JXynmAUE54i0a4hsNxmAjiU6sSNLS
-        4069uUsVOYKmsiMThfPfOdl9JWYlgnk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-AwwR_DOPPbOuCQHshVdOGQ-1; Tue, 26 Jan 2021 04:42:22 -0500
-X-MC-Unique: AwwR_DOPPbOuCQHshVdOGQ-1
-Received: by mail-ed1-f69.google.com with SMTP id j11so8334961edy.20
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:42:22 -0800 (PST)
+        Tue, 26 Jan 2021 04:45:56 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70359C061573;
+        Tue, 26 Jan 2021 01:45:16 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id q129so32352057iod.0;
+        Tue, 26 Jan 2021 01:45:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZIW7mnwPUf6YWlYV9Dc8rQUYYrNuTxch5ZKKzYw0AFE=;
+        b=ByfMfrJVJCKfp9k9KLuY9+zPDSK/oFPLxitqpAXbJiff4391iSWe8bKaYpGBbCmmvE
+         FIyrmxZBTVaD2k5CbmUL7zZ898btlbJNEgMoRgegkdChxpRG0wHsfu+P1j+Xvk9nnHyD
+         x/5TkGYudvDAChZjGnJXtjw1q2R5CB8MhAJtJUoaU2DvDlmWgqbJ3Hdn//kyJbj3JTrU
+         eoaAyB08XmQ+F9wGYcs+tDXIbHAV95o7rM+y7DAztaGQ0U83UmbjTSn+AWLbCEI2CUOn
+         fL21yhJXU7mRf8+Npa6Fd/e0B0JcBAWP1EetClFEvo5H0/nbc91eHMYHCXE0g3OjS1WV
+         y3bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9ELbqYkM15Es76ozmIJcHhdpfubxI1cLD4ywGKoPzIA=;
-        b=GFk4w51DksJsIKuG5f+bOhNOKIYmJxuenMv4d9vie3mN7ZbMhRE28ZukWgOJivM5BE
-         eNneFPUw9hun0LHdD//bXr5Bt7urko6nHGKn0lhRBCyxZDK1HrAyKZSacUA3iIoNH/QN
-         RFsFW9yQk4GZQDghtFW5JvmqiOL1V45fUv2AqJhiPaYre6V3LVmUY1/ncU27cied9rZ/
-         bapD66TpEcd5argGD6+9On1OqQ5fQhHD8Ji+5QM4ClBNUD+M7yMELA5IHvsOIKw1BmLc
-         uiUygWMBNQtirGsyPPsEAN1LfnteeLC7NgvQzDJb+jQ1ZhRArg6ap5mpzPv9fNmPZ2ve
-         RJow==
-X-Gm-Message-State: AOAM532DMgeQPfiN6J8bUwjW70l8dmQp7LSig3wTdHVSenMaBRoHVGtZ
-        Kzo+RSvFa7nMs1helBl0CIoRksrwIinFdlVrbdwevG2LRr4R/nnAh4hYIoWcMl6W/obmkkrk08s
-        DXAMfM1mPZWWkmmAFlkgYrflrodvJyG9k/icENweiSGt+E28RQbkisPXxY5ZmLLi1iG+5Gkm+7N
-        bT
-X-Received: by 2002:a17:906:d0c1:: with SMTP id bq1mr2851350ejb.202.1611654140860;
-        Tue, 26 Jan 2021 01:42:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz5q6Cglr8yc4Tr1luUe2n5bPAisSEgBRjI1FR+e19Q51L1XJNavk/drdhQScc+LJysYlFjFA==
-X-Received: by 2002:a17:906:d0c1:: with SMTP id bq1mr2851329ejb.202.1611654140650;
-        Tue, 26 Jan 2021 01:42:20 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id de4sm11928924edb.38.2021.01.26.01.42.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 01:42:19 -0800 (PST)
-To:     Like Xu <like.xu@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, kan.liang@intel.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210108013704.134985-1-like.xu@linux.intel.com>
- <20210108013704.134985-4-like.xu@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RESEND v13 03/10] KVM: x86/pmu: Use IA32_PERF_CAPABILITIES to
- adjust features visibility
-Message-ID: <a1291d0b-297c-9146-9689-f4a4129de3c6@redhat.com>
-Date:   Tue, 26 Jan 2021 10:42:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZIW7mnwPUf6YWlYV9Dc8rQUYYrNuTxch5ZKKzYw0AFE=;
+        b=fi4Gsd1X1UnHzLEH4LduDZbTwYZwXnHrZh8luRFKorFaUFgP0kMHeeChC4OFZdFDyk
+         6lUIwXfggD+3QfKSLpFJ56KLlULSc4RCDi/eNGwjTxJ1OrWA+L/RwP2Nl8Y9X4pahwTk
+         HnvJcuZyoLHDipQJYo9Jw7CtUivPcNO2y1mZNL0c0w4jR/pAJHSZdPKGgMEuZb3VgdKG
+         8X9mpgP4JfSCsdN6lCWoXrRsp4TkZstHeWpgKeiXgb3PDeAQKRloDIJ1vQkSHBNYrzlB
+         ABMKwV6T1hQIpNL5sADfqN3fh8ukHAChy6+X9pjzfdLJLmZYDFb5liZxGeWIAdBCSBWO
+         rZhA==
+X-Gm-Message-State: AOAM5314U4v/PnUdnfueKPkmCtx0kXlKWXRLZ7PbVlnRLs9ZjEFDDHW5
+        NnxRLQwaDX13zmcYhze2RHlDUZApD756AhkdPkw=
+X-Google-Smtp-Source: ABdhPJyuTTVkkTksmE/DzwuiRARXE9iUtKPzZJoMvirmHVYMYFMkCjf7EuwR1M8S0b8H68CNmqnHUn+oa+2RK/ndoqk=
+X-Received: by 2002:a02:7fc5:: with SMTP id r188mr4063015jac.69.1611654315745;
+ Tue, 26 Jan 2021 01:45:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210108013704.134985-4-like.xu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210122162529.84978-1-alexandru.ardelean@analog.com>
+ <20210122162529.84978-4-alexandru.ardelean@analog.com> <20210124181126.07c100a5@archlinux>
+ <YA8b0az9c0Hha405@kroah.com>
+In-Reply-To: <YA8b0az9c0Hha405@kroah.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 26 Jan 2021 11:45:04 +0200
+Message-ID: <CA+U=DsoogP2Bj5zsE-1BwOhZy20jjvEhgh780FSiQU4M9AwoxA@mail.gmail.com>
+Subject: Re: [PATCH v2 03/12][RESEND] iio: buffer: rework buffer &
+ scan_elements dir creation
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        nuno.sa@analog.com, "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/01/21 02:36, Like Xu wrote:
-> 
-> @@ -401,6 +398,9 @@ static void intel_pmu_init(struct kvm_vcpu *vcpu)
->  		pmu->fixed_counters[i].idx = i + INTEL_PMC_IDX_FIXED;
->  		pmu->fixed_counters[i].current_config = 0;
->  	}
-> +
-> +	vcpu->arch.perf_capabilities = guest_cpuid_has(vcpu, X86_FEATURE_PDCM) ?
-> +		vmx_get_perf_capabilities() : 0;
+On Mon, Jan 25, 2021 at 9:32 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Sun, Jan 24, 2021 at 06:11:26PM +0000, Jonathan Cameron wrote:
+> > On Fri, 22 Jan 2021 18:25:20 +0200
+> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> >
+> > > When adding more than one IIO buffer per IIO device, we will need to create
+> > > a buffer & scan_elements directory for each buffer.
+> > > We also want to move the 'scan_elements' to be a sub-directory of the
+> > > 'buffer' folder.
+> > >
+> > > The format we want to reach is, for a iio:device0 folder, for 2 buffers
+> > > [for example], we have a 'buffer0' and a 'buffer1' subfolder, and each with
+> > > it's own 'scan_elements' subfolder.
+> > >
+> > > So, for example:
+> > >    iio:device0/buffer0
+> > >       scan_elements/
+> > >
+> > >    iio:device0/buffer1
+> > >       scan_elements/
+> > >
+> > > The other attributes under 'bufferX' would remain unchanged.
+> > >
+> > > However, we would also need to symlink back to the old 'buffer' &
+> > > 'scan_elements' folders, to keep backwards compatibility.
+> > >
+> > > Doing all these, require that we maintain the kobjects for each 'bufferX'
+> > > and 'scan_elements' so that we can symlink them back. We also need to
+> > > implement the sysfs_ops for these folders.
+> > >
+> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> >
+> > +CC GregKH and Rafael W for feedback on various things inline.
+> >
+> > It might be that this is the neatest solution that we can come up with but
+> > more eyes would be good!
+>
+> In short, please do NOT do this.
+>
+> At all.
+>
+> no.
+>
+> {sigh}
+>
+> >
+> > Whilst I think this looks fine, I'm less confident than I'd like to be.
+> >
+> > Jonathan
+> >
+> > > ---
+> > >  drivers/iio/industrialio-buffer.c | 195 +++++++++++++++++++++++++++---
+> > >  drivers/iio/industrialio-core.c   |  24 ++--
+> > >  include/linux/iio/buffer_impl.h   |  14 ++-
+> > >  include/linux/iio/iio.h           |   2 +-
+> > >  4 files changed, 200 insertions(+), 35 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > > index 0412c4fda4c1..0f470d902790 100644
+> > > --- a/drivers/iio/industrialio-buffer.c
+> > > +++ b/drivers/iio/industrialio-buffer.c
+> > > @@ -1175,8 +1175,6 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
+> > >     return (ret < 0) ? ret : len;
+> > >  }
+> > >
+> > > -static const char * const iio_scan_elements_group_name = "scan_elements";
+> > > -
+> > >  static ssize_t iio_buffer_show_watermark(struct device *dev,
+> > >                                      struct device_attribute *attr,
+> > >                                      char *buf)
+> > > @@ -1252,6 +1250,124 @@ static struct attribute *iio_buffer_attrs[] = {
+> > >     &dev_attr_data_available.attr,
+> > >  };
+> > >
+> > > +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
+> > > +
+> > > +static ssize_t iio_buffer_dir_attr_show(struct kobject *kobj,
+> > > +                                   struct attribute *attr,
+> > > +                                   char *buf)
+> > > +{
+> > > +   struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, buffer_dir);
+> > > +   struct device_attribute *dattr;
+> > > +
+> > > +   dattr = to_dev_attr(attr);
+> > > +
+> > > +   return dattr->show(&buffer->indio_dev->dev, dattr, buf);
+> > > +}
+>
+>
+> First off, you are dealing with "raw" kobjects here, below a 'struct
+> device' in the device tree, which means that suddenly userspace does not
+> know what in the world is going on, and you lost events and lots of
+> other stuff.
+>
+> Never do this.  It should not be needed, and you are just trying to
+> paper over one odd decision of an api with another one you will be stuck
+> with for forever.
+>
+> Remember the driver core can create subdirectories for your attributes
+> automatically if you want them to be in a subdir, but that's it, no
+> further than that.  Just name the attribute group.
+>
+> But yes, you can not create a symlink to there, because (surprise), you
+> don't want to!
+>
+> So please, just rethink your naming, create a totally new naming scheme
+> for multiple entities, and just drop the old one (or keep a single
+> value if you really want to.)  Don't make it harder than it has to be
+> please, you can never remove the "compatible symlinks", just make a new
+> api and move on.
 
-There is one thing I don't understand with this patch: intel_pmu_init is 
-not called when CPUID is changed.  So I would have thought that anything 
-that uses guest_cpuid_has must stay in intel_pmu_refresh.  As I 
-understand it vcpu->arch.perf_capabilities is always set to 0 
-(vmx_get_perf_capabilities is never called), and kvm_set_msr_common 
-would fail to set any bit in the MSR.  What am I missing?
 
-In addition, the code of patch 4:
+So, coming back to Jonathan.
+Any thoughts on how to proceed?
 
-+	if (!intel_pmu_lbr_is_enabled(vcpu)) {
-+		vcpu->arch.perf_capabilities &= ~PMU_CAP_LBR_FMT;
-+		lbr_desc->records.nr = 0;
-+	}
+We could merge the files 'buffer & scan_elements' [from in the
+/sys/bus/iio/devices/iio:deviceX/{buffer,scan_elements}
 
-is not okay after MSR changes.  The value written by the host must be 
-either rejected (with "return 1") or applied unchanged.
+So, essentially:
+# ls /sys/bus/iio/devices/iio:deviceX/bufferY
+data_available       length              watermark
+enable                   length_align_bytes
+in_voltage0_en      in_voltage0_type   in_voltage1_index
+in_voltage0_index  in_voltage1_en     in_voltage1_type
 
-Fortunately I think this code is dead if you move the check in 
-kvm_set_msr from patch 9 to patch 4.  However, in patch 9 
-vmx_get_perf_capabilities() must only set the LBR format bits if 
-intel_pmu_lbr_is_compatible(vcpu).
+Where:
+# ls  /sys/bus/iio/devices/iio:deviceX/scan_elements
+in_voltage0_en     in_voltage0_type   in_voltage1_index
+in_voltage0_index  in_voltage1_en     in_voltage1_typ
 
+# ls  /sys/bus/iio/devices/iio:deviceX/buffer
+data_available      length              watermark
+enable              length_align_bytes
 
-The patches look good apart from these issues and the other nits I 
-pointed out.  However, you need testcases here, for both kvm-unit-tests 
-and tools/testing/selftests/kvm.
+I don't think we need to add any prefixes for the scan_elements/buffer
+files, or?
 
-For KVM, it would be at least a basic check that looks for the MSR LBR 
-(using the MSR indices for the various processors), does a branch, and 
-checks that the FROM_IP/TO_IP are good.  You can write the 
-kvm-unit-tests using the QEMU option "-cpu host,migratable=no": if you 
-do this, QEMU will pick the KVM_GET_SUPPORTED_CPUID bits and move them 
-more or less directly into the guest CPUID.
+Do we still do this new ioctl() for buffer0, 1, 2, N being accessed
+via anon inodes?
+Or do we go [back] via the route of each buffer with it's own chardev?
+i.e.  introduce a "/dev/iio/deviceX/bufferY" structure
 
-For tools/testing/selftests/kvm, your test need to check the effect of 
-various CPUID settings on the PERF_CAPABILITIES MSR, check that whatever 
-you write with KVM_SET_MSR is _not_ modified and can be retrieved with 
-KVM_GET_MSR, and check that invalid LBR formats are rejected.
+I'm fine either way.
 
-I'm really, really sorry for leaving these patches on my todo list for 
-months, but you guys need to understand the main reason for this: they 
-come with no testcases.  A large patch series adding userspace APIs and 
-complicated CPUID/MSR processing *automatically* goes to the bottom of 
-my queue, because:
+Thanks
+Alex
 
-- I need to go with a fine comb over all the userspace API changes, I 
-cannot just look at test code and see if it works.
-
-- I will have no way to test its correctness after it's committed.
-
-For you, the work ends when your patch is accepted.  For me, that's when 
-the work begins, and I need to make sure that the patch will be 
-maintainable in the future.
-
-Thanks, and sorry again for the delay.
-
-Paolo
-
+>
+> thanks,
+>
+> greg k-h
