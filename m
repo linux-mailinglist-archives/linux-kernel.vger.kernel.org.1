@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664E6303C1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83F0303C32
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:55:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405497AbhAZLwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:52:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405479AbhAZLvs (ORCPT
+        id S2392552AbhAZLyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:54:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50198 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405511AbhAZLy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:51:48 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBEAC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:51:08 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1l4MsD-00089m-PB; Tue, 26 Jan 2021 12:51:05 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1l4MsD-0000iA-B6; Tue, 26 Jan 2021 12:51:05 +0100
-Date:   Tue, 26 Jan 2021 12:51:05 +0100
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org
-Subject: Re: [RFC] clk: Mark HW enabled clocks as enabled in core
-Message-ID: <20210126115105.GD28722@pengutronix.de>
-References: <1611660096-12381-1-git-send-email-abel.vesa@nxp.com>
+        Tue, 26 Jan 2021 06:54:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611661983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jlQQQ6L+FtcMn7LVj7kDbGnrW45WOTGTVH3PvdiMo28=;
+        b=Lo+coYbxiX0DOppxHx5XliuWVE/eL0dfwf7mrxTkFsLMiUh5zQFW3PqLaPhPjbHv432zML
+        GZubCKbyY4ir2quBvq7QbY6croMIldp9paBGEor0sGHFWbM3m5vCZfTdg/jeXCVVrsYFV4
+        Tr03zXR3wZWwkr1dOUV2q16lxLx+gaY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-150-Xv8bPRWoNpeVt9ncVFrPTg-1; Tue, 26 Jan 2021 06:53:01 -0500
+X-MC-Unique: Xv8bPRWoNpeVt9ncVFrPTg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9B2510054FF;
+        Tue, 26 Jan 2021 11:52:59 +0000 (UTC)
+Received: from starship (unknown [10.35.206.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E17010023AE;
+        Tue, 26 Jan 2021 11:52:51 +0000 (UTC)
+Message-ID: <f8a2fbc829a553b936b8babc5c1df2b1e88f51d7.camel@redhat.com>
+Subject: Re: [PATCH v3 3/4] KVM: SVM: Add support for SVM instruction
+ address check change
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, luto@amacapital.net
+Date:   Tue, 26 Jan 2021 13:52:50 +0200
+In-Reply-To: <20210126081831.570253-4-wei.huang2@amd.com>
+References: <20210126081831.570253-1-wei.huang2@amd.com>
+         <20210126081831.570253-4-wei.huang2@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611660096-12381-1-git-send-email-abel.vesa@nxp.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:46:48 up 55 days, 13 min, 98 users,  load average: 0.21, 0.10,
- 0.10
-User-Agent: Mutt/1.10.1 (2018-07-13)
-From:   Sascha Hauer <sha@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 01:21:36PM +0200, Abel Vesa wrote:
-> Some clocks are already enabled in HW even before the kernel
-> starts to boot. So, in order to make sure that these clocks do not
-> get disabled when clk_disable_unused call is done or when
-> reparenting clocks, we enable them in core on clock registration.
-> Such a clock will have to be registered with CLK_IGNORE_UNUSED flag
-> and also needs to have the is_enabled ops implemented.
+On Tue, 2021-01-26 at 03:18 -0500, Wei Huang wrote:
+> New AMD CPUs have a change that checks #VMEXIT intercept on special SVM
+> instructions before checking their EAX against reserved memory region.
+> This change is indicated by CPUID_0x8000000A_EDX[28]. If it is 1, #VMEXIT
+> is triggered before #GP. KVM doesn't need to intercept and emulate #GP
+> faults as #GP is supposed to be triggered.
 > 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> Co-developed-by: Bandan Das <bsd@redhat.com>
+> Signed-off-by: Bandan Das <bsd@redhat.com>
+> Signed-off-by: Wei Huang <wei.huang2@amd.com>
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 > ---
->  drivers/clk/clk.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  arch/x86/kvm/svm/svm.c             | 3 +++
+>  2 files changed, 4 insertions(+)
 > 
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index 3d751ae5bc70..26d55851cfa5 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -3416,6 +3416,7 @@ static int __clk_core_init(struct clk_core *core)
->  	int ret;
->  	struct clk_core *parent;
->  	unsigned long rate;
-> +	bool is_hw_enabled = false;
->  	int phase;
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 84b887825f12..ea89d6fdd79a 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -337,6 +337,7 @@
+>  #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
+>  #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
+>  #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
+> +#define X86_FEATURE_SVME_ADDR_CHK	(15*32+28) /* "" SVME addr check */
 >  
->  	if (!core)
-> @@ -3558,12 +3559,20 @@ static int __clk_core_init(struct clk_core *core)
->  		rate = 0;
->  	core->rate = core->req_rate = rate;
+>  /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
+>  #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index e5ca01e25e89..f9233c79265b 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1036,6 +1036,9 @@ static __init int svm_hardware_setup(void)
+>  		}
+>  	}
 >  
-> +	/*
-> +	 * If the clock has the CLK_IGNORE_UNUSED flag set and it is already
-> +	 * enabled in HW, enable it in core too so it won't get accidentally
-> +	 * disabled when walking the orphan tree and reparenting clocks
-> +	 */
-> +	if (core->flags & CLK_IGNORE_UNUSED && core->ops->is_enabled)
-> +		is_hw_enabled = clk_core_is_enabled(core);
+> +	if (boot_cpu_has(X86_FEATURE_SVME_ADDR_CHK))
+> +		svm_gp_erratum_intercept = false;
 > +
->  	/*
->  	 * Enable CLK_IS_CRITICAL clocks so newly added critical clocks
->  	 * don't get accidentally disabled when walking the orphan tree and
->  	 * reparenting clocks
->  	 */
-> -	if (core->flags & CLK_IS_CRITICAL) {
-> +	if (core->flags & CLK_IS_CRITICAL || is_hw_enabled) {
->  		unsigned long flags;
->  
->  		ret = clk_core_prepare(core);
+Again, I would make svm_gp_erratum_intercept a tri-state module param,
+and here if it is in 'auto' state do this.
 
-This means that a bootloader enabled clock with CLK_IGNORE_UNUSED flag
-can effectively never be disabled because the prepare/enable count is 1
-without any user. This is the behaviour we want to have with critical
-clocks, but I don't think this is desired for clocks with the
-CLK_IGNORE_UNUSED flag.
+Also I might as well made this code fail if X86_FEATURE_SVME_ADDR_CHK is set but
+user insists on svm_gp_erratum_intercept = true.
 
-Sascha
+>  	if (vgif) {
+>  		if (!boot_cpu_has(X86_FEATURE_VGIF))
+>  			vgif = false;
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+Best regards,
+	Maxim Levitsky
+
