@@ -2,148 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607E3303B9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CBF303B94
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392497AbhAZL3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:29:03 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:20082 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391306AbhAZJjC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:39:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611653942; x=1643189942;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=13AMwCZ6qcfg0VkHbBn4I9vHrDIxJT8mXVzUrrVXQvo=;
-  b=oV4HnHYQzc119a7Xuld7/hxFz54lxwgfuG+c6ZJm2qfmEiiKOEBK1Qxq
-   9sGgtHpRY+yN5v+UheAnwN/DxMTAvQuMFVeHKKULSnrZ0/iwv12iYxpYl
-   HaaJXkqRJKzg+viN8n1+I5V4HH6SYWN+8bQtmgydUTe+HzUXNBtdWmGn+
-   28ImPEulQqmG2+TYAVanJJzOTeIOeAUXv6f4avCJO3BaJdnuMvkWSe4kt
-   NNgNFfAj7d8WOigWgzcvaOYuNOyZEy9NuZNd4Xpr/Hvd7K/ITYWMkDkUx
-   0Bo/QKTe9p7dRNFOk9YkZAiN5UFvn9KsvKHwdsBlQd4DCHJIh7DUN8Ag5
-   A==;
-IronPort-SDR: 8oi87UC4YRBuVdFxvpygPis0sAnwqN9N/qpI2vg0Pl76DvqVIoi3m03AabSAjECGHxgE/Wgagc
- ezvzcvJqYzp8EvuHPIfZZVXIYjJXJr0FiVFw923LBc03Zcy1Tnihl+ejaRUod+niITxJUGmCj4
- pDJopUxaa3zDj499dc+QF2ch4RSNg5AdjuYzKXDh6GLXiarYyEbUShkn/IsJ5bil+mPPlZgyZr
- 6ec/5z+L1lzPCWSoeb7vM0kNhOCkvSFZ4two3g+8hwWcpOcIEkmwCc/hO//L87tvDy5T8omYMt
- mYA=
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="101448962"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jan 2021 02:37:04 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 Jan 2021 02:37:03 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 26 Jan 2021 02:37:01 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
-CC:     <sudeep.holla@arm.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 7/7] drivers: soc: atmel: add support for sama7g5
-Date:   Tue, 26 Jan 2021 11:29:36 +0200
-Message-ID: <1611653376-24168-8-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
+        id S2392217AbhAZL04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:26:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39178 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391084AbhAZJae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:30:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9F58DACF4;
+        Tue, 26 Jan 2021 09:29:52 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 10:29:46 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
+ associated with each HugeTLB page
+Message-ID: <20210126092942.GA10602@linux>
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210117151053.24600-6-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for SAMA7G5 SoCs.
+On Sun, Jan 17, 2021 at 11:10:46PM +0800, Muchun Song wrote:
+> When we free a HugeTLB page to the buddy allocator, we should allocate the
+> vmemmap pages associated with it. We can do that in the __free_hugepage()
+> before freeing it to buddy.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/soc/atmel/soc.c | 18 ++++++++++++++++++
- drivers/soc/atmel/soc.h |  6 ++++++
- 2 files changed, 24 insertions(+)
+This series has grown a certain grade of madurity and improvment, but it seems
+to me that we have been stuck in this patch (and patch#4) for quite some time.
 
-diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-index 813052dc9fce..e7c873134f59 100644
---- a/drivers/soc/atmel/soc.c
-+++ b/drivers/soc/atmel/soc.c
-@@ -28,8 +28,10 @@
- #define AT91_CHIPID_EXID		0x04
- #define AT91_CIDR_VERSION(x, m)		((x) & (m))
- #define AT91_CIDR_VERSION_MASK		GENMASK(4, 0)
-+#define AT91_CIDR_VERSION_MASK_SAMA7G5	GENMASK(3, 0)
- #define AT91_CIDR_EXT			BIT(31)
- #define AT91_CIDR_MATCH_MASK		GENMASK(30, 5)
-+#define AT91_CIDR_MASK_SAMA7G5		GENMASK(27, 5)
- 
- static const struct at91_soc socs[] __initconst = {
- #ifdef CONFIG_SOC_AT91RM9200
-@@ -212,6 +214,20 @@ static const struct at91_soc socs[] __initconst = {
- 		 AT91_CIDR_VERSION_MASK, SAMV70Q19_EXID_MATCH,
- 		 "samv70q19", "samv7"),
- #endif
-+#ifdef CONFIG_SOC_SAMA7
-+	AT91_SOC(SAMA7G5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-+		 AT91_CIDR_VERSION_MASK_SAMA7G5, SAMA7G51_EXID_MATCH,
-+		 "sama7g51", "sama7g5"),
-+	AT91_SOC(SAMA7G5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-+		 AT91_CIDR_VERSION_MASK_SAMA7G5, SAMA7G52_EXID_MATCH,
-+		 "sama7g52", "sama7g5"),
-+	AT91_SOC(SAMA7G5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-+		 AT91_CIDR_VERSION_MASK_SAMA7G5, SAMA7G53_EXID_MATCH,
-+		 "sama7g53", "sama7g5"),
-+	AT91_SOC(SAMA7G5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-+		 AT91_CIDR_VERSION_MASK_SAMA7G5, SAMA7G54_EXID_MATCH,
-+		 "sama7g54", "sama7g5"),
-+#endif
- 	{ /* sentinel */ },
- };
- 
-@@ -249,6 +265,7 @@ static int __init at91_get_cidr_exid_from_chipid(u32 *cidr, u32 *exid)
- 	void __iomem *regs;
- 	static const struct of_device_id chipids[] = {
- 		{ .compatible = "atmel,sama5d2-chipid" },
-+		{ .compatible = "microchip,sama7g5-chipid" },
- 		{ },
- 	};
- 
-@@ -336,6 +353,7 @@ static const struct of_device_id at91_soc_allowed_list[] __initconst = {
- 	{ .compatible = "atmel,at91sam9", },
- 	{ .compatible = "atmel,sama5", },
- 	{ .compatible = "atmel,samv7", },
-+	{ .compatible = "microchip,sama7g5", },
- 	{ }
- };
- 
-diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
-index 8a51cd973103..14c249c98c49 100644
---- a/drivers/soc/atmel/soc.h
-+++ b/drivers/soc/atmel/soc.h
-@@ -49,6 +49,7 @@ at91_soc_init(const struct at91_soc *socs);
- #define AT91SAM9X5_CIDR_MATCH		0x019a05a0
- #define AT91SAM9N12_CIDR_MATCH		0x019a07a0
- #define SAM9X60_CIDR_MATCH		0x019b35a0
-+#define SAMA7G5_CIDR_MATCH		0x00162100
- 
- #define AT91SAM9M11_EXID_MATCH		0x00000001
- #define AT91SAM9M10_EXID_MATCH		0x00000002
-@@ -67,6 +68,11 @@ at91_soc_init(const struct at91_soc *socs);
- 
- #define SAM9X60_EXID_MATCH		0x00000000
- 
-+#define SAMA7G51_EXID_MATCH		0x3
-+#define SAMA7G52_EXID_MATCH		0x2
-+#define SAMA7G53_EXID_MATCH		0x1
-+#define SAMA7G54_EXID_MATCH		0x0
-+
- #define AT91SAM9XE128_CIDR_MATCH	0x329973a0
- #define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
- #define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
+Would it be acceptable for a first implementation to not let hugetlb pages to
+be freed when this feature is in use?
+This would simplify things for now, as we could get rid of patch#4 and patch#5.
+We can always extend functionality once this has been merged, right?
+
+Of course, this means that e.g: memory-hotplug (hot-remove) will not fully work
+when this in place, but well.
+
+I would like to hear what others think, but in my opinion it would be a big step
+to move on.
+
+
+
+> ---
+>  include/linux/mm.h   |  2 ++
+>  mm/hugetlb.c         |  2 ++
+>  mm/hugetlb_vmemmap.c | 15 ++++++++++
+>  mm/hugetlb_vmemmap.h |  5 ++++
+>  mm/sparse-vmemmap.c  | 77 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  5 files changed, 100 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index f928994ed273..16b55d13b0ab 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -3007,6 +3007,8 @@ static inline void print_vma_addr(char *prefix, unsigned long rip)
+>  
+>  void vmemmap_remap_free(unsigned long start, unsigned long end,
+>  			unsigned long reuse);
+> +void vmemmap_remap_alloc(unsigned long start, unsigned long end,
+> +			 unsigned long reuse);
+>  
+>  void *sparse_buffer_alloc(unsigned long size);
+>  struct page * __populate_section_memmap(unsigned long pfn,
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index c165186ec2cf..d11c32fcdb38 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1326,6 +1326,8 @@ static void update_hpage_vmemmap_workfn(struct work_struct *work)
+>  		page->mapping = NULL;
+>  		h = page_hstate(page);
+>  
+> +		alloc_huge_page_vmemmap(h, page);
+> +
+>  		spin_lock(&hugetlb_lock);
+>  		__free_hugepage(h, page);
+>  		spin_unlock(&hugetlb_lock);
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index 19f1898aaede..6108ae80314f 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -183,6 +183,21 @@ static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
+>  	return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
+>  }
+>  
+> +void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+> +{
+> +	unsigned long vmemmap_addr = (unsigned long)head;
+> +	unsigned long vmemmap_end, vmemmap_reuse;
+> +
+> +	if (!free_vmemmap_pages_per_hpage(h))
+> +		return;
+> +
+> +	vmemmap_addr += RESERVE_VMEMMAP_SIZE;
+> +	vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
+> +	vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
+> +
+> +	vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse);
+> +}
+> +
+>  void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+>  {
+>  	unsigned long vmemmap_addr = (unsigned long)head;
+> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
+> index 01f8637adbe0..b2c8d2f11d48 100644
+> --- a/mm/hugetlb_vmemmap.h
+> +++ b/mm/hugetlb_vmemmap.h
+> @@ -11,6 +11,7 @@
+>  #include <linux/hugetlb.h>
+>  
+>  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> +void alloc_huge_page_vmemmap(struct hstate *h, struct page *head);
+>  void free_huge_page_vmemmap(struct hstate *h, struct page *head);
+>  
+>  /*
+> @@ -25,6 +26,10 @@ static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
+>  	return 0;
+>  }
+>  #else
+> +static inline void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+> +{
+> +}
+> +
+>  static inline void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+>  {
+>  }
+> diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
+> index ce4be1fa93c2..3b146d5949f3 100644
+> --- a/mm/sparse-vmemmap.c
+> +++ b/mm/sparse-vmemmap.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/pgtable.h>
+>  #include <linux/bootmem_info.h>
+> +#include <linux/delay.h>
+>  
+>  #include <asm/dma.h>
+>  #include <asm/pgalloc.h>
+> @@ -40,7 +41,8 @@
+>   * @remap_pte:		called for each non-empty PTE (lowest-level) entry.
+>   * @reuse_page:		the page which is reused for the tail vmemmap pages.
+>   * @reuse_addr:		the virtual address of the @reuse_page page.
+> - * @vmemmap_pages:	the list head of the vmemmap pages that can be freed.
+> + * @vmemmap_pages:	the list head of the vmemmap pages that can be freed
+> + *			or is mapped from.
+>   */
+>  struct vmemmap_remap_walk {
+>  	void (*remap_pte)(pte_t *pte, unsigned long addr,
+> @@ -50,6 +52,10 @@ struct vmemmap_remap_walk {
+>  	struct list_head *vmemmap_pages;
+>  };
+>  
+> +/* The gfp mask of allocating vmemmap page */
+> +#define GFP_VMEMMAP_PAGE		\
+> +	(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN | __GFP_THISNODE)
+> +
+>  static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
+>  			      unsigned long end,
+>  			      struct vmemmap_remap_walk *walk)
+> @@ -228,6 +234,75 @@ void vmemmap_remap_free(unsigned long start, unsigned long end,
+>  	free_vmemmap_page_list(&vmemmap_pages);
+>  }
+>  
+> +static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
+> +				struct vmemmap_remap_walk *walk)
+> +{
+> +	pgprot_t pgprot = PAGE_KERNEL;
+> +	struct page *page;
+> +	void *to;
+> +
+> +	BUG_ON(pte_page(*pte) != walk->reuse_page);
+> +
+> +	page = list_first_entry(walk->vmemmap_pages, struct page, lru);
+> +	list_del(&page->lru);
+> +	to = page_to_virt(page);
+> +	copy_page(to, (void *)walk->reuse_addr);
+> +
+> +	set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
+> +}
+> +
+> +static void alloc_vmemmap_page_list(struct list_head *list,
+> +				    unsigned long start, unsigned long end)
+> +{
+> +	unsigned long addr;
+> +
+> +	for (addr = start; addr < end; addr += PAGE_SIZE) {
+> +		struct page *page;
+> +		int nid = page_to_nid((const void *)addr);
+> +
+> +retry:
+> +		page = alloc_pages_node(nid, GFP_VMEMMAP_PAGE, 0);
+> +		if (unlikely(!page)) {
+> +			msleep(100);
+> +			/*
+> +			 * We should retry infinitely, because we cannot
+> +			 * handle allocation failures. Once we allocate
+> +			 * vmemmap pages successfully, then we can free
+> +			 * a HugeTLB page.
+> +			 */
+> +			goto retry;
+> +		}
+> +		list_add_tail(&page->lru, list);
+> +	}
+> +}
+> +
+> +/**
+> + * vmemmap_remap_alloc - remap the vmemmap virtual address range [@start, end)
+> + *			 to the page which is from the @vmemmap_pages
+> + *			 respectively.
+> + * @start:	start address of the vmemmap virtual address range.
+> + * @end:	end address of the vmemmap virtual address range.
+> + * @reuse:	reuse address.
+> + */
+> +void vmemmap_remap_alloc(unsigned long start, unsigned long end,
+> +			 unsigned long reuse)
+> +{
+> +	LIST_HEAD(vmemmap_pages);
+> +	struct vmemmap_remap_walk walk = {
+> +		.remap_pte	= vmemmap_restore_pte,
+> +		.reuse_addr	= reuse,
+> +		.vmemmap_pages	= &vmemmap_pages,
+> +	};
+> +
+> +	might_sleep();
+> +
+> +	/* See the comment in the vmemmap_remap_free(). */
+> +	BUG_ON(start - reuse != PAGE_SIZE);
+> +
+> +	alloc_vmemmap_page_list(&vmemmap_pages, start, end);
+> +	vmemmap_remap_range(reuse, end, &walk);
+> +}
+> +
+>  /*
+>   * Allocate a block of memory to be used to back the virtual memory map
+>   * or to back the page tables that are used to create the mapping.
+> -- 
+> 2.11.0
+> 
+> 
+
 -- 
-2.7.4
-
+Oscar Salvador
+SUSE L3
