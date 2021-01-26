@@ -2,257 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9A1304E83
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AA6304E28
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404508AbhA0Aco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:32:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
+        id S2390073AbhA0AOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:14:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392882AbhAZRkK (ORCPT
+        with ESMTP id S1730236AbhAZRFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:40:10 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C10C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:39:29 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l4Rg8-00045u-5B; Tue, 26 Jan 2021 17:58:56 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l4Rg5-0003hn-PE; Tue, 26 Jan 2021 17:58:53 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 5/5] amba: Make use of bus_type functions
-Date:   Tue, 26 Jan 2021 17:58:35 +0100
-Message-Id: <20210126165835.687514-6-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
-References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+        Tue, 26 Jan 2021 12:05:12 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DBCC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:00:09 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id h192so19240108oib.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EU+WTGu8bUI816wzRP2V2ST2vW8X+ERkOSMJ6GfAu7A=;
+        b=pEMdUe1I+pz92rcVj3qrndpwiny2nUbbUT9WmvMR83b2whOeAhucNsaDELoIn2Dbro
+         mPMtW1FeXb4aVdCgOLPc7KjI+XzgWFeNH3OU8VPiLPY4ZW5gxxYoyabLZ9XDsOmRcmwT
+         AV2BlJrF5okewJUrUxknlRfEOTFBf0S2vq0VWvCzP7R4B3dFPgD2YlR6uiwlUBSGSl0J
+         IUVj7S1vpZXFNyHS5CoyHU9R99ATSz0I7YDNuJHq9hqQwfoAXgUSj+p2NI7w0De4efON
+         xTNCuo1oxoGemSpTOy0YbAl1i+90Q4G0Tu9UYQqF1spkrrPQQDdM8Mz04lLlbamV08Ba
+         m2Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EU+WTGu8bUI816wzRP2V2ST2vW8X+ERkOSMJ6GfAu7A=;
+        b=foD/1obwhe1vVF9nU8KHLTpfZPECWLUHQX3914+JjKn897WITCWu9bZGZo6dbCKWEo
+         YbddvldJxMI5r+NadgLCLQtmm/hgyo84pFqM/QKrkPjUDIMf2HCQACJuH+Qx/GgDAF3b
+         Ph7d7JoN+hXClXy6fgUgaq53bzXuE+T2x8A1cwIfXW0l6cVU8rKAhqrBuWUSpLHnfH48
+         eq1w7w3BWe+U2CqP6noX7//ELMUpgr47JTsaRXF1TSGTL3qFuOCTWWYhXLh/jbTB9oIf
+         e5tXV23badCXBeai6Whx4N8uxJ6lVswK0T8P8Ir2NSXSfQXJXANyW591rr75NiptailB
+         BCCg==
+X-Gm-Message-State: AOAM5334IHPp0qiEBnw3dzYqGGBdB1hapjaguolYBL1FxvqbgYusk4t/
+        9nHYO2fbC0MHVPK4gVaw21wQreQgjOwklQ==
+X-Google-Smtp-Source: ABdhPJzJ9rDz6FYhds6jaMVjB00+YT+kXxwNhRowzyxERbBRdSPVyHiBFunvQyxwQf01zmcyTS2XkQ==
+X-Received: by 2002:aca:d481:: with SMTP id l123mr360474oig.155.1611680408337;
+        Tue, 26 Jan 2021 09:00:08 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j8sm4236852oie.47.2021.01.26.09.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 09:00:07 -0800 (PST)
+Date:   Tue, 26 Jan 2021 11:00:05 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>
+Subject: Re: Preemptible idr_alloc() in QRTR code
+Message-ID: <YBBKla3I2TxMFIvZ@builder.lan>
+References: <20210126104734.GB80448@C02TD0UTHF1T.local>
+ <20210126145833.GM308988@casper.infradead.org>
+ <20210126162154.GD80448@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126162154.GD80448@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of assigning the needed functions for each driver separately do it
-only once in amba_bustype. Move the definition of the functions to their
-proper place among the other callbacks used there. Note that the bus's
-shutdown function might be called for unbound devices, too, so it needs
-additional guarding.
+On Tue 26 Jan 10:21 CST 2021, Mark Rutland wrote:
 
-This prepares getting rid of these callbacks in struct device_driver.
+> On Tue, Jan 26, 2021 at 02:58:33PM +0000, Matthew Wilcox wrote:
+> > On Tue, Jan 26, 2021 at 10:47:34AM +0000, Mark Rutland wrote:
+> > > Hi,
+> > > 
+> > > When fuzzing arm64 with Syzkaller, I'm seeing some splats where
+> > > this_cpu_ptr() is used in the bowels of idr_alloc(), by way of
+> > > radix_tree_node_alloc(), in a preemptible context:
+> > 
+> > I sent a patch to fix this last June.  The maintainer seems to be
+> > under the impression that I care an awful lot more about their
+> > code than I do.
+> > 
+> > https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
+> 
+> Ah; I hadn't spotted the (glaringly obvious) GFP_ATOMIC abuse, thanks
+> for the pointer, and sorry for the noise.
+> 
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/amba/bus.c | 158 +++++++++++++++++++++++----------------------
- 1 file changed, 81 insertions(+), 77 deletions(-)
+I'm afraid this isn't as obvious to me as it is to you. Are you saying
+that one must not use GFP_ATOMIC in non-atomic contexts?
 
-diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-index 48b5d4b4e889..939ca220bf78 100644
---- a/drivers/amba/bus.c
-+++ b/drivers/amba/bus.c
-@@ -174,6 +174,84 @@ static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	return retval;
- }
- 
-+/*
-+ * These are the device model conversion veneers; they convert the
-+ * device model structures to our more specific structures.
-+ */
-+static int amba_probe(struct device *dev)
-+{
-+	struct amba_device *pcdev = to_amba_device(dev);
-+	struct amba_driver *pcdrv = to_amba_driver(dev->driver);
-+	const struct amba_id *id = amba_lookup(pcdrv->id_table, pcdev);
-+	int ret;
-+
-+	do {
-+		ret = of_clk_set_defaults(dev->of_node, false);
-+		if (ret < 0)
-+			break;
-+
-+		ret = dev_pm_domain_attach(dev, true);
-+		if (ret)
-+			break;
-+
-+		ret = amba_get_enable_pclk(pcdev);
-+		if (ret) {
-+			dev_pm_domain_detach(dev, true);
-+			break;
-+		}
-+
-+		pm_runtime_get_noresume(dev);
-+		pm_runtime_set_active(dev);
-+		pm_runtime_enable(dev);
-+
-+		ret = pcdrv->probe(pcdev, id);
-+		if (ret == 0)
-+			break;
-+
-+		pm_runtime_disable(dev);
-+		pm_runtime_set_suspended(dev);
-+		pm_runtime_put_noidle(dev);
-+
-+		amba_put_disable_pclk(pcdev);
-+		dev_pm_domain_detach(dev, true);
-+	} while (0);
-+
-+	return ret;
-+}
-+
-+static int amba_remove(struct device *dev)
-+{
-+	struct amba_device *pcdev = to_amba_device(dev);
-+	struct amba_driver *drv = to_amba_driver(dev->driver);
-+
-+	pm_runtime_get_sync(dev);
-+	if (drv->remove)
-+		drv->remove(pcdev);
-+	pm_runtime_put_noidle(dev);
-+
-+	/* Undo the runtime PM settings in amba_probe() */
-+	pm_runtime_disable(dev);
-+	pm_runtime_set_suspended(dev);
-+	pm_runtime_put_noidle(dev);
-+
-+	amba_put_disable_pclk(pcdev);
-+	dev_pm_domain_detach(dev, true);
-+
-+	return 0;
-+}
-+
-+static void amba_shutdown(struct device *dev)
-+{
-+	struct amba_driver *drv;
-+
-+	if (!dev->driver)
-+		return;
-+
-+	drv = to_amba_driver(dev->driver);
-+	if (drv->shutdown)
-+		drv->shutdown(to_amba_device(dev));
-+}
-+
- #ifdef CONFIG_PM
- /*
-  * Hooks to provide runtime PM of the pclk (bus clock).  It is safe to
-@@ -239,6 +317,9 @@ struct bus_type amba_bustype = {
- 	.dev_groups	= amba_dev_groups,
- 	.match		= amba_match,
- 	.uevent		= amba_uevent,
-+	.probe		= amba_probe,
-+	.remove		= amba_remove,
-+	.shutdown	= amba_shutdown,
- 	.dma_configure	= platform_dma_configure,
- 	.pm		= &amba_pm,
- };
-@@ -251,80 +332,6 @@ static int __init amba_init(void)
- 
- postcore_initcall(amba_init);
- 
--/*
-- * These are the device model conversion veneers; they convert the
-- * device model structures to our more specific structures.
-- */
--static int amba_probe(struct device *dev)
--{
--	struct amba_device *pcdev = to_amba_device(dev);
--	struct amba_driver *pcdrv = to_amba_driver(dev->driver);
--	const struct amba_id *id = amba_lookup(pcdrv->id_table, pcdev);
--	int ret;
--
--	do {
--		ret = of_clk_set_defaults(dev->of_node, false);
--		if (ret < 0)
--			break;
--
--		ret = dev_pm_domain_attach(dev, true);
--		if (ret)
--			break;
--
--		ret = amba_get_enable_pclk(pcdev);
--		if (ret) {
--			dev_pm_domain_detach(dev, true);
--			break;
--		}
--
--		pm_runtime_get_noresume(dev);
--		pm_runtime_set_active(dev);
--		pm_runtime_enable(dev);
--
--		ret = pcdrv->probe(pcdev, id);
--		if (ret == 0)
--			break;
--
--		pm_runtime_disable(dev);
--		pm_runtime_set_suspended(dev);
--		pm_runtime_put_noidle(dev);
--
--		amba_put_disable_pclk(pcdev);
--		dev_pm_domain_detach(dev, true);
--	} while (0);
--
--	return ret;
--}
--
--static int amba_remove(struct device *dev)
--{
--	struct amba_device *pcdev = to_amba_device(dev);
--	struct amba_driver *drv = to_amba_driver(dev->driver);
--
--	pm_runtime_get_sync(dev);
--	if (drv->remove)
--		drv->remove(pcdev);
--	pm_runtime_put_noidle(dev);
--
--	/* Undo the runtime PM settings in amba_probe() */
--	pm_runtime_disable(dev);
--	pm_runtime_set_suspended(dev);
--	pm_runtime_put_noidle(dev);
--
--	amba_put_disable_pclk(pcdev);
--	dev_pm_domain_detach(dev, true);
--
--	return 0;
--}
--
--static void amba_shutdown(struct device *dev)
--{
--	struct amba_driver *drv = to_amba_driver(dev->driver);
--
--	if (drv->shutdown)
--		drv->shutdown(to_amba_device(dev));
--}
--
- /**
-  *	amba_driver_register - register an AMBA device driver
-  *	@drv: amba device driver structure
-@@ -339,9 +346,6 @@ int amba_driver_register(struct amba_driver *drv)
- 		return -EINVAL;
- 
- 	drv->drv.bus = &amba_bustype;
--	drv->drv.probe = amba_probe;
--	drv->drv.remove = amba_remove;
--	drv->drv.shutdown = amba_shutdown;
- 
- 	return driver_register(&drv->drv);
- }
--- 
-2.29.2
 
+That said, glancing at the code I'm puzzled to why it would use
+GFP_ATOMIC.
+
+> It looks like Eric was after a fix that trivially backported to v4.7
+> (and hence couldn't rely on xarray) but instead it just got left broken
+> for months. :/
+> 
+> Bjorn, is this something you care about? You seem to have the most
+> commits to the file, and otherwise the official maintainer is Dave
+> Miller per get_maintainer.pl.
+> 
+
+I certainly care about qrtr working and remember glancing at Matthew's
+patch, but seems like I never found time to properly review it.
+
+> It is very tempting to make the config option depend on BROKEN...
+> 
+
+I hear you and that would be bad, so I'll make sure to take a proper
+look at this and Matthew's patch.
+
+Thanks,
+Bjorn
