@@ -2,170 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F67303B5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E35DF303B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392236AbhAZLSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:18:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47558 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389818AbhAZIVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:21:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4CBA5ACF4;
-        Tue, 26 Jan 2021 08:20:21 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 09:20:18 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 3/5] hugetlb: only set HPageMigratable for migratable
- hstates
-Message-ID: <20210126082018.GB9519@linux>
-References: <20210122195231.324857-1-mike.kravetz@oracle.com>
- <20210122195231.324857-4-mike.kravetz@oracle.com>
+        id S2392240AbhAZLS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:18:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389841AbhAZIVq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:21:46 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A30C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:21:05 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id i9so1929042wmq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:21:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+jmRovbHoJFIPsxdXAY7r0V1zGJfwiz2YjhcYRzpajM=;
+        b=PxUN3nqggnDRnjIg//589fa4L1h6sSUPQup32s/k9tsY1DOKHbiY07oQpUffQPQ0S6
+         Hjyb6TEEApQdEuHzAXuTm9jOnPEHJWUxI/neKhqfWxZgx576UI8YQORSxwI0f8HpTvnB
+         3Y8arwDxSK4Mbl+fWIXurbvmHeZ1c9tRuCK1JXRa4pQa6OEIsgk1kkKdyWwicY+PiHvw
+         FmbZkaml8GNQNpNkeeMS+I2iClvaXvN6gHPAy6D7mkLhLMOpt/mqS5lCBHCxhCOpDmJ8
+         DtaDUBVZCPdvJBF/RbcoF7YqQ/RbEYvcRYz59yrYb0Al1URb4qryjElzKZ0vmWu4kMlK
+         f4rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+jmRovbHoJFIPsxdXAY7r0V1zGJfwiz2YjhcYRzpajM=;
+        b=W4kvoC7QgWiTsW7C5ZFa5aAeQz95a4XCleXmm6bO9dw5BNTSKdFaqklvOpmZUr9PEQ
+         CPDFMPHWgluHN/uDGHqCPE82PuJJ8iAZNKD6kgFUi+EDv/7rXQzGS0hGInbfY3LHczoh
+         wK4G5xS0pqYDZduDHHtIamzUAyXBck5gCVNHckttlnErzdflruyrMt7bol9RlVqMT7dQ
+         laolVq+8vcpt4Lg9mz3g/OQ/v9naK9Ocwq+kauahxzkIjk1JSkxS8XzLG7e5qdjnuYYh
+         ektq2G7jfUhOMUJ/7DIg5bjvaT6k6o8HZU1i68r1NKVucD3f0NlfZ6j58CHxw2AONq8f
+         f2nw==
+X-Gm-Message-State: AOAM5316CxEX5jKZO0zxtKdCEbtXeGvttAY8MOx7WXhxuoObkjR1uvIK
+        FwemPjBUAIFxebhdWnIN2u7wMQ==
+X-Google-Smtp-Source: ABdhPJzWMEJBAbelnI6VV/+tPmVfTI0FrXf0cV2oFryj7tJwUA85QEhadchYojFzQ1oygPTv16rZ2w==
+X-Received: by 2002:a1c:26c1:: with SMTP id m184mr3611308wmm.49.1611649264241;
+        Tue, 26 Jan 2021 00:21:04 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id g194sm2259715wme.39.2021.01.26.00.21.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 00:21:03 -0800 (PST)
+Date:   Tue, 26 Jan 2021 08:21:01 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v1 00/10] mfd, x86: remove msic driver and leftovers
+Message-ID: <20210126082101.GD4903@dell>
+References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210122195231.324857-4-mike.kravetz@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 11:52:29AM -0800, Mike Kravetz wrote:
-> The HP_Migratable flag indicates a page is a candidate for migration.
-> Only set the flag if the page's hstate supports migration.  This allows
-> the migration paths to detect non-migratable pages earlier.  If migration
-> is not supported for the hstate, HP_Migratable will not be set, the page
-> will not be isolated and no attempt will be made to migrate.  We should
-> never get to unmap_and_move_huge_page for a page where migration is not
-> supported, so throw a warning if we do.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Mon, 25 Jan 2021, Andy Shevchenko wrote:
 
-I wish there was a better way to do this like opencode it at fault path,
-but as you mentioned that is troublesome.
-
-I am not a big fan of the name either, too long for my taste but I cannot
-come up with anything better so:
-
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-
-> ---
->  fs/hugetlbfs/inode.c    | 2 +-
->  include/linux/hugetlb.h | 9 +++++++++
->  mm/hugetlb.c            | 8 ++++----
->  mm/migrate.c            | 9 ++++-----
->  4 files changed, 18 insertions(+), 10 deletions(-)
+> This is a second part of the Intel MID outdated platforms removal.
+> First part is available as immutable branch [1]. The series has functional
+> and build dependencies, so the mentioned branch should be used as a base
+> for these changes.
 > 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index e1d7ed2a53a9..93f7b8d3c5fd 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -735,7 +735,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
->  
->  		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
->  
-> -		SetHPageMigratable(page);
-> +		SetHPageMigratableIfSupported(page);
->  		/*
->  		 * unlock_page because locked by add_to_page_cache()
->  		 * put_page() due to reference from alloc_huge_page()
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 58be44a915d1..cd1960541f2a 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -740,6 +740,15 @@ static inline bool hugepage_migration_supported(struct hstate *h)
->  	return arch_hugetlb_migration_supported(h);
->  }
->  
-> +/*
-> + * Only set HPageMigratable if migration supported for page
-> + */
-> +static inline void SetHPageMigratableIfSupported(struct page *page)
-> +{
-> +	if (hugepage_migration_supported(page_hstate(page)))
-> +		SetHPageMigratable(page);
-> +}
-> +
->  /*
->   * Movability check is different as compared to migration check.
->   * It determines whether or not a huge page should be placed on
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index f1a3c8230dbf..4da1a29ac5e2 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -4194,7 +4194,7 @@ static vm_fault_t hugetlb_cow(struct mm_struct *mm, struct vm_area_struct *vma,
->  				make_huge_pte(vma, new_page, 1));
->  		page_remove_rmap(old_page, true);
->  		hugepage_add_new_anon_rmap(new_page, vma, haddr);
-> -		SetHPageMigratable(new_page);
-> +		SetHPageMigratableIfSupported(new_page);
->  		/* Make the old page be freed below */
->  		new_page = old_page;
->  	}
-> @@ -4436,7 +4436,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
->  	 * been isolated for migration.
->  	 */
->  	if (new_page)
-> -		SetHPageMigratable(page);
-> +		SetHPageMigratableIfSupported(page);
->  
->  	unlock_page(page);
->  out:
-> @@ -4747,7 +4747,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->  	update_mmu_cache(dst_vma, dst_addr, dst_pte);
->  
->  	spin_unlock(ptl);
-> -	SetHPageMigratable(page);
-> +	SetHPageMigratableIfSupported(page);
->  	if (vm_shared)
->  		unlock_page(page);
->  	ret = 0;
-> @@ -5589,7 +5589,7 @@ void putback_active_hugepage(struct page *page)
->  {
->  	VM_BUG_ON_PAGE(!PageHead(page), page);
->  	spin_lock(&hugetlb_lock);
-> -	SetHPageMigratable(page);
-> +	SetHPageMigratableIfSupported(page);
->  	list_move_tail(&page->lru, &(page_hstate(page))->hugepage_activelist);
->  	spin_unlock(&hugetlb_lock);
->  	put_page(page);
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index a3e1acc72ad7..c8d19e83f372 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1275,13 +1275,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
->  	struct address_space *mapping = NULL;
->  
->  	/*
-> -	 * Migratability of hugepages depends on architectures and their size.
-> -	 * This check is necessary because some callers of hugepage migration
-> -	 * like soft offline and memory hotremove don't walk through page
-> -	 * tables or check whether the hugepage is pmd-based or not before
-> -	 * kicking migration.
-> +	 * Support for migration should be checked at isolation time.
-> +	 * Therefore, we should never get here if migration is not supported
-> +	 * for the page.
->  	 */
->  	if (!hugepage_migration_supported(page_hstate(hpage))) {
-> +		VM_WARN_ON(1);
->  		list_move_tail(&hpage->lru, ret);
->  		return -ENOSYS;
->  	}
-> -- 
-> 2.29.2
-> 
-> 
+> Note, that some of the drivers, that arch/x86 covers, seems never appeared
+> in the upstream (like msic_ocd).
+
+What platforms stop working after this removal?
+
+Are you sure no-one is using them?
+
+I wouldn't be keen on breaking Janet's PC that she's been using daily
+and keeping up-to-date since the 90's.
 
 -- 
-Oscar Salvador
-SUSE L3
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
