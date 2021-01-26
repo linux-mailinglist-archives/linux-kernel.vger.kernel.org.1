@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C95304E39
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADC8304E32
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404179AbhA0ASZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:18:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbhAZRIg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:08:36 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262B6C0611C2;
-        Tue, 26 Jan 2021 08:44:58 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0d11004e878318d6a49745.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1100:4e87:8318:d6a4:9745])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7508B1EC0489;
-        Tue, 26 Jan 2021 17:44:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611679493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5BNpA18woz/GtfcJQFYWq8Enn52JhWk6go+AvI3AO0o=;
-        b=JbzeN6Y3TiHP0m0DgF4RqOYNI+QjY+gMwZCh9AxYX0L8xVq4wa04fEyh6FrmCjYPmdiqzC
-        tpmeNqOkWo1HZVFeDZpFru6tq/5or4V/6dOhHrPgzBeTZTqUEGUrteo4v5qkJEelpNlF01
-        b8X8N3n41Y3OPWVqZlIJmzqUUw8tA1g=
-Date:   Tue, 26 Jan 2021 17:44:54 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Terry Bowman <terry.bowman@amd.com>
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, james.morse@arm.com,
-        tony.luck@intel.com, yazen.ghannam@amd.com, guohanjun@huawei.com,
-        colin.king@canonical.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jon.grimm@amd.com
-Subject: Re: [PATCH v2] ACPI / APEI: Add is_generic_error() to identify GHES
- sources
-Message-ID: <20210126164454.GD6514@zn.tnic>
-References: <20210126163201.1433505-1-terry.bowman@amd.com>
+        id S2404013AbhA0ARx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:17:53 -0500
+Received: from mga04.intel.com ([192.55.52.120]:32786 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390022AbhAZRHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:07:55 -0500
+IronPort-SDR: isjOqGRmE+Gj09JWKuSW4ysyj2galbHoL0hDTd34/M77BOaU+ELtAd8P7qWk1Fa1dWy/AyOnfJ
+ Ai5edlTS6KOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="177361862"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="177361862"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 08:45:08 -0800
+IronPort-SDR: 1lnn6dLSjZsvUzYC004Zq7WqDUJ9wbWzfZnjJqc+oti7kBC5bOxEJBmTc6AjJx2iQxG+v3AvmN
+ 6R/gTSu1RsbQ==
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="504586158"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.153.84]) ([10.212.153.84])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 08:45:07 -0800
+Subject: Re: [PATCH v17 11/26] x86/mm: Update ptep_set_wrprotect() and
+ pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-12-yu-cheng.yu@intel.com>
+ <20210125182709.GC23290@zn.tnic>
+ <8084836b-4990-90e8-5c9a-97a920f0239e@intel.com>
+ <20210125215558.GK23070@zn.tnic>
+ <c000e1fa-5da8-9316-ef9e-565d79308296@intel.com>
+ <20210126102404.GA6514@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <5f8da4cc-9c5c-73f9-7426-924c77797995@intel.com>
+Date:   Tue, 26 Jan 2021 08:45:06 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210126163201.1433505-1-terry.bowman@amd.com>
+In-Reply-To: <20210126102404.GA6514@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:32:01AM -0600, Terry Bowman wrote:
-> From: Yazen Ghannam <yazen.ghannam@amd.com>
+On 1/26/2021 2:24 AM, Borislav Petkov wrote:
+> On Mon, Jan 25, 2021 at 02:18:37PM -0800, Yu, Yu-cheng wrote:
+>> For example, when a thread reads a W=1, D=0 PTE and before changing it to
+>> W=0,D=0, another thread could have written to the page and the PTE is W=1,
+>> D=1 now.  When try_cmpxchg() detects the difference, old_pte is read again.
 > 
-> Refactor duplicated GHES identity logic into is_generic_error().
+> None of that is mentioned in the comment above it and if anything,
+> *that* is what should be explained there - not some guarantee about some
+> processors which doesn't even apply here.
 > 
-> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> Reviewed-by: Robert Richter <rrichter@amd.com>
-> Co-developed-by: Terry Bowman <terry.bowman@amd.com>
-> Signed-off-by: Terry Bowman <terry.bowman@amd.com>
-> ---
-> Changes in v2:
->   - Rename is_ghes_type() to is_generic_error()
->   - Add co-developed-by
->   
->  drivers/acpi/apei/hest.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+> Also, add the fact that try_cmpxchg() will update old_pte with any
+> modified bits - D=1 for example - when it fails. As Peter just explained
+> to me on IRC.
 > 
-> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
-> index 6e980fe16772..f220bb00e91b 100644
-> --- a/drivers/acpi/apei/hest.c
-> +++ b/drivers/acpi/apei/hest.c
-> @@ -49,6 +49,12 @@ static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
->  	[ACPI_HEST_TYPE_IA32_DEFERRED_CHECK] = -1,
->  };
->  
-> +static inline bool is_generic_error(struct acpi_hest_header *hest_hdr)
-> +{
-> +	return hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR ||
-> +	       hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR_V2;
-> +}
-> +
->  static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
->  {
->  	u16 hest_type = hest_hdr->type;
-> @@ -141,8 +147,7 @@ static int __init hest_parse_ghes_count(struct acpi_hest_header *hest_hdr, void
->  {
->  	int *count = data;
->  
-> -	if (hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR ||
-> -	    hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR_V2)
-> +	if (is_generic_error(hest_hdr))
->  		(*count)++;
->  	return 0;
->  }
-> @@ -153,9 +158,7 @@ static int __init hest_parse_ghes(struct acpi_hest_header *hest_hdr, void *data)
->  	struct ghes_arr *ghes_arr = data;
->  	int rc, i;
->  
-> -	if (hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR &&
-> -	    hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR_V2)
-> +	if (!is_generic_error(hest_hdr))
->  		return 0;
->  
->  	if (!((struct acpi_hest_generic *)hest_hdr)->enabled)
-> --
+> Thx.
+> 
 
-Acked-by: Borislav Petkov <bp@suse.de>
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yes, I will fix it.  Thanks!
