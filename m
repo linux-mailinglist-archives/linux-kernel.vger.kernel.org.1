@@ -2,96 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34016303D0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DDC303D0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404166AbhAZKfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:35:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:42486 "EHLO foss.arm.com"
+        id S2403972AbhAZKY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:24:56 -0500
+Received: from mga06.intel.com ([134.134.136.31]:10878 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729825AbhAZBnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:43:50 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3955F1FB;
-        Mon, 25 Jan 2021 16:15:02 -0800 (PST)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F3C843F68F;
-        Mon, 25 Jan 2021 16:14:59 -0800 (PST)
-Date:   Tue, 26 Jan 2021 00:14:08 +0000
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v4 12/21] dt-bindings: rtc: sun6i: Add H616 compatible
- string
-Message-ID: <20210126001408.58dda681@slackpad.fritz.box>
-In-Reply-To: <20210125225101.GV1196852@piout.net>
-References: <20210125151811.11871-1-andre.przywara@arm.com>
-        <20210125151811.11871-13-andre.przywara@arm.com>
-        <20210125225101.GV1196852@piout.net>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S1732002AbhAZB2C (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:28:02 -0500
+IronPort-SDR: RJO4O+mUX+3OSrwgfa89EM5KoV2WBNJrJwS//OzuMYWMPFhSTc8rkMkDhe768MjFrKurb9Klzi
+ 56wEnAnHWAYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="241355582"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="241355582"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:20:56 -0800
+IronPort-SDR: dDJmSZwGA96dlEzfV5Lz/swJN0DJJPkbYsyqGAQUwx0Qazbg5GB0xnFHKJd1FKsa3/TY+fz1Qh
+ ZNqTVrwvSOVA==
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="387598889"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:20:53 -0800
+Subject: Re: [PATCH v7] perf stat: Fix wrong skipping for per-die aggregation
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com
+References: <20210118040521.31003-1-yao.jin@linux.intel.com>
+ <20210120220735.GE1798087@krava>
+ <dd75cc3f-9440-c33b-cea3-529134c33e80@linux.intel.com>
+ <20210123225709.GB138414@krava>
+ <de88878b-b184-b1a2-ad91-1069d81c4e53@linux.intel.com>
+ <20210125094554.GB245791@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <7ab33f63-ec8a-4b44-c6b0-521aad41225f@linux.intel.com>
+Date:   Tue, 26 Jan 2021 08:20:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210125094554.GB245791@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 23:51:01 +0100
-Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+Hi Jiri,
 
-Hi Alexandre,
-
-> On 25/01/2021 15:18:02+0000, Andre Przywara wrote:
-> > Add the obvious compatible name to the existing RTC binding, and pair
-> > it with the existing H6 fallback compatible string, as the devices are
-> > compatible.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml       | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >   
+On 1/25/2021 5:45 PM, Jiri Olsa wrote:
+> I believe that the less ifdefs te better, if you could squash this
+> change with your patch and send it, that'd be great
 > 
-> How do you expect that patch to be merged? I was thinking it would go
-> through Rob's tree.
+> SNIP
 
-Yes, and that's why I originally combined all those trivial patches
-into one, but broonie asked for a split up.
+I will add your change in the patch and send the v8. Thanks so much for your help!
 
-So I guess there is not much to do there, unless you want to object ;-)
-
-Cheers,
-Andre
-
-> 
-> > diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> > index b1b0ee769b71..4193e5813344 100644
-> > --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> > +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> > @@ -26,6 +26,9 @@ properties:
-> >            - const: allwinner,sun50i-a64-rtc
-> >            - const: allwinner,sun8i-h3-rtc
-> >        - const: allwinner,sun50i-h6-rtc
-> > +      - items:
-> > +          - const: allwinner,sun50i-h616-rtc
-> > +          - const: allwinner,sun50i-h6-rtc
-> >  
-> >    reg:
-> >      maxItems: 1
-> > -- 
-> > 2.17.5
-> >   
-> 
-
+Thanks
+Jin Yao
