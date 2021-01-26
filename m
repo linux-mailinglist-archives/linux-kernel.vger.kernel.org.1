@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C440304612
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CD8304615
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394265AbhAZSOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:14:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38964 "EHLO mail.kernel.org"
+        id S2394276AbhAZSOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:14:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392950AbhAZRkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:40:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2929B22228;
-        Tue, 26 Jan 2021 17:40:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611682800;
-        bh=t5FEKloI/6KDyGm6sAJ0H3ldMzvUb5M0dXOLgYL8aOo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tHr9IRSqUdTQdutykeZAniX66EyqUCsXr+aKVV05pnC0QWOhwqhMM7FDCElq9cdFa
-         UtNRv9YL+2rOEe/uy1emrn8XfqjDwL8SM6GUvQPDryiM4+iSja7S2Mqk/dj28u0pee
-         EszTIIe1KNAJEEEJdqKz1Mk9Tzv9wj4dkfScFz1Q=
-Date:   Tue, 26 Jan 2021 18:39:58 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     balbi@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        benh@kernel.crashing.org, sashal@kernel.org, rentao.bupt@gmail.com,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] usb: gadget: Remove unused including
- <linux/version.h>
-Message-ID: <YBBT7gNiKGmM4jjD@kroah.com>
-References: <1611578492-43121-1-git-send-email-zou_wei@huawei.com>
+        id S2392965AbhAZRlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:41:15 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 889A02228A;
+        Tue, 26 Jan 2021 17:40:33 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 12:40:32 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        keescook@chromium.org, John Ogness <john.ogness@linutronix.de>,
+        linux-mm@kvack.org, Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
+Message-ID: <20210126124032.0915f408@gandalf.local.home>
+In-Reply-To: <20210126123912.23a5c3a1@gandalf.local.home>
+References: <20210116220950.47078-1-timur@kernel.org>
+        <20210118182635.GD2260413@casper.infradead.org>
+        <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
+        <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
+        <20210119014725.GH2260413@casper.infradead.org>
+        <YAa2oCNWjExWlQTu@jagdpanzerIV.localdomain>
+        <09c70d6b-c989-ca23-7ee8-b404bb0490f0@suse.cz>
+        <cd9e7a31-e4f6-69d3-0648-c6228108b592@kernel.org>
+        <083dd940-60c1-4cc8-fc89-8815b253d5c5@suse.cz>
+        <a9b38fe7-8a22-71b7-1e84-0ebf1e864306@kernel.org>
+        <20210126123912.23a5c3a1@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611578492-43121-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 08:41:32PM +0800, Zou Wei wrote:
-> Fix the following versioncheck warning:
-> 
-> drivers/usb/gadget/udc/aspeed-vhub/hub.c:33:1: unused including <linux/version.h>
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/usb/gadget/udc/aspeed-vhub/hub.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/usb/gadget/udc/aspeed-vhub/hub.c b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-> index 396a7d8..b192d57 100644
-> --- a/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-> +++ b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-> @@ -30,7 +30,6 @@
->  #include <linux/regmap.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/bcd.h>
-> -#include <linux/version.h>
->  #include <linux/usb.h>
->  #include <linux/usb/hcd.h>
+On Tue, 26 Jan 2021 12:39:12 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-You didn't test this patch either :(
+> On Tue, 26 Jan 2021 11:30:02 -0600
+> Timur Tabi <timur@kernel.org> wrote:
+> 
+> > On 1/26/21 11:14 AM, Vlastimil Babka wrote:  
+> > > If it was a boot option, I would personally be for leaving hashing enabled by
+> > > default, with opt-in boot option to disable it.    
+> > 
+> > A boot option would solve all my problems.  I wouldn't need to recompile 
+> > the kernel, and it would apply to all variations of printk.  
+> 
+> Should it be called "make-printk-insecure"
+> 
+> ?
 
-Your script is not correct...
+And even if we make this a boot time option, perhaps we should still
+include that nasty dmesg notice, which will let people know that the kernel
+has unhashed values.
 
-greg k-h
+-- Steve
+
