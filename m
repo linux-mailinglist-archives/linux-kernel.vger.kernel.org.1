@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E843F3045C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C103045C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392240AbhAZRyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
+        id S2393598AbhAZRzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:55:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390552AbhAZIre (ORCPT
+        with ESMTP id S2390560AbhAZIrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:47:34 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7A7C0617AA
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:46:05 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id d38so17090810ybe.15
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:46:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=rY9VRGFEnK07xJyRxhqYar0R4BXBdHwAeKiBVE3gLSc=;
-        b=UnAA7x7sisgHljyIT3brf27r5NguPJN6tGOVTmiPo2N2K9j+Gu/JvzvKR+oBXsMm8v
-         2IV3JGec/SjF2E1jp01MTDE6qwsitpCnUfMQDmwpwoxpxc5ozzMDQqPI7gxNUxF/ZK9E
-         ex2NDQh/t613jm0YYS5r9kA7Ylj9HOF5ZXJAtJImG+OI3oMqQ0j45CKotJGFAH1E+wwv
-         HGKvZ69ezcCeX+/DEoWEnHxnpl6eUgottFdSOcYNy9PTbQAOCj+4B43hYfYGLAsOEHQJ
-         x+xbafEeLwoxmI/QC/iSIsV24te9zerIcaN4RlcboxBDlAGq30azKEPBCpucE8Q9kpc2
-         HVUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=rY9VRGFEnK07xJyRxhqYar0R4BXBdHwAeKiBVE3gLSc=;
-        b=plOjO8nBuVhQLf9dyj2X4DsPdbw4V01zEpbZ13O4vDiSyClvlX+2h3A7j6C+eOnSSN
-         UCzzIK2QsCwYncwMrrdfpsu1M+LDP7pOuy/sBPue3h1waJqujjLSSuxGZ86cz13a3vKg
-         WMViXB+xn05jTVCDKy54+ttbpauQOQNeeFKTDynr7PE1OHPp4fXrbjgKCb43enhDUtQp
-         i74XUZRT9EgsRALJfF4ooUMbt8fMlO5xBysYv7AtatNWvBpVnKp54u9oRgoVAKH3Zj0A
-         c+CtiO/gnt3HKsxeSdWyrydbcSKXwXG+Q+t5+KKDl3mdT6gEsLkwODxLDnLZ4OxvZXvU
-         NkdQ==
-X-Gm-Message-State: AOAM530CaOBffUReI/7mI4NfAlrkhbPGxc81+mnzSYiRqdaLnmZJrujF
-        mb00JNb5aZFTsbeaB3qwWmQW4p6c/Y01
-X-Google-Smtp-Source: ABdhPJx+fjPVUGXGXLaEb5V4RxpTQ3WPXK1uu3IzULxVwMe1ZP0gWXIf/o0pmkLFGK4n8elA+NfVJT/bgeaO
-Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:4430:c29c:1e76:3e65])
- (user=kyletso job=sendgmr) by 2002:a25:ac5d:: with SMTP id
- r29mr7223448ybd.446.1611650764837; Tue, 26 Jan 2021 00:46:04 -0800 (PST)
-Date:   Tue, 26 Jan 2021 16:45:44 +0800
-In-Reply-To: <20210126084544.682641-1-kyletso@google.com>
-Message-Id: <20210126084544.682641-4-kyletso@google.com>
-Mime-Version: 1.0
-References: <20210126084544.682641-1-kyletso@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH 3/3] usb: typec: tcpm: Get Sink VDO from fwnode
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        hdegoede@redhat.com, badhri@google.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 26 Jan 2021 03:47:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2970C061573;
+        Tue, 26 Jan 2021 00:47:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HTfSorXdnEfh5Pm6XuKzd/GUg2qCTwSNwfeKANXmstw=; b=OgRpkyAv7EKJSlbJknfC0DSAe9
+        R12QvtgLZUBskgoi/tToyYrG9mczu0Gs5i24dRdDz7pzyKn9JrwR+mJioR2S2bHUOkUBwaU1oYdAX
+        YDnD+7G5+f/40Yol964RBKzZtH4hRXwczJFKv/2pQXeOQ6HOgFggEVRrrdWZO7Bm88qXwTkl2t8LD
+        LZxNRXDVyH5nrniYeqh6aFSqq7nTDfn97yhufrVLz+Y8+wAZ2RXzSssqwEPjBusWSOtqYjV0sEccf
+        NwBxu6uCkLnJUnOKbj+Cd8gdOIcmdgbq2VewKberESEB7QqQs1IWt2PKROscW1Q2sx0wIEXCHTB6n
+        19f+D4IA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4Jzj-0006Ar-QW; Tue, 26 Jan 2021 08:46:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3A13B300DAE;
+        Tue, 26 Jan 2021 09:46:36 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 059A3209C50F2; Tue, 26 Jan 2021 09:46:35 +0100 (CET)
+Date:   Tue, 26 Jan 2021 09:46:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v17 11/26] x86/mm: Update ptep_set_wrprotect() and
+ pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
+Message-ID: <YA/W63sob0keoD+i@hirez.programming.kicks-ass.net>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-12-yu-cheng.yu@intel.com>
+ <20210125182709.GC23290@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125182709.GC23290@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current design only allows TCPM to get the Sink VDO from TCPC configs.
-Add an additional way from fwnode.
+On Mon, Jan 25, 2021 at 07:27:09PM +0100, Borislav Petkov wrote:
 
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> > +		pte_t old_pte, new_pte;
+> > +
+> > +		do {
+> > +			old_pte = READ_ONCE(*ptep);
+> > +			new_pte = pte_wrprotect(old_pte);
+> 
+> Maybe I'm missing something but those two can happen outside of the
+> loop, no? Or is *ptep somehow changing concurrently while the loop is
+> doing the CMPXCHG and you need to recreate it each time?
+> 
+> IOW, you can generate upfront and do the empty loop...
+> 
+> > +
+> > +		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
+> > +
+> > +		return;
+> > +	}
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index c14cf7842520..7b797d14d9db 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -5673,6 +5673,18 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 			port->new_source_frs_current = frs_current;
- 	}
- 
-+	ret = fwnode_property_read_u32_array(fwnode, "sink-vdos", NULL, 0);
-+	if (ret <= 0 && ret != -EINVAL) {
-+		return -EINVAL;
-+	} else if (ret > 0) {
-+		port->nr_snk_vdo = min(ret, VDO_MAX_OBJECTS);
-+		ret = fwnode_property_read_u32_array(fwnode, "sink-vdos",
-+						     port->snk_vdo,
-+						     port->nr_snk_vdo);
-+		if (ret < 0)
-+			return -EINVAL;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.30.0.280.ga3ce27912f-goog
+Empty loop would be wrong, but that wants to be written like:
 
+	old_pte = READ_ONCE(*ptep);
+	do {
+		new_pte = pte_wrprotect(old_pte);
+	} while (try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
+
+Since try_cmpxchg() will update old_pte on failure.
