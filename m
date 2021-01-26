@@ -2,113 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB268303AD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04123303AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbhAZKyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:54:06 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:44359 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730427AbhAZCvU (ORCPT
+        id S2404602AbhAZK5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:57:14 -0500
+Received: from tartarus.angband.pl ([51.83.246.204]:41822 "EHLO
+        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727856AbhAZDcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:51:20 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UMwR7au_1611629414;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMwR7au_1611629414)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 Jan 2021 10:50:30 +0800
-From:   Yang Li <abaci-bugfix@linux.alibaba.com>
-To:     kuba@kernel.org
-Cc:     davem@davemloft.net, rajur@chelsio.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yang Li <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH net-next] cxgb4: remove redundant NULL check
-Date:   Tue, 26 Jan 2021 10:50:13 +0800
-Message-Id: <1611629413-81373-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 25 Jan 2021 22:32:54 -0500
+X-Greylist: delayed 2348 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Jan 2021 22:32:53 EST
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1l4ERQ-004Msq-5n; Tue, 26 Jan 2021 03:50:52 +0100
+Date:   Tue, 26 Jan 2021 03:50:52 +0100
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <20210126025052.GA1040564@angband.pl>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warnings reported by coccicheck:
-./drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c:323:3-9: WARNING:
-NULL check before some freeing functions is not needed.
-./drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c:3554:2-8: WARNING:
-NULL check before some freeing functions is not needed.
-./drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c:157:2-7: WARNING:
-NULL check before some freeing functions is not needed.
-./drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c:525:3-9: WARNING:
-NULL check before some freeing functions is not needed.
+On Mon, Jan 25, 2021 at 11:55:11AM -0800, Scott Branden wrote:
+> The 5.10 LTS kernel being officially LTS supported for 2 years presents a problem:
+> why would anyone select a 5.10 kernel with 2 year LTS when 5.4 kernel has a 6 year LTS.
+> 
+> Yet, various unofficial reports indicate it will be supported for 6
+> years.  And AOSP has already declared the use of 5.10 kernel in their
+> Android S and T releases.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
----
- drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c     | 3 +--
- drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c    | 3 +--
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c  | 3 +--
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c | 6 ++----
- 4 files changed, 5 insertions(+), 10 deletions(-)
+5.10 will also be used for Debian Bullseye.
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
-index ce28820..12fcf84 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
-@@ -323,8 +323,7 @@ void t4_cleanup_clip_tbl(struct adapter *adap)
- 	struct clip_tbl *ctbl = adap->clipt;
- 
- 	if (ctbl) {
--		if (ctbl->cl_list)
--			kvfree(ctbl->cl_list);
-+		kvfree(ctbl->cl_list);
- 		kvfree(ctbl);
- 	}
- }
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-index 75474f8..94eb8a6 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-@@ -3554,8 +3554,7 @@ int cudbg_collect_qdesc(struct cudbg_init *pdbg_init,
- 	}
- 
- out_free:
--	if (data)
--		kvfree(data);
-+	kvfree(data);
- 
- #undef QDESC_GET_FLQ
- #undef QDESC_GET_RXQ
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-index 77648e4..dd66b24 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-@@ -157,8 +157,7 @@ static int cudbg_alloc_compress_buff(struct cudbg_init *pdbg_init)
- 
- static void cudbg_free_compress_buff(struct cudbg_init *pdbg_init)
- {
--	if (pdbg_init->compress_buff)
--		vfree(pdbg_init->compress_buff);
-+	vfree(pdbg_init->compress_buff);
- }
- 
- int cxgb4_cudbg_collect(struct adapter *adap, void *buf, u32 *buf_size,
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-index dede025..97a811f 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-@@ -525,12 +525,10 @@ struct cxgb4_tc_u32_table *cxgb4_init_tc_u32(struct adapter *adap)
- 	for (i = 0; i < t->size; i++) {
- 		struct cxgb4_link *link = &t->table[i];
- 
--		if (link->tid_map)
--			kvfree(link->tid_map);
-+		kvfree(link->tid_map);
- 	}
- 
--	if (t)
--		kvfree(t);
-+	kvfree(t);
- 
- 	return NULL;
- }
 -- 
-1.8.3.1
-
+⢀⣴⠾⠻⢶⣦⠀ .--[ Makefile ]
+⣾⠁⢠⠒⠀⣿⡁ # beware of races
+⢿⡄⠘⠷⠚⠋⠀ all: pillage burn
+⠈⠳⣄⠀⠀⠀⠀ `----
