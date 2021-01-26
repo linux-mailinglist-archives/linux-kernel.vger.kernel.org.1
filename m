@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5873303F19
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B783303F1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404958AbhAZNnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:43:49 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11446 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404851AbhAZNmz (ORCPT
+        id S2404989AbhAZNnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:43:52 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11888 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404864AbhAZNnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:42:55 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DQ7DT5z5yzjCXS;
-        Tue, 26 Jan 2021 21:41:13 +0800 (CST)
+        Tue, 26 Jan 2021 08:43:01 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DQ7DK2Mz7z7bNr;
+        Tue, 26 Jan 2021 21:41:05 +0800 (CST)
 Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
  DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 26 Jan 2021 21:42:05 +0800
+ 14.3.498.0; Tue, 26 Jan 2021 21:42:06 +0800
 From:   Yanan Wang <wangyanan55@huawei.com>
 To:     <kvmarm@lists.cs.columbia.edu>,
         <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
@@ -31,9 +31,9 @@ CC:     Mark Rutland <mark.rutland@arm.com>,
         <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
         <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
         Yanan Wang <wangyanan55@huawei.com>
-Subject: [RFC PATCH v1 1/5] arm64: cpufeature: Detect the ARMv8.4 TTRem feature
-Date:   Tue, 26 Jan 2021 21:41:58 +0800
-Message-ID: <20210126134202.381996-2-wangyanan55@huawei.com>
+Subject: [RFC PATCH v1 2/5] arm64: cpufeature: Add an API to get level of TTRem supported by hardware
+Date:   Tue, 26 Jan 2021 21:41:59 +0800
+Message-ID: <20210126134202.381996-3-wangyanan55@huawei.com>
 X-Mailer: git-send-email 2.8.4.windows.1
 In-Reply-To: <20210126134202.381996-1-wangyanan55@huawei.com>
 References: <20210126134202.381996-1-wangyanan55@huawei.com>
@@ -45,60 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ARMv8.4 TTRem feature offers 3 levels of support when changing block
-size without changing any other parameters that are listed as requiring
-use of break-before-make.
-
-With level 0 supported, software must use break-before-make to avoid the
-possible hardware problems. With level 1 supported, besides use of BBM,
-software can also make use of the nT block translation entry. With level
-2 supported, besides approaches of BBM and nT, software can also directly
-change block size, but TLB conflicts possibly occur as a result.
-
-We have found a place where TTRem can be used to improve the performance
-in guest stage-2 translation. So detact the TTRem feature here.
+The ARMv8.4 architecture offers 3 levels of support when changing
+block size without changing any other parameters that are listed
+as requiring use of break-before-make. So get the current level
+of TTRem supported by hardware and software can use corresponding
+process when changing block size.
 
 Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
 ---
- arch/arm64/include/asm/cpucaps.h |  3 ++-
- arch/arm64/kernel/cpufeature.c   | 10 ++++++++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/cpufeature.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm64/include/asm/cpucaps.h b/arch/arm64/include/asm/cpucaps.h
-index b77d997b173b..e24570ea7444 100644
---- a/arch/arm64/include/asm/cpucaps.h
-+++ b/arch/arm64/include/asm/cpucaps.h
-@@ -66,7 +66,8 @@
- #define ARM64_WORKAROUND_1508412		58
- #define ARM64_HAS_LDAPR				59
- #define ARM64_KVM_PROTECTED_MODE		60
-+#define ARM64_HAS_ARMv8_4_TTREM			61
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 9a555809b89c..f8ee7d30829b 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -50,6 +50,11 @@ enum ftr_type {
+ #define FTR_VISIBLE	true	/* Feature visible to the user space */
+ #define FTR_HIDDEN	false	/* Feature is hidden from the user */
  
--#define ARM64_NCAPS				61
-+#define ARM64_NCAPS				62
++/* Supported levels of ARMv8.4 TTRem feature */
++#define TTREM_LEVEL0	0
++#define TTREM_LEVEL1	1
++#define TTREM_LEVEL2	2
++
+ #define FTR_VISIBLE_IF_IS_ENABLED(config)		\
+ 	(IS_ENABLED(config) ? FTR_VISIBLE : FTR_HIDDEN)
  
- #endif /* __ASM_CPUCAPS_H */
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index e99eddec0a46..8295dd1d450b 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1960,6 +1960,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
- 		.sign = FTR_UNSIGNED,
- 		.min_field_value = ID_AA64ISAR0_TLB_RANGE,
- 	},
-+	{
-+		.desc = "ARMv8.4 TTRem",
-+		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-+		.capability = ARM64_HAS_ARMv8_4_TTREM,
-+		.sys_reg = SYS_ID_AA64MMFR2_EL1,
-+		.sign = FTR_UNSIGNED,
-+		.field_pos = ID_AA64MMFR2_BBM_SHIFT,
-+		.min_field_value = 1,
-+		.matches = has_cpuid_feature,
-+	},
- #ifdef CONFIG_ARM64_HW_AFDBM
- 	{
- 		/*
+@@ -739,6 +744,14 @@ static inline bool system_supports_tlb_range(void)
+ 		cpus_have_const_cap(ARM64_HAS_TLB_RANGE);
+ }
+ 
++static inline u32 system_support_level_of_ttrem(void)
++{
++	u64 mmfr2 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR2_EL1);
++
++	return cpuid_feature_extract_unsigned_field(mmfr2,
++						    ID_AA64MMFR2_BBM_SHIFT);
++}
++
+ extern int do_emulate_mrs(struct pt_regs *regs, u32 sys_reg, u32 rt);
+ 
+ static inline u32 id_aa64mmfr0_parange_to_phys_shift(int parange)
 -- 
 2.19.1
 
