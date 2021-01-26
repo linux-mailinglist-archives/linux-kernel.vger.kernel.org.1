@@ -2,92 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71099304554
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D8030454C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389184AbhAZRaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:30:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730332AbhAZHfy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728044AbhAZR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:28:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53364 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729658AbhAZHfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Jan 2021 02:35:54 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EB0C061788;
-        Mon, 25 Jan 2021 23:25:33 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id u15so116016plf.1;
-        Mon, 25 Jan 2021 23:25:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=exoaYFCYrI1Kapbl0247/VMsceScMtEx+1JSl3RbtM0=;
-        b=rC9JpwUwVKNFrvZw2yKfzrFvW2/SphbDJvjQXkWM7BpoSeXE1CEaRMIDDRAtBsg1PR
-         x16z00FnWKMVb5sEF0XLjZu1y7kk4N62RIbzT4VqDMuWaEwpw22XQiGfCUeSVEz1UsL6
-         MMM4q48fybEv8giwc8M3nuhXET09XPPhF+Ud71yvL+XmYIb9VIGm0izs7EQZPWfyTv6t
-         nAgGJHhkZdZwiU4Eoig+8HXEiLS1Fj1ozQ2e/uwyPdClid8CD7G57MKOkAaL092CcOoR
-         RIdqKplGp71unbVk3vQxIfRYlRDQCAEynPP4ALElP+jOZZ5UEW6U7nbLfknPfjnUWM5w
-         SQaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=exoaYFCYrI1Kapbl0247/VMsceScMtEx+1JSl3RbtM0=;
-        b=TJDtdeiuyett/uva6DUS7wv/JNlcMHyt9AylILhoYmkKV0vw+GXtBw1CYVgTi1xt7Q
-         NpNc71QuTfVjOjVYhzcaTXhqY8mfnQkfCcwpUBF/iE9TXdEiWUaxSu5lsO0HfcZw+nZ9
-         CdGJesUr3nv5Kwjal556yTZmugqrqLA32e1buS+D7uGDkdHmoUuwvlfd0B9Alfrwlvfe
-         Vm9hLDJJIWz0OBYhFhZ/AAYdPJIQqiUL2ZXIQPM0EBXxbzi+/lTySp27UvpXfUUg7JOw
-         J2Yw4ju3SUM2nDlKRiWoYinOfxmT58HmdkAfYRkWuNVoBf+mp29BmoyPmtb7y1l+2g9Y
-         9hbQ==
-X-Gm-Message-State: AOAM530xy2/HzvZAP8AEtFyvwIh2k/iLvCcNIRgVg4h3e0yeLTlBq2OR
-        R94BCfKxfO3lSdWvLQQTo94=
-X-Google-Smtp-Source: ABdhPJzHNj7oVxZamieAaa6afql/shnLl7aTfjCyDznI7JKvjd0X356aJu8odMDX48Ep/NKC07St4A==
-X-Received: by 2002:a17:90a:c404:: with SMTP id i4mr4756979pjt.57.1611645932777;
-        Mon, 25 Jan 2021 23:25:32 -0800 (PST)
-Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id l12sm1320256pjg.54.2021.01.25.23.25.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 23:25:32 -0800 (PST)
-From:   Fox Chen <foxhlchen@gmail.com>
-To:     corbet@lwn.net, vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de
-Cc:     Fox Chen <foxhlchen@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 06/12] docs: path-lookup: Add macro name to symlink limit description
-Date:   Tue, 26 Jan 2021 15:24:37 +0800
-Message-Id: <20210126072443.33066-7-foxhlchen@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210126072443.33066-1-foxhlchen@gmail.com>
-References: <20210126072443.33066-1-foxhlchen@gmail.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611646304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7zMRtj92K4aLVsKF/LtuTzpzMNc9rmo/TxWykS3K0E0=;
+        b=fbzVzS60+bW4/eLvVlMg8GidpFB1jBrR7hcptqrY8DOrxY95Wqr6BYjafHEM6FDX7G5i/a
+        47NUGFfcrm6l+Of7J1sWw4Lzuue/Bl54LKMg59hi6hWCs5djiniqInQ7mh6N/vOqeVmO+1
+        dcHiiymtcGUHsS6UXafRNc9p1dmXURc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3F491AE61;
+        Tue, 26 Jan 2021 07:31:44 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 08:31:42 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
+Message-ID: <20210126073142.GY827@dhcp22.suse.cz>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-9-rppt@kernel.org>
+ <20210125165451.GT827@dhcp22.suse.cz>
+ <20210125213817.GM6332@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125213817.GM6332@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add macro name MAXSYMLINKS to the symlink limit description, so
-that it is consistent with path name length description above.
+On Mon 25-01-21 23:38:17, Mike Rapoport wrote:
+> On Mon, Jan 25, 2021 at 05:54:51PM +0100, Michal Hocko wrote:
+> > On Thu 21-01-21 14:27:20, Mike Rapoport wrote:
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > 
+> > > Account memory consumed by secretmem to memcg. The accounting is updated
+> > > when the memory is actually allocated and freed.
+> > 
+> > What does this mean?
+> 
+> That means that the accounting is updated when secretmem does cma_alloc()
+> and cma_relase().
+> 
+> > What are the lifetime rules?
+> 
+> Hmm, what do you mean by lifetime rules?
 
-Signed-off-by: Fox Chen <foxhlchen@gmail.com>
----
- Documentation/filesystems/path-lookup.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+OK, so let's start by reservation time (mmap time right?) then the
+instantiation time (faulting in memory). What if the calling process of
+the former has a different memcg context than the later. E.g. when you
+send your fd or inherited fd over fork will move to a different memcg.
 
-diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
-index bc450e0864d6..25d2a5a59f45 100644
---- a/Documentation/filesystems/path-lookup.rst
-+++ b/Documentation/filesystems/path-lookup.rst
-@@ -994,8 +994,8 @@ is 4096.  There are a number of reasons for this limit; not letting the
- kernel spend too much time on just one path is one of them.  With
- symbolic links you can effectively generate much longer paths so some
- sort of limit is needed for the same reason.  Linux imposes a limit of
--at most 40 symlinks in any one path lookup.  It previously imposed a
--further limit of eight on the maximum depth of recursion, but that was
-+at most 40 (MAXSYMLINKS) symlinks in any one path lookup.  It previously imposed
-+a further limit of eight on the maximum depth of recursion, but that was
- raised to 40 when a separate stack was implemented, so there is now
- just the one limit.
- 
+What about freeing path? E.g. when you punch a hole in the middle of
+a mapping?
+
+Please make sure to document all this.
+
+> > [...]
+> > 
+> > > +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
+> > > +{
+> > > +	int err;
+> > > +
+> > > +	err = memcg_kmem_charge_page(page, gfp, order);
+> > > +	if (err)
+> > > +		return err;
+> > > +
+> > > +	/*
+> > > +	 * seceremem caches are unreclaimable kernel allocations, so treat
+> > > +	 * them as unreclaimable slab memory for VM statistics purposes
+> > > +	 */
+> > > +	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
+> > > +			      PAGE_SIZE << order);
+> > 
+> > A lot of memcg accounted memory is not reclaimable. Why do you abuse
+> > SLAB counter when this is not a slab owned memory? Why do you use the
+> > kmem accounting API when __GFP_ACCOUNT should give you the same without
+> > this details?
+> 
+> I cannot use __GFP_ACCOUNT because cma_alloc() does not use gfp.
+
+Other people are working on this to change. But OK, I do see that this
+can be done later but it looks rather awkward.
+
+> Besides, kmem accounting with __GFP_ACCOUNT does not seem
+> to update stats and there was an explicit request for statistics:
+>  
+> https://lore.kernel.org/lkml/CALo0P13aq3GsONnZrksZNU9RtfhMsZXGWhK1n=xYJWQizCd4Zw@mail.gmail.com/
+
+charging and stats are two different things. You can still take care of
+your stats without explicitly using the charging API. But this is a mere
+detail. It just hit my eyes.
+
+> As for (ab)using NR_SLAB_UNRECLAIMABLE_B, as it was already discussed here:
+> 
+> https://lore.kernel.org/lkml/20201129172625.GD557259@kernel.org/
+
+Those arguments should be a part of the changelof.
+
+> I think that a dedicated stats counter would be too much at the moment and
+> NR_SLAB_UNRECLAIMABLE_B is the only explicit stat for unreclaimable memory.
+
+Why do you think it would be too much? If the secret memory becomes a
+prevalent memory user because it will happen to back the whole virtual
+machine then hiding it into any existing counter would be less than
+useful.
+
+Please note that this all is a user visible stuff that will become PITA
+(if possible) to change later on. You should really have strong
+arguments in your justification here.
 -- 
-2.30.0
-
+Michal Hocko
+SUSE Labs
