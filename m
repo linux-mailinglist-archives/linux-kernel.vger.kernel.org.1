@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97AA6304E28
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82AB304E2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390073AbhA0AOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:14:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730236AbhAZRFM (ORCPT
+        id S2403885AbhA0ARb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:17:31 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60000 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731183AbhAZRF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:05:12 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DBCC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:00:09 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id h192so19240108oib.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:00:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EU+WTGu8bUI816wzRP2V2ST2vW8X+ERkOSMJ6GfAu7A=;
-        b=pEMdUe1I+pz92rcVj3qrndpwiny2nUbbUT9WmvMR83b2whOeAhucNsaDELoIn2Dbro
-         mPMtW1FeXb4aVdCgOLPc7KjI+XzgWFeNH3OU8VPiLPY4ZW5gxxYoyabLZ9XDsOmRcmwT
-         AV2BlJrF5okewJUrUxknlRfEOTFBf0S2vq0VWvCzP7R4B3dFPgD2YlR6uiwlUBSGSl0J
-         IUVj7S1vpZXFNyHS5CoyHU9R99ATSz0I7YDNuJHq9hqQwfoAXgUSj+p2NI7w0De4efON
-         xTNCuo1oxoGemSpTOy0YbAl1i+90Q4G0Tu9UYQqF1spkrrPQQDdM8Mz04lLlbamV08Ba
-         m2Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EU+WTGu8bUI816wzRP2V2ST2vW8X+ERkOSMJ6GfAu7A=;
-        b=foD/1obwhe1vVF9nU8KHLTpfZPECWLUHQX3914+JjKn897WITCWu9bZGZo6dbCKWEo
-         YbddvldJxMI5r+NadgLCLQtmm/hgyo84pFqM/QKrkPjUDIMf2HCQACJuH+Qx/GgDAF3b
-         Ph7d7JoN+hXClXy6fgUgaq53bzXuE+T2x8A1cwIfXW0l6cVU8rKAhqrBuWUSpLHnfH48
-         eq1w7w3BWe+U2CqP6noX7//ELMUpgr47JTsaRXF1TSGTL3qFuOCTWWYhXLh/jbTB9oIf
-         e5tXV23badCXBeai6Whx4N8uxJ6lVswK0T8P8Ir2NSXSfQXJXANyW591rr75NiptailB
-         BCCg==
-X-Gm-Message-State: AOAM5334IHPp0qiEBnw3dzYqGGBdB1hapjaguolYBL1FxvqbgYusk4t/
-        9nHYO2fbC0MHVPK4gVaw21wQreQgjOwklQ==
-X-Google-Smtp-Source: ABdhPJzJ9rDz6FYhds6jaMVjB00+YT+kXxwNhRowzyxERbBRdSPVyHiBFunvQyxwQf01zmcyTS2XkQ==
-X-Received: by 2002:aca:d481:: with SMTP id l123mr360474oig.155.1611680408337;
-        Tue, 26 Jan 2021 09:00:08 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j8sm4236852oie.47.2021.01.26.09.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 09:00:07 -0800 (PST)
-Date:   Tue, 26 Jan 2021 11:00:05 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>
-Subject: Re: Preemptible idr_alloc() in QRTR code
-Message-ID: <YBBKla3I2TxMFIvZ@builder.lan>
-References: <20210126104734.GB80448@C02TD0UTHF1T.local>
- <20210126145833.GM308988@casper.infradead.org>
- <20210126162154.GD80448@C02TD0UTHF1T.local>
+        Tue, 26 Jan 2021 12:05:26 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10QH2lnF142817;
+        Tue, 26 Jan 2021 12:04:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=lQXCXlAY16ryEQoXpRWuEDcQKmEETRmymadtYc+qZrs=;
+ b=C/KlOrKJtLTy6EcLuJ1+SlqtkB2GgV4SdHTI+0+d6Ax8GqTIFBd9js3oxdPMhzQdpcUA
+ F5qQX5Y1Ir70lyLAhpNp39KlbF92nAdJhvZuSJL/ZcXGFLkqS4uEM/DKY6U6kiXSy+X5
+ UXdjGA48LmloJNB1UYe2OeAm7h3n9OUCe/1tWagCKOGtnTCfLjYWIU0T4j3wonZxh24Q
+ UwT/VwEZ4uRQ98pkYrHGzT2Nrg3LIyFQP4YnSEfkFfwUELaCkUQP3dRD60S4fj2L9c3p
+ 0wePGH5w2ZTvPhYP+gum/UKIdvaSckD5MorqJFwxsW+2yufBbeZHSY+/Ny6CvMJA67ro 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36apuf8h6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 12:04:06 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10QH3Oar146027;
+        Tue, 26 Jan 2021 12:04:05 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36apuf8h5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 12:04:05 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10QGvucH010073;
+        Tue, 26 Jan 2021 17:04:05 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma01wdc.us.ibm.com with ESMTP id 36a8uh4qy2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 17:04:05 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10QH42Ei31064556
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Jan 2021 17:04:02 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21FA4124058;
+        Tue, 26 Jan 2021 17:04:02 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 128E9124052;
+        Tue, 26 Jan 2021 17:04:02 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 26 Jan 2021 17:04:01 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     dhowells@redhat.com, keyrings@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH 0/3] Add support for x509 certs with NIST p256 and p192 keys
+Date:   Tue, 26 Jan 2021 12:03:56 -0500
+Message-Id: <20210126170359.363969-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126162154.GD80448@C02TD0UTHF1T.local>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-26_09:2021-01-26,2021-01-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101260086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26 Jan 10:21 CST 2021, Mark Rutland wrote:
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-> On Tue, Jan 26, 2021 at 02:58:33PM +0000, Matthew Wilcox wrote:
-> > On Tue, Jan 26, 2021 at 10:47:34AM +0000, Mark Rutland wrote:
-> > > Hi,
-> > > 
-> > > When fuzzing arm64 with Syzkaller, I'm seeing some splats where
-> > > this_cpu_ptr() is used in the bowels of idr_alloc(), by way of
-> > > radix_tree_node_alloc(), in a preemptible context:
-> > 
-> > I sent a patch to fix this last June.  The maintainer seems to be
-> > under the impression that I care an awful lot more about their
-> > code than I do.
-> > 
-> > https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
-> 
-> Ah; I hadn't spotted the (glaringly obvious) GFP_ATOMIC abuse, thanks
-> for the pointer, and sorry for the noise.
-> 
+This series of patches adds support for x509 certificates signed by a CA
+that uses NIST p256 or p192 keys for signing. It also adds support for
+certificates where the public key is a NIST p256 or p192 key. The math
+for ECDSA signature verification is also added.
 
-I'm afraid this isn't as obvious to me as it is to you. Are you saying
-that one must not use GFP_ATOMIC in non-atomic contexts?
+Since self-signed certificates are verified upon loading, the following
+script can be used for testing:
+
+keyctrl newring test @u
+
+while :; do
+	for hash in sha1 sha224 sha256 sha384 sha512; do
+		openssl req \
+			-x509 \
+			-${hash} \
+			-newkey ec \
+			-pkeyopt ec_paramgen_curve:prime256v1 \
+			-keyout key.pem \
+			-days 365 \
+			-subj '/CN=test' \
+			-nodes \
+			-outform der \
+			-out cert.der
+		keyctl padd asymmetric testkey %keyring:test < cert.der
+		if [ $? -ne 0 ]; then
+			echo "ERROR"
+			exit 1
+		fi
+	done
+done
+
+It also works with restricted keyrings where an RSA key is used to sign
+a NIST P256/P192 key:
 
 
-That said, glancing at the code I'm puzzled to why it would use
-GFP_ATOMIC.
 
-> It looks like Eric was after a fix that trivially backported to v4.7
-> (and hence couldn't rely on xarray) but instead it just got left broken
-> for months. :/
-> 
-> Bjorn, is this something you care about? You seem to have the most
-> commits to the file, and otherwise the official maintainer is Dave
-> Miller per get_maintainer.pl.
-> 
+The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+file signatures stored in RPM packages will use substantially less space
+than if RSA signatures were to be used.
 
-I certainly care about qrtr working and remember glancing at Matthew's
-patch, but seems like I never found time to properly review it.
+   Stefan
 
-> It is very tempting to make the config option depend on BROKEN...
-> 
+Stefan Berger (3):
+  x509: Add support for parsing x509 certs with NIST p256 keys
+  x509: Add support for NIST p192 keys in certificates and akcipher
+  x509: Detect sm2 keys by their parameters OID
 
-I hear you and that would be bad, so I'll make sure to take a proper
-look at this and Matthew's patch.
+ crypto/Makefile                           |   9 +-
+ crypto/asymmetric_keys/public_key.c       |  19 ++
+ crypto/asymmetric_keys/x509_cert_parser.c |  45 ++-
+ crypto/ecc.c                              | 331 ++++++++++++++++++++++
+ crypto/ecc.h                              |   2 +
+ crypto/ecc_curve_defs.h                   |   4 +
+ crypto/eccsignature.asn1                  |   4 +
+ include/linux/oid_registry.h              |   6 +
+ 8 files changed, 417 insertions(+), 3 deletions(-)
+ create mode 100644 crypto/eccsignature.asn1
 
-Thanks,
-Bjorn
+-- 
+2.25.4
+
