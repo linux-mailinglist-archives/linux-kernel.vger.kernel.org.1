@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36331303BE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE9D303BDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405319AbhAZLmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:42:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404229AbhAZLAV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:00:21 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC28C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:59:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=zxNMCtXliQ1UV7PXH/s1fAYCtYOC1OUZ5jx5WwFzVj4=; b=rnHi2H7Klf6UwcFvsAH0iDxVd
-        CKnMn/0ZlVsH8q+a7O9XUlwNqDr3ylIx9M1KWtDK46OcJZPvviWAho9kUnAtD7vnnvlIsNg3Wa2ZH
-        PufiuchMWzjBtv92avIpkJKoNj9guDwjvmGgv8Yex5SJZo2rZImQZcqTgwFI0Scg/opMWYQf1e0lu
-        2COOKEH0vuv5ZUQoJty1SlKg5PfnAit72lB/fEyds2o/IwvhFMJiWmWNuUDusg0wAQTqNUmcqeRIh
-        TjuwVdTRNu2ggFJr+vzHuVYDdYY4AurCizQ00aCD8+X0+EqEIAyBAFJtV81sx4G9fYeIh6oXBkLSb
-        Fvs8fS1PQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52926)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l4M4P-0004Ig-0X; Tue, 26 Jan 2021 10:59:37 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l4M4K-0003jk-UC; Tue, 26 Jan 2021 10:59:32 +0000
-Date:   Tue, 26 Jan 2021 10:59:32 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     akpm@linux-foundation.org, bigeasy@linutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        marc.zyngier@arm.com, peterx@redhat.com, rppt@kernel.org,
-        walken@google.com, yj.chiang@mediatek.com
-Subject: Re: [PATCH] ARM: mm: harden branch predictor before opening
- interrupts during fault
-Message-ID: <20210126105932.GG1551@shell.armlinux.org.uk>
-References: <20201203092738.11866-1-lecopzer.chen@mediatek.com>
- <20210126091708.3461-1-lecopzer.chen@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126091708.3461-1-lecopzer.chen@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        id S2405302AbhAZLlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:41:19 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:56880 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404476AbhAZKwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:52:44 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BFE251A0678;
+        Tue, 26 Jan 2021 11:51:55 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B0CEB1A0392;
+        Tue, 26 Jan 2021 11:51:51 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 36509402A2;
+        Tue, 26 Jan 2021 11:51:46 +0100 (CET)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     mark.rutland@arm.com, leoyang.li@nxp.com, tglx@linutronix.de,
+        jason@lakedaemon.net, maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, ran.wang_1@nxp.com,
+        Biwen Li <biwen.li@nxp.com>
+Subject: [PATCH] irqchip: ls-extirq: add flag IRQCHIP_SKIP_SET_WAKE to remove call trace
+Date:   Tue, 26 Jan 2021 19:00:27 +0800
+Message-Id: <20210126110027.39689-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 05:17:08PM +0800, Lecopzer Chen wrote:
-> Hi all,
-> 
-> I don't see any fix for this issue now(maybe I missed it..?),
-> could we fix this if there is better solution?
-> This issue exists almost two years.
+From: Biwen Li <biwen.li@nxp.com>
 
-I don't think anyone provided an acceptable patch.
+Add flag IRQCHIP_SKIP_SET_WAKE to remove call trace as follow,
+[   45.605239] Unbalanced IRQ 120 wake disable
+[   45.609445] WARNING: CPU: 0 PID: 1124 at kernel/irq/manage.c:800 irq_set_irq_wake+0x154/0x1a0
+[   45.617965] Modules linked in: fsl_jr_uio caam_jr caamkeyblob_desc crypto_engine rng_core dpaa2_caam caamhash_desc caamalg_desc crct10dif_ce libdes caam error lm90 ina2xx
+[   45.633222] CPU: 0 PID: 1124 Comm: sh Not tainted 5.10.9 #1
+[   45.638789] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+[   45.645141] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
+[   45.651144] pc : irq_set_irq_wake+0x154/0x1a0
+[   45.655497] lr : irq_set_irq_wake+0x154/0x1a0
+[   45.659847] sp : ffff800012a83b00
+[   45.663156] x29: ffff800012a83b00 x28: 0000000000000000
+[   45.668469] x27: 0000000000000008 x26: ffffa74bd9d22cf0
+[   45.673781] x25: 0000000a5a1768a7 x24: ffffa74bda672e6c
+[   45.679092] x23: 0000000000000000 x22: ffff62f7f2a08000
+[   45.684404] x21: 00000000ffffffea x20: 0000000000000078
+[   45.689715] x19: ffff62f7f00b3e00 x18: 0000000000000030
+[   45.695026] x17: 0000000000000000 x16: 0000000000000001
+[   45.700337] x15: ffff62f7f2a08460 x14: ffffffffffffffff
+[   45.705648] x13: ffffa74bda6733f8 x12: 000000000000080d
+[   45.710959] x11: 00000000000002af x10: ffffa74bda6cb3f8
+[   45.716270] x9 : 00000000fffff000 x8 : ffffa74bda6733f8
+[   45.721581] x7 : ffffa74bda6cb3f8 x6 : 0000000000000000
+[   45.726892] x5 : 0000000000000000 x4 : 0000000000000000
+[   45.732203] x3 : 00000000ffffffff x2 : ffffa74bda673378
+[   45.737514] x1 : f27fea81bfee7700 x0 : 0000000000000000
+[   45.742825] Call trace:
+[   45.745268]  irq_set_irq_wake+0x154/0x1a0
+[   45.749278]  ds3232_resume+0x38/0x50
+[   45.752853]  dpm_run_callback.constprop.0+0x3c/0xe4
+[   45.757727]  device_resume+0x88/0x180
+[   45.761385]  dpm_resume+0xe8/0x220
+[   45.764782]  dpm_resume_end+0x18/0x30
+[   45.768447]  suspend_devices_and_enter+0x1a4/0x5a0
+[   45.773235]  pm_suspend+0x2e0/0x34c
+[   45.776720]  state_store+0x8c/0x110
+[   45.780205]  kobj_attr_store+0x1c/0x30
+[   45.783955]  sysfs_kf_write+0x48/0x60
+[   45.787613]  kernfs_fop_write+0xfc/0x220
+[   45.791539]  vfs_write+0xf0/0x2a4
+[   45.794849]  ksys_write+0x6c/0x100
+[   45.798248]  __arm64_sys_write+0x20/0x30
+[   45.802173]  el0_svc_common.constprop.0+0x78/0x1a0
+[   45.806960]  do_el0_svc+0x24/0x90
+[   45.810271]  el0_svc+0x14/0x20
+[   45.813320]  el0_sync_handler+0x1a4/0x1b0
+[   45.817326]  el0_sync+0x174/0x180
+[   45.820635] ---[ end trace ae76f63f1f1791a1 ]---
 
-The first patch moved the hardening out of the translation/section
-fault handling. Since the kernel is mapped with sections, these
-are above TASK_SIZE, and the whole point of the branch prediction
-hardening is to prevent the prediction in the kernel being exploited,
-missing the hardening effectively makes the mitigation useless.
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+ drivers/irqchip/irq-ls-extirq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The discussion in February 2019 never concluded from what I can see.
-
+diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
+index 564e6de0bd8e..3c6ed7b4744d 100644
+--- a/drivers/irqchip/irq-ls-extirq.c
++++ b/drivers/irqchip/irq-ls-extirq.c
+@@ -65,7 +65,7 @@ static struct irq_chip ls_extirq_chip = {
+ 	.irq_set_type		= ls_extirq_set_type,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+-	.flags                  = IRQCHIP_SET_TYPE_MASKED,
++	.flags                  = IRQCHIP_SET_TYPE_MASKED | IRQCHIP_SKIP_SET_WAKE,
+ };
+ 
+ static int
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
