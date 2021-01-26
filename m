@@ -2,124 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CB4303A2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8148C303A22
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404041AbhAZKZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:25:26 -0500
-Received: from mga06.intel.com ([134.134.136.31]:10854 "EHLO mga06.intel.com"
+        id S2391922AbhAZKXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:23:34 -0500
+Received: from mga05.intel.com ([192.55.52.43]:51468 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726705AbhAZB3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:29:48 -0500
-IronPort-SDR: 1QTFv+R7FBFqXBzBTm4rZLDFSor4822j9ERpl0WIhdWGzhl4mrhd/UoUGcWDaVpkvzEwocG60/
- VPGtZIiUF1ig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="241357462"
+        id S1731288AbhAZB1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:27:16 -0500
+IronPort-SDR: 6yEHJpy6doNSua178IKj6l7OW37hamGSPfKiwhHQeYxS5nTz3ejTQZAyjnofq1oxVUdOFd2KKc
+ Sy8s+JuTJNTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="264650530"
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="241357462"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:41:30 -0800
-IronPort-SDR: Vl5O5lRyuX+4dPcq04mBs0y4dhKi+CBikSSu35wxdEQDo6WnKFzvdlF4f87Lz8ePxEZM9DObEv
- PcCH+93JCJTw==
+   d="scan'208";a="264650530"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:41:33 -0800
+IronPort-SDR: dbJq1qH5Z1fdAfEVME5ZBbW8Wwg/P8yL4tmPp6pkvnSzAqHZNGjAfed4QTeksfGw93a5tTZN69
+ LPwzuG6C3+GA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="393571480"
+   d="scan'208";a="573875709"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga007.jf.intel.com with ESMTP; 25 Jan 2021 16:41:30 -0800
-Subject: [RFC][PATCH 00/13] [v5] Migrate Pages in lieu of discard
+  by fmsmga006.fm.intel.com with ESMTP; 25 Jan 2021 16:41:32 -0800
+Subject: [RFC][PATCH 01/13] mm/vmscan: restore zone_reclaim_mode ABI
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        yang.shi@linux.alibaba.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
-        osalvador@suse.de
+        ben.widawsky@intel.com, rientjes@google.com, cl@linux.com,
+        alex.shi@linux.alibaba.com, dwagner@suse.de, tobin@kernel.org,
+        akpm@linux-foundation.org, ying.huang@intel.com,
+        dan.j.williams@intel.com, cai@lca.pw, osalvador@suse.de,
+        stable@vger.kernel.org
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Mon, 25 Jan 2021 16:34:11 -0800
-Message-Id: <20210126003411.2AC51464@viggo.jf.intel.com>
+Date:   Mon, 25 Jan 2021 16:34:13 -0800
+References: <20210126003411.2AC51464@viggo.jf.intel.com>
+In-Reply-To: <20210126003411.2AC51464@viggo.jf.intel.com>
+Message-Id: <20210126003412.59594AA9@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-The full series is also available here:
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-	https://github.com/hansendc/linux/tree/automigrate-20210122
+I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
+sysctl.  Like a good kernel developer, I also went to go update the
+documentation.  I noticed that the bits in the documentation didn't
+match the bits in the #defines.
 
-The meat of this patch is in:
+The VM never explicitly checks the RECLAIM_ZONE bit.  The bit is,
+however implicitly checked when checking 'node_reclaim_mode==0'.
+The RECLAIM_ZONE #define was removed in a cleanup.  That, by itself
+is fine.
 
-	[PATCH 08/13] mm/migrate: demote pages during reclaim
+But, when the bit was removed (bit 0) the _other_ bit locations also
+got changed.  That's not OK because the bit values are documented to
+mean one specific thing and users surely rely on them meaning that one
+thing and not changing from kernel to kernel.  The end result is that
+if someone had a script that did:
 
-Which also has the most changes since the last post.  This version is
-mostly to address review comments from Yang Shi and Oscar Salvador.
-Review comments are documented in the individual patch changelogs.
+	sysctl vm.zone_reclaim_mode=1
 
-This also contains a few prerequisite patches that fix up an issue
-with the vm.zone_reclaim_mode sysctl ABI.
+This script would have gone from enalbing node reclaim for clean
+unmapped pages to writing out pages during node reclaim after the
+commit in question.  That's not great.
 
---
+Put the bits back the way they were and add a comment so something
+like this is a bit harder to do again.  Update the documentation to
+make it clear that the first bit is ignored.
 
-We're starting to see systems with more and more kinds of memory such
-as Intel's implementation of persistent memory.
-
-Let's say you have a system with some DRAM and some persistent memory.
-Today, once DRAM fills up, reclaim will start and some of the DRAM
-contents will be thrown out.  Allocations will, at some point, start
-falling over to the slower persistent memory.
-
-That has two nasty properties.  First, the newer allocations can end
-up in the slower persistent memory.  Second, reclaimed data in DRAM
-are just discarded even if there are gobs of space in persistent
-memory that could be used.
-
-This set implements a solution to these problems.  At the end of the
-reclaim process in shrink_page_list() just before the last page
-refcount is dropped, the page is migrated to persistent memory instead
-of being dropped.
-
-While I've talked about a DRAM/PMEM pairing, this approach would
-function in any environment where memory tiers exist.
-
-This is not perfect.  It "strands" pages in slower memory and never
-brings them back to fast DRAM.  Other things need to be built to
-promote hot pages back to DRAM.
-
-This is also all based on an upstream mechanism that allows
-persistent memory to be onlined and used as if it were volatile:
-
-	http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
-
-== Open Issues ==
-
- * For cpusets and memory policies that restrict allocations
-   to PMEM, is it OK to demote to PMEM?  Do we need a cgroup-
-   level API to opt-in or opt-out of these migrations?
-
---
-
-Changes since (automigrate-20200818):
- * Fall back to normal reclaim when demotion fails
- * Fix some compile issues, when page migration and NUMA are off
-
-Changes since (automigrate-20201007):
- * separate out checks for "can scan anon LRU" from "can actually
-   swap anon pages right now".  Previous series conflated them
-   and may have been overly aggressive scanning LRU
- * add MR_DEMOTION to tracepoint header
- * remove unnecessary hugetlb page check
-
-Changes since (https://lwn.net/Articles/824830/):
- * Use higher-level migrate_pages() API approach from Yang Shi's
-   earlier patches.
- * made sure to actually check node_reclaim_mode's new bit
- * disabled migration entirely before introducing RECLAIM_MIGRATE
- * Replace GFP_NOWAIT with explicit __GFP_KSWAPD_RECLAIM and
-   comment why we want that.
- * Comment on effects of that keep multiple source nodes from
-   sharing target nodes
-
-Cc: Yang Shi <yang.shi@linux.alibaba.com>
-Cc: David Rientjes <rientjes@google.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Fixes: 648b5cf368e0 ("mm/vmscan: remove unused RECLAIM_OFF/RECLAIM_ZONE")
+Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Christoph Lameter <cl@linux.com>
+Cc: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Daniel Wagner <dwagner@suse.de>
+Cc: "Tobin C. Harding" <tobin@kernel.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Huang Ying <ying.huang@intel.com>
 Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Daniel Wagner <dwagner@suse.de>
 Cc: osalvador <osalvador@suse.de>
-Cc: Huang Ying <ying.huang@intel.com>
+Cc: stable@vger.kernel.org
 
+--
+
+Changes from v2:
+ * Update description to indicate that bit0 was used for clean
+   unmapped page node reclaim.
+---
+
+ b/Documentation/admin-guide/sysctl/vm.rst |   10 +++++-----
+ b/mm/vmscan.c                             |    9 +++++++--
+ 2 files changed, 12 insertions(+), 7 deletions(-)
+
+diff -puN Documentation/admin-guide/sysctl/vm.rst~mm-vmscan-restore-old-zone_reclaim_mode-abi Documentation/admin-guide/sysctl/vm.rst
+--- a/Documentation/admin-guide/sysctl/vm.rst~mm-vmscan-restore-old-zone_reclaim_mode-abi	2021-01-25 16:23:06.048866718 -0800
++++ b/Documentation/admin-guide/sysctl/vm.rst	2021-01-25 16:23:06.056866718 -0800
+@@ -978,11 +978,11 @@ that benefit from having their data cach
+ left disabled as the caching effect is likely to be more important than
+ data locality.
+ 
+-zone_reclaim may be enabled if it's known that the workload is partitioned
+-such that each partition fits within a NUMA node and that accessing remote
+-memory would cause a measurable performance reduction.  The page allocator
+-will then reclaim easily reusable pages (those page cache pages that are
+-currently not used) before allocating off node pages.
++Consider enabling one or more zone_reclaim mode bits if it's known that the
++workload is partitioned such that each partition fits within a NUMA node
++and that accessing remote memory would cause a measurable performance
++reduction.  The page allocator will take additional actions before
++allocating off node pages.
+ 
+ Allowing zone reclaim to write out pages stops processes that are
+ writing large amounts of data from dirtying pages on other nodes. Zone
+diff -puN mm/vmscan.c~mm-vmscan-restore-old-zone_reclaim_mode-abi mm/vmscan.c
+--- a/mm/vmscan.c~mm-vmscan-restore-old-zone_reclaim_mode-abi	2021-01-25 16:23:06.052866718 -0800
++++ b/mm/vmscan.c	2021-01-25 16:23:06.057866718 -0800
+@@ -4086,8 +4086,13 @@ module_init(kswapd_init)
+  */
+ int node_reclaim_mode __read_mostly;
+ 
+-#define RECLAIM_WRITE (1<<0)	/* Writeout pages during reclaim */
+-#define RECLAIM_UNMAP (1<<1)	/* Unmap pages during reclaim */
++/*
++ * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
++ * ABI.  New bits are OK, but existing bits can never change.
++ */
++#define RECLAIM_ZONE  (1<<0)   /* Run shrink_inactive_list on the zone */
++#define RECLAIM_WRITE (1<<1)   /* Writeout pages during reclaim */
++#define RECLAIM_UNMAP (1<<2)   /* Unmap pages during reclaim */
+ 
+ /*
+  * Priority for NODE_RECLAIM. This determines the fraction of pages
+_
