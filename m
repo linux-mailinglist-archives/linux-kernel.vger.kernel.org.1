@@ -2,378 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2D4304F9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAB1304F9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235294AbhA0DQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:16:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37958 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729840AbhAZUSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:18:33 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 80077AC97;
-        Tue, 26 Jan 2021 20:17:50 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 21:17:46 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
-        jing2.liu@intel.com, ravi.v.shankar@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 07/21] x86/fpu/xstate: Introduce helpers to manage
- dynamic xstate buffers
-Message-ID: <20210126201746.GB9662@zn.tnic>
-References: <20201223155717.19556-1-chang.seok.bae@intel.com>
- <20201223155717.19556-8-chang.seok.bae@intel.com>
-MIME-Version: 1.0
+        id S235308AbhA0DQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:16:35 -0500
+Received: from mail-bn8nam11on2074.outbound.protection.outlook.com ([40.107.236.74]:51232
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727837AbhAZUUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 15:20:50 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WX+splqaf7N/mjkmNLOHvgfJzYLBncaZybPi/WjDdqfImox2Mp126Qqm0NFy5YDjrkulqK0+HOffwxX2KD0uTu8nQStQ6Y/pUpyu5joS+0Nl9PhYGJxQ5CsZG+UtYa8z3G4+8hJrWvl3BN6anKeWLWWe9Fw6orMD860+NUl2o4tHOO7hGBehXzIsJzoNv6uuNtUbfd/5Y1ywGuB0ALegrglCb3kbILB9SKTTbGuTpeMo/O/1CN1GhH7DlJoCZeznH1kNP4ggGQuhj9zTWpwOzPqfVdhMp4o4LIrKvh1ZdCRUaruVAg6mboYuUWp7ia0mqsz7LpEZoEDchbai1KCs6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=66GLq7k059h5QtMfUxDpH8yIm5w3aCtEK4BKvCvB6OQ=;
+ b=T7zfjDnLy849qvm8/fA+tDdkOYI94mayV9wlGcNdEUeQWCR1t7udQAdgklIFXzTEwB5yFbmAV/7Wwml0xRo3PEge/AGCbVLu+6JkzfXRfYip6DtTtKM9L8EHiG6SMUVG2MBbQ47ySuFEEOPK3fHn5pAP8v5FQb+oj2xkqq8jTTgKm6Dh1YRgA66ErDEtxRwub00PRqK8IPTcFp3Ysnxa8uywmVkorz6jpZ8sMYORkpJFkT5kGcpr94m/2KU7Q27R98n1QmL0L1w0bj3eJm9VguvnlvNVaW3YJXFgdDh3Kzk8MpDH+g+nIxS8PZZvB/Fuh0gRXI0ONDRbJKZVXIHAew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=66GLq7k059h5QtMfUxDpH8yIm5w3aCtEK4BKvCvB6OQ=;
+ b=AsevXr+kF+FSJ+EFi0NqmIbNQW4tGRkLakh4dnXM45Tq/xIkuhqSv0u9l3Ge9qP/qLnUTM63SHV1ogFHnhlCfZM+KxINrUJlzm6iWlJv6t288cAeq5ZmqUvSeADDpdBZlLBduALBCWq0ZNbRJx94czKw4qKbZrJ0J9KO7tHCnhY=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3273.namprd12.prod.outlook.com (2603:10b6:5:188::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.11; Tue, 26 Jan 2021 20:19:56 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::cc15:4b1f:9f84:6914]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::cc15:4b1f:9f84:6914%4]) with mapi id 15.20.3784.019; Tue, 26 Jan 2021
+ 20:19:55 +0000
+Subject: Re: [PATCH] Fix unsynchronized access to sev members through
+ svm_register_enc_region
+To:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210126185431.1824530-1-pgonda@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <6407cdf6-5dc7-96c0-343b-d2c0e1d7aaa4@amd.com>
+Date:   Tue, 26 Jan 2021 14:19:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210126185431.1824530-1-pgonda@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201223155717.19556-8-chang.seok.bae@intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA9PR13CA0039.namprd13.prod.outlook.com
+ (2603:10b6:806:22::14) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by SA9PR13CA0039.namprd13.prod.outlook.com (2603:10b6:806:22::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.6 via Frontend Transport; Tue, 26 Jan 2021 20:19:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1473cb33-ca7e-4e79-39f4-08d8c237bee5
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3273:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3273EDB713C8D25938390E1BECBC9@DM6PR12MB3273.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GN3UlpHklIeogfM3KWm3CFczVxvGA/dR4mdfembGcKWZNjhzcg2JVt51vkd9unPGsTuykkWjlMr9QcVOYGDZBnrmIOs1Z9pDltISPX5Fjm0vPjTFlsX0LZLWqCQ53+V0pyKYlxuLArjOLDzO4KjdkSr8G/1Prix3tdVGagCDiKZJQO0tChmSIqdKByUY+/3splkljqWomZnn1T78/rbAZAREwlYJ09Hby/8EkuFpcP7EBorbBfXEQamRoY9OOZfDUR3raRm9V++0iCUETbUCQDGq+xeEoAexm79lnmW5lHtimDD2tHy5KsRCrHi4kSiRKxycIbOU+CuV5UhhykutBjwQ/Glr5VLq5zNuuU2w9Ic9/EnXAYZeDiutt1mkaLrHRcN9VSIo9mlPUm2qZQ9jB98d9gTGp5RBZLoNFGW/336ubgJmVMCq6G9lFr089dYKw6elKPE9nfebWE2WB3FfWdBTihEylp39ZcR1PJd5Wjg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(39860400002)(396003)(346002)(186003)(16526019)(2906002)(66946007)(66476007)(26005)(5660300002)(8936002)(16576012)(54906003)(66556008)(316002)(8676002)(31696002)(31686004)(7416002)(36756003)(956004)(52116002)(83380400001)(53546011)(86362001)(478600001)(6486002)(2616005)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VkFwbThCeFlObFdZN3NzVVV3anMvcjhKQUJ2dFFoQXVlcnpZTEpWYUV5K1lY?=
+ =?utf-8?B?KzhNZ3pmNXVpUmZ5cGlyMVVnTndxMVEwNmU1TndFdVp6YVR0U2prbStUVFE4?=
+ =?utf-8?B?ZTZlS3FIQTNtL3JvUGo5aWtyZ2NkVVlkelhrNG5BZkYwaFJlMkNJS1EvMytO?=
+ =?utf-8?B?M3NyWWMwTHJVVE52dE5lMXRsZUtzOFZVWmIrQTRTTkcvaVVLR0hYbnVmMUFu?=
+ =?utf-8?B?bng2TVRhRkRqeURkNFhzRmtrNlY1eUlBRzdGNStCNHhRZUoreGRRdVRIWnFn?=
+ =?utf-8?B?bVQyNWxjS3htRkh5RXV1eHQ5eEhrWDkyN1BFMXd1Qk9QMnJVZVhqQXZpZHNT?=
+ =?utf-8?B?dEFST2J6MUYrZ0pXU3N4TGRVN2V6YjlzSFJpakhkL1JFWFNNRkMwMHp1YlJu?=
+ =?utf-8?B?NUVvUWlOemQwUWl1NWl6ZHpXQm9kcUYwQldOdjhSRXlndU1JZXdKdWJqcFFU?=
+ =?utf-8?B?S24zVUd0TlNmSytaVVY5RzFjMVYvNDlJaHlHbGhFRnJUcm1UMFlNcVBWWWR4?=
+ =?utf-8?B?QVNtN2Jrcy8rMDl4Z2o1WGYvOFBEUUQyY2NIZGhVbjIvSXIrSG14MXhpQ25G?=
+ =?utf-8?B?OFd1N2hwdzlBakhOeUZDbGdmeXpZMHBabzZUZjFteEZKRlc2dklETGdHbkxP?=
+ =?utf-8?B?czhnNHE2U3N1enhVU09ITkpsZGhUVEhYWHliZCt6WDB0VlRvcE9IU1VTRTB5?=
+ =?utf-8?B?QWVZZ0VndjAvTG83enVPTVJiZ21DSlVUV2dTbUdJY3ozT0tUQmdDSkZWUkFQ?=
+ =?utf-8?B?dDhjZ1Z6NHJsbGl6ZmMyUHdiZjdraDhoeWR6OHNmQm9YaDIrUzdxNlowV0VX?=
+ =?utf-8?B?ODMzVzFYZ09NY01zOTRiQjRSdG9HNENlWEF1eWRmQUUxSlQycmx0TGxoNjE3?=
+ =?utf-8?B?dndaOTM3d0ROaWhZT0VPRWpzQTZVamQ2TndvY2R1cU9Bd1VwMVpDMDVlclVV?=
+ =?utf-8?B?ZVYrY2l4Vm94d0xDMGxlNmdCWmdUTXpHUVAyRDljclRWRVlLUHc1VWl3WTBZ?=
+ =?utf-8?B?azVhTzJOaDVPMWcvcUNPMFdRVEl6bWlrNXhKS0Y4SkRCR3VnVVVrKzdCNFJo?=
+ =?utf-8?B?VE5qbjhrWTZjM0JQZ2gzTG5sd0pjdzlsaloraDAzc1g4MWxOQU1TakJHNTFT?=
+ =?utf-8?B?U0xwa1BTMEtFTzFYZm9SNFpMSVB4OUhVMVE3WFh4QVdFSURmRStnQWk3Q3di?=
+ =?utf-8?B?ejBnblJjbE92cTdOeG9KaTAwL003NDFJbXZFT21EY05hdjhrNmc1MW5HVEty?=
+ =?utf-8?B?L0tsVE5qVU03Z29lNFpIM0pSU0E4ZWJpemRvbVFRRnprUUo3L3ZkS3FMSHpa?=
+ =?utf-8?B?c3pPcjlYd0dqdlMwZzdTRDV3UVU4VmUvS2ViUlRnZGJGWldlOXIweUlERmdK?=
+ =?utf-8?B?NG1haVVCOWd0NW9qdFY4NEh4c0MrVHYrWC9LWml0Y2I4MGJmSzc3SmVCY0h5?=
+ =?utf-8?Q?7qM6D+rz?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1473cb33-ca7e-4e79-39f4-08d8c237bee5
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 20:19:55.6617
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2pjxwHJey638zdDDV0E7ZRheK2HEeO1uJ9RbqUg/Q5TQq/2/lR1lhZrkdctrM8TECbCMxvPCBUIBjxlmsvedgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3273
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:57:03AM -0800, Chang S. Bae wrote:
-> diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-> index f5a38a5f3ae1..3fc6dbbe3ede 100644
-> --- a/arch/x86/include/asm/fpu/types.h
-> +++ b/arch/x86/include/asm/fpu/types.h
-> @@ -336,14 +336,33 @@ struct fpu {
+On 1/26/21 12:54 PM, Peter Gonda wrote:
+> sev_pin_memory assumes that callers hold the kvm->lock. This was true for
+> all callers except svm_register_enc_region since it does not originate
+> from svm_mem_enc_op. Also added lockdep annotation to help prevent
+> future regressions.
+
+I'm not exactly sure what the problem is that your fixing? What is the
+symptom that you're seeing?
+
+> 
+> Tested: Booted SEV enabled VM on host.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Fixes: 116a2214c5173 (KVM: SVM: Pin guest memory when SEV is active)
+
+I can't find this commit. The Linux and KVM trees have it as:
+
+1e80fdc09d12 ("KVM: SVM: Pin guest memory when SEV is active")
+
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> 
+> ---
+>  arch/x86/kvm/svm.c | 16 +++++++++-------
+
+This patch won't apply, as it has already been a few releases since svm.c
+was moved to the arch/x86/kvm/svm directory and this function now lives in
+sev.c.
+
+Thanks,
+Tom
+
+>  1 file changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
+> index afdc5b44fe9f..9884e57f3d0f 100644
+> --- a/arch/x86/kvm/svm.c
+> +++ b/arch/x86/kvm/svm.c
+> @@ -1699,6 +1699,8 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
+>  	struct page **pages;
+>  	unsigned long first, last;
+>  
+> +	lockdep_assert_held(&kvm->lock);
+> +
+>  	if (ulen == 0 || uaddr + ulen < uaddr)
+>  		return NULL;
+>  
+> @@ -7228,12 +7230,19 @@ static int svm_register_enc_region(struct kvm *kvm,
+>  	if (!region)
+>  		return -ENOMEM;
+>  
+> +	mutex_lock(&kvm->lock);
+>  	region->pages = sev_pin_memory(kvm, range->addr, range->size, &region->npages, 1);
+>  	if (!region->pages) {
+>  		ret = -ENOMEM;
+>  		goto e_free;
+>  	}
+>  
+> +	region->uaddr = range->addr;
+> +	region->size = range->size;
+> +
+> +	list_add_tail(&region->list, &sev->regions_list);
+> +	mutex_unlock(&kvm->lock);
+> +
+>  	/*
+>  	 * The guest may change the memory encryption attribute from C=0 -> C=1
+>  	 * or vice versa for this memory range. Lets make sure caches are
+> @@ -7242,13 +7251,6 @@ static int svm_register_enc_region(struct kvm *kvm,
 >  	 */
->  	unsigned long			avx512_timestamp;
+>  	sev_clflush_pages(region->pages, region->npages);
 >  
-> +	/*
-> +	 * @state_mask:
-> +	 *
-> +	 * The state component bitmap. It indicates the saved xstate in
-> +	 * either @state or @state_ptr. The map value starts to be aligned
-> +	 * with @state and then with @state_ptr once it is in use.
-
-Are you trying to say here that the mask describes the state saved in
-@state initially and then, when the task is switched to dynamic state,
-it denotes the state in ->state_ptr?
-
-> +	 */
-> +	u64				state_mask;
-> +
-> +	/*
-> +	 * @state_ptr:
-> +	 *
-> +	 * Copy of all extended register states, in a dynamically allocated
-> +	 * buffer. When a task is using extended features, the register state
-> +	 * is always the most current. This state copy is more recent than
-> +	 * @state. If the task context-switches away, they get saved here,
-> +	 * representing the xstate.
-
-Calling it a copy here is confusing - you wanna say that when dynamic
-states get used, the state in state_ptr supercedes and invalidates the
-state in @state. AFAIU, at least.
-
-> +	 */
-> +	union fpregs_state		*state_ptr;
-> +
->  	/*
->  	 * @state:
->  	 *
-> -	 * In-memory copy of all FPU registers that we save/restore
-> -	 * over context switches. If the task is using the FPU then
-> -	 * the registers in the FPU are more recent than this state
-> -	 * copy. If the task context-switches away then they get
-> -	 * saved here and represent the FPU state.
-> +	 * Copy of some extended register state. If a task uses a dynamically
-
-Copy of some?
-
-Why not, "Initial in-memory copy of all FPU registers that we
-save/restore over context switches. When the task is switched to dynamic
-states, this copy is replaced with the one in ->state_ptr."
-
-Which brings me to the more important question and I guess I'll see when
-I get to the end of this: are we aiming at having a *single* ->state
-pointer which gets used in both static and dynamic FPU state settings?
-
-> +	 * allocated buffer, @state_ptr, then it has a more recent state copy
-> +	 * than this. This copy follows the same attributes as described for
-> +	 * @state_ptr.
->  	 */
->  	union fpregs_state		state;
->  	/*
-> diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-> index 6ce8350672c2..379e8f8b8440 100644
-> --- a/arch/x86/include/asm/fpu/xstate.h
-> +++ b/arch/x86/include/asm/fpu/xstate.h
-> @@ -103,6 +103,9 @@ extern void __init update_regset_xstate_info(unsigned int size,
->  					     u64 xstate_mask);
+> -	region->uaddr = range->addr;
+> -	region->size = range->size;
+> -
+> -	mutex_lock(&kvm->lock);
+> -	list_add_tail(&region->list, &sev->regions_list);
+> -	mutex_unlock(&kvm->lock);
+> -
+>  	return ret;
 >  
->  void *get_xsave_addr(struct fpu *fpu, int xfeature_nr);
-> +int alloc_xstate_buffer(struct fpu *fpu, u64 mask);
-> +void free_xstate_buffer(struct fpu *fpu);
-> +
->  const void *get_xsave_field_ptr(int xfeature_nr);
->  int using_compacted_format(void);
->  int xfeature_size(int xfeature_nr);
-> diff --git a/arch/x86/include/asm/trace/fpu.h b/arch/x86/include/asm/trace/fpu.h
-> index 879b77792f94..bf88b3333873 100644
-> --- a/arch/x86/include/asm/trace/fpu.h
-> +++ b/arch/x86/include/asm/trace/fpu.h
-> @@ -89,6 +89,11 @@ DEFINE_EVENT(x86_fpu, x86_fpu_xstate_check_failed,
->  	TP_ARGS(fpu)
->  );
->  
-> +DEFINE_EVENT(x86_fpu, x86_fpu_xstate_alloc_failed,
-> +	TP_PROTO(struct fpu *fpu),
-> +	TP_ARGS(fpu)
-> +);
-> +
-
-Huh, what's that for?
-
->  #undef TRACE_INCLUDE_PATH
->  #define TRACE_INCLUDE_PATH asm/trace/
->  #undef TRACE_INCLUDE_FILE
-> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-> index 1a428803e6b2..6dafed34be4f 100644
-> --- a/arch/x86/kernel/fpu/core.c
-> +++ b/arch/x86/kernel/fpu/core.c
-> @@ -235,6 +235,9 @@ int fpu__copy(struct task_struct *dst, struct task_struct *src)
->  	 */
->  	memset(&dst_fpu->state.xsave, 0, fpu_kernel_xstate_min_size);
->  
-> +	dst_fpu->state_mask = xfeatures_mask_all & ~xfeatures_mask_user_dynamic;
-> +	dst_fpu->state_ptr = NULL;
-> +
->  	/*
->  	 * If the FPU registers are not current just memcpy() the state.
->  	 * Otherwise save current FPU registers directly into the child's FPU
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index 2012b17b1793..af4d7d9aa977 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -10,6 +10,7 @@
->  #include <linux/pkeys.h>
->  #include <linux/seq_file.h>
->  #include <linux/proc_fs.h>
-> +#include <linux/vmalloc.h>
->  
->  #include <asm/fpu/api.h>
->  #include <asm/fpu/internal.h>
-> @@ -19,6 +20,7 @@
->  
->  #include <asm/tlbflush.h>
->  #include <asm/cpufeature.h>
-> +#include <asm/trace/fpu.h>
->  
->  /*
->   * Although we spell it out in here, the Processor Trace
-> @@ -71,6 +73,7 @@ static unsigned int xstate_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] =
->  static unsigned int xstate_sizes[XFEATURE_MAX]   = { [ 0 ... XFEATURE_MAX - 1] = -1};
->  static unsigned int xstate_comp_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
->  static unsigned int xstate_supervisor_only_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
-> +static bool xstate_aligns[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = false};
-
-What's that for?
-
->  
->  /*
->   * The XSAVE area of kernel can be in standard or compacted format;
-> @@ -130,6 +133,48 @@ static bool xfeature_is_supervisor(int xfeature_nr)
->  	return ecx & 1;
->  }
->  
-> +/*
-> + * Available once those arrays for the offset, size, and alignment info are set up,
-> + * by setup_xstate_features().
-> + */
-> +static unsigned int get_xstate_size(u64 mask)
-> +{
-> +	unsigned int size;
-> +	u64 xmask;
-> +	int i, nr;
-> +
-> +	if (!mask)
-> +		return 0;
-> +	else if (mask == (xfeatures_mask_all & ~xfeatures_mask_user_dynamic))
-> +		return fpu_kernel_xstate_min_size;
-> +	else if (mask == xfeatures_mask_all)
-> +		return fpu_kernel_xstate_max_size;
-> +
-> +	nr = fls64(mask) - 1;
-> +
-> +	if (!using_compacted_format())
-> +		return xstate_offsets[nr] + xstate_sizes[nr];
-> +
-> +	xmask = BIT_ULL(nr + 1) - 1;
-> +
-> +	if (mask == (xmask & xfeatures_mask_all))
-> +		return xstate_comp_offsets[nr] + xstate_sizes[nr];
-> +
-> +	/*
-> +	 * Calculate the size by summing up each state together, since no known
-> +	 * size found with the xstate buffer format out of the given mask.
-> +	 */
-
-I barely can imagine what that comment is trying to tell me...
-
-> +	for (size = FXSAVE_SIZE + XSAVE_HDR_SIZE, i = FIRST_EXTENDED_XFEATURE; i <= nr; i++) {
-> +		if (!(mask & BIT_ULL(i)))
-> +			continue;
-> +
-> +		if (xstate_aligns[i])
-> +			size = ALIGN(size, 64);
-> +		size += xstate_sizes[i];
-> +	}
-> +	return size;
-> +}
-> +
->  /*
->   * When executing XSAVEOPT (or other optimized XSAVE instructions), if
->   * a processor implementation detects that an FPU state component is still
-> @@ -270,10 +315,12 @@ static void __init setup_xstate_features(void)
->  	xstate_offsets[XFEATURE_FP]	= 0;
->  	xstate_sizes[XFEATURE_FP]	= offsetof(struct fxregs_state,
->  						   xmm_space);
-> +	xstate_aligns[XFEATURE_FP]	= true;
->  
->  	xstate_offsets[XFEATURE_SSE]	= xstate_sizes[XFEATURE_FP];
->  	xstate_sizes[XFEATURE_SSE]	= sizeof_field(struct fxregs_state,
->  						       xmm_space);
-> +	xstate_aligns[XFEATURE_SSE]	= true;
->  
->  	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
->  		if (!xfeature_enabled(i))
-> @@ -291,6 +338,7 @@ static void __init setup_xstate_features(void)
->  			continue;
->  
->  		xstate_offsets[i] = ebx;
-> +		xstate_aligns[i] = (ecx & 2) ? true : false;
->  
->  		/*
->  		 * In our xstate size checks, we assume that the highest-numbered
-> @@ -755,6 +803,9 @@ static bool is_supported_xstate_size(unsigned int test_xstate_size)
->  	return false;
->  }
->  
-> +/* The watched threshold size of dynamically allocated xstate buffer */
-
-Watched?
-
-> +#define XSTATE_BUFFER_MAX_BYTES		(64 * 1024)
-
-What's that thing for when we have fpu_kernel_xstate_max_size too?
-
-> +
->  static int __init init_xstate_size(void)
->  {
->  	/* Recompute the context size for enabled features: */
-> @@ -779,6 +830,14 @@ static int __init init_xstate_size(void)
->  	if (!is_supported_xstate_size(fpu_kernel_xstate_min_size))
->  		return -EINVAL;
->  
-> +	/*
-> +	 * When allocating buffers larger than the threshold, a more sophisticated
-> +	 * mechanism might be considerable.
-> +	 */
-> +	if (fpu_kernel_xstate_max_size > XSTATE_BUFFER_MAX_BYTES)
-> +		pr_warn("x86/fpu: xstate buffer too large (%u > %u)\n",
-> +			fpu_kernel_xstate_max_size, XSTATE_BUFFER_MAX_BYTES);
-
-So why doesn't this return an error?
-
-> +
->  	/*
->  	 * User space is always in standard format.
->  	 */
-> @@ -869,6 +928,9 @@ void __init fpu__init_system_xstate(void)
->  	if (err)
->  		goto out_disable;
->  
-> +	/* Make sure init_task does not include the dynamic user states */
-> +	current->thread.fpu.state_mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
-
-xfeatures_mask_user_dynamic just got set to 0 a couple of lines above...
-
-> +
->  	/*
->  	 * Update info used for ptrace frames; use standard-format size and no
->  	 * supervisor xstates:
-> @@ -1089,6 +1151,59 @@ static inline bool xfeatures_mxcsr_quirk(u64 xfeatures)
->  	return true;
->  }
->  
-> +void free_xstate_buffer(struct fpu *fpu)
-> +{
-> +	vfree(fpu->state_ptr);
-> +}
-> +
-> +/*
-> + * Allocate an xstate buffer with the size calculated based on 'mask'.
-> + *
-> + * The allocation mechanism does not shrink or reclaim the buffer.
-> + */
-> +int alloc_xstate_buffer(struct fpu *fpu, u64 mask)
-> +{
-> +	union fpregs_state *state_ptr;
-> +	unsigned int oldsz, newsz;
-> +	u64 state_mask;
-> +
-> +	state_mask = fpu->state_mask | mask;
-> +
-> +	oldsz = get_xstate_size(fpu->state_mask);
-> +	newsz = get_xstate_size(state_mask);
-> +
-> +	if (oldsz >= newsz)
-> +		return 0;
-> +
-> +	if (newsz > fpu_kernel_xstate_max_size) {
-> +		pr_warn_once("x86/fpu: xstate buffer too large (%u > %u bytes)\n",
-> +			     newsz, fpu_kernel_xstate_max_size);
-> +		XSTATE_WARN_ON(1);
-> +		return 0;
-
-return 0?!? On an error?!?
-
-> +	}
-> +
-> +	/* We need 64B aligned pointer, but vmalloc() returns a page-aligned address. */
-
-So this comment is useless, basically...
-
-> +	state_ptr = vmalloc(newsz);
-> +	if (!state_ptr) {
-> +		trace_x86_fpu_xstate_alloc_failed(fpu);
-
-WTH is that tracepoint here for?
-
-> +		return -ENOMEM;
-> +	}
-> +
-> +	memset(state_ptr, 0, newsz);
-
-So vzalloc() above?
-
-> +	if (using_compacted_format())
-> +		fpstate_init_xstate(&state_ptr->xsave, state_mask);
-> +
-> +	/*
-> +	 * As long as the register state is intact, save the xstate in the new buffer
-> +	 * at the next context copy/switch or potentially ptrace-driven xstate writing.
-> +	 */
-> +
-> +	vfree(fpu->state_ptr);
-> +	fpu->state_ptr = state_ptr;
-> +	fpu->state_mask = state_mask;
-
-I must be missing something here but where's the logic that decides
-between the static and dynamic buffer? Later patches?
-
-I have to admit I've yet to see how the "switching" between static and
-dynamic state happens...
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+>  e_free:
+> 
