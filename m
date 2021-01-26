@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F48B304600
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EACF73045FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394081AbhAZSKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:10:00 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38602 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406000AbhAZQf2 (ORCPT
+        id S2394053AbhAZSJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:09:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47589 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405922AbhAZQel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:35:28 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10QGWxhX087660;
-        Tue, 26 Jan 2021 10:32:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611678779;
-        bh=zT5rXzi404sanDCD+FhX1p4eVM2SYSfy/bavMPjgsZ4=;
-        h=From:To:CC:Subject:Date;
-        b=cNY76W8khMWDiihJY+w8MLZDKUuaH3lNcFQ2hrFVzOT3LkWgLVJVkV29RAv+hniF2
-         zGTVg5PzHG3AUCBbMo1N6PvrvxxpmfQVCALvx9zoPYa58ImdqQNMoNgck+QUPDWGUA
-         cwgXcGJmus1xbwREQpFqeGuiFxg+UCaMcyLP5j3U=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10QGWxR0082334
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 26 Jan 2021 10:32:59 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
- Jan 2021 10:32:58 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 26 Jan 2021 10:32:58 -0600
-Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10QGWwpA069669;
-        Tue, 26 Jan 2021 10:32:58 -0600
-Received: from localhost ([10.250.35.71])
-        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 10QGWwbq111807;
-        Tue, 26 Jan 2021 10:32:58 -0600
-From:   Suman Anna <s-anna@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     Jan Kiszka <jan.kiszka@siemens.com>,
-        David Lechner <david@lechnology.com>,
-        <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Suman Anna <s-anna@ti.com>
-Subject: [PATCH] dt-bindings: irqchip: Add node name to PRUSS INTC
-Date:   Tue, 26 Jan 2021 10:32:51 -0600
-Message-ID: <20210126163251.29468-1-s-anna@ti.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 26 Jan 2021 11:34:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611678795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ha4U7ceCG4iR97RxFf530wLIfNGvWAF4SbfMNImTvaE=;
+        b=Kg78ZG9r2mZ9Rz66G+aMT47boRY9FSXHiF5+B74tZLh5r182Reu5zRWL8x3hlQJ84ujZay
+        qkynQ/3tbb7asVnQpusOkL4UNc8/YTUp6wm+J5ws/u51ma5RpuGuh/CFM8whGK+GHaXQsg
+        g2bTQE3iVUtdY6vqfu+k9PHcKBBv7M0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-L4Qq0W_0NgulA0cCBZXCYQ-1; Tue, 26 Jan 2021 11:33:12 -0500
+X-MC-Unique: L4Qq0W_0NgulA0cCBZXCYQ-1
+Received: by mail-ej1-f70.google.com with SMTP id hd8so3643397ejc.22
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 08:33:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ha4U7ceCG4iR97RxFf530wLIfNGvWAF4SbfMNImTvaE=;
+        b=FZPEtYqz4d8PR5YIRilxStocKYbSAzGhoV/yXIrm0ARTbjvZw9BeYt9WqRnJ4K0/2+
+         crc4mILYA2Hb7i6YgdpLZf9J+g0myUpn/+e5KKJgXjhzMnofNMbKm2zEND8CrYX7NSok
+         LhCb2nd4WB7WIbWHZcTSmPPLhOW99gvebkFi379XTvd4zi9EsWgpfDSJjxIfYEGfBUQa
+         wWvcsXnH2YxzU/90K8HUTReNSBnzl3p6/A5dtEmncuF/SlbVLRDTebBPuP/Q3c7IuviM
+         n+OXpxLNq8wLyt96x0+mlLMYc9QXQ+ko/FxcC34T6VbXqmQ0z9XHdKoMYz+AxNcLgJYS
+         KJmw==
+X-Gm-Message-State: AOAM531LUEEAPIwJygb2qtX9KVxTnLExXPpn2Cbiq/ESH717bN4KG43R
+        KivtXWyuDBQ1XBt1U0FtJ4H4QVZki0urIbHzGKG11P6l77AfuPvs7fgrSNzTG8WhV9Y6Zm3nvHx
+        1D6tvLIUjYmLTWZohjWbppOfhH4K6AfUh91Ml+Yb2S7nPAFM+TudE1o+H4a+vnnRicpIX/J/+4/
+        ol
+X-Received: by 2002:a17:906:f144:: with SMTP id gw4mr4017990ejb.189.1611678791310;
+        Tue, 26 Jan 2021 08:33:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxYxTqPIIM498wLg5agu1FCqlafY+yJQ8sBaBGPpRrIuslguN5AKilUcZJMZgnY2TjYm0Utog==
+X-Received: by 2002:a17:906:f144:: with SMTP id gw4mr4017972ejb.189.1611678791138;
+        Tue, 26 Jan 2021 08:33:11 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id w17sm10029141ejk.124.2021.01.26.08.33.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 08:33:10 -0800 (PST)
+Subject: Re: [RESEND PATCH 2/2] KVM: X86: Expose bus lock debug exception to
+ guest
+To:     kernel test robot <lkp@intel.com>,
+        Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kbuild-all@lists.01.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210108064924.1677-3-chenyi.qiang@intel.com>
+ <202101090218.oqYcWXa4-lkp@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cfc345ea-980d-821d-f3a6-cea1f8e7ba03@redhat.com>
+Date:   Tue, 26 Jan 2021 17:33:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <202101090218.oqYcWXa4-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current PRUSS Interrupt Controller binding doesn't exactly specify
-the convention for the node name. These interrupt-controllers will always
-have a unit address. Update the binding with the '$nodename' using the
-expected generic name, this shall ensure the interrupt-controller.yaml
-is automatically applied to this binding.
+On 08/01/21 19:16, kernel test robot wrote:
+> Hi Chenyi,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on kvm/linux-next]
+> [also build test ERROR on v5.11-rc2 next-20210108]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
----
-This patch is a result of the previous discussion at
-https://patchwork.kernel.org/comment/23926133/
+What is the status of the patch to introduce X86_FEATURE_BUS_LOCK_DETECT 
+(I saw 
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2389369.html)?
 
- .../bindings/interrupt-controller/ti,pruss-intc.yaml           | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-index c2ce215501a5..9731dd4421a1 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-@@ -33,6 +33,9 @@ description: |
-   corresponding PRUSS node. The node should be named "interrupt-controller".
- 
- properties:
-+  $nodename:
-+    pattern: "^interrupt-controller@[0-9a-f]+$"
-+
-   compatible:
-     enum:
-       - ti,pruss-intc
--- 
-2.29.2
+Paolo
 
