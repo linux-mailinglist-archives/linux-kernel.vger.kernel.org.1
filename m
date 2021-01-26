@@ -2,138 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9C4303A62
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2722303A96
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404078AbhAZKd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:33:27 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:59810 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727010AbhAZBf6 (ORCPT
+        id S2404065AbhAZKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731742AbhAZCE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:35:58 -0500
-Received: from rapha-Virtual-Machine.mshome.net (unknown [131.107.160.57])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8FA7A20B7192;
-        Mon, 25 Jan 2021 16:50:51 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8FA7A20B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1611622251;
-        bh=moqku2tkY4SiJt7zT3t8TjRoMyMCVZ4Ccw5Yo30J5dc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=l+XzbsKo6flGDWVfzzZAlbIENJWyYi8fpNDqCZ4E2cONJFWrUZjjQANMoNiWfEK5x
-         TYsFNrKzHj3cxuHTC6sFqvhIiBtgZXNRDj06oqJIzl5gRH2O6YBQdj6JikZZ2wK4NY
-         bLLi0Eg+FyvhIasc147M/7FBNhhnext5z8Cgo7/E=
-From:   Raphael Gianotti <raphgi@linux.microsoft.com>
-To:     zohar@linux.ibm.com
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tusharsu@linux.microsoft.com, nramas@linux.microsoft.com,
-        tyhicks@linux.microsoft.com
-Subject: [PATCH v3] IMA: Measure kernel version in early boot
-Date:   Mon, 25 Jan 2021 16:50:44 -0800
-Message-Id: <20210126005044.2010-1-raphgi@linux.microsoft.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 25 Jan 2021 21:04:57 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388D9C0611C2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:53:36 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id g19so551070qki.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:53:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BcKx8yKk9DEzeYQ1umTI+yLBl6nPj9ta1OpCtTjEqbQ=;
+        b=njnDopwPY7IHJTT3bdBrU9QfFha4FxpxvTw/x0eCbFDHDRkNCsMhN+UQ8bqUqh+nhI
+         arbXAHIod5UjilnecY3GMdwiG9CkFv/AoitTOC0pGdAMapHEH+1EXa9PS06XyY+iwklW
+         3xZR+MdCR4jnI8L57SQhpX2x5w6gqYroe06iSaPQuj6Zv7YSMlxhKJZeq0b+wgBw3kT9
+         8MqiisibVyyyv7yJkXZhmWOE8+Fa6EyKnp+86TU1Hfw+W+QNIEe6Jds13qc0wx6tx/KX
+         GJzaD5UUS1yjmPg5fEPwLQ4S2gjz2NUKBaHgQTfYwffboht2+lJqDU4R62maGsAvJbRp
+         OVPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BcKx8yKk9DEzeYQ1umTI+yLBl6nPj9ta1OpCtTjEqbQ=;
+        b=bCudxR8pMZLAobyNnx+s/P3hh4hHLHWD0sjA3AXZN3qiUF1qA8PzVVEFU0xltdfyUx
+         BUK9HrmPdx1hX1L6UJB+HHx87/a7yl7j48q9W19LS+WCyKd3LUAkoMI21d7mHLtVdmA4
+         HhqIw9sj0MLMLpSN+Ht5DPmxmUixFF94AJt+LCCISAgD7kVp4B57hOb0giy+UN3a548y
+         8hNFn/KFWwgl3oGSf3T+UHKA7J7eKfChg86Qzq2k6Qdrh3jj8ARKFKfv5Hu7CtXiUKrL
+         MiafB+LxocSxLA6lsByw6ngdVjI9hIZnVfxeWfmhI2ANDVGqYkQdW/tkihJR2Tq0pyWp
+         nnPg==
+X-Gm-Message-State: AOAM530kbCz+pIIeFEfkBBPe2rdCBvJ2MOOCLQ0T6wKqsezdQpFharIu
+        f388GiDV9p0EVFtbWmfaG70=
+X-Google-Smtp-Source: ABdhPJzNSrqw8AGfWL6w4wY3IRVZzKaALDklw4GZn0asaDzWVB/jdpCgw+2C2dmFj2yeGLIXJSZj+w==
+X-Received: by 2002:a37:a909:: with SMTP id s9mr3577509qke.489.1611622415327;
+        Mon, 25 Jan 2021 16:53:35 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id i18sm13174644qkg.66.2021.01.25.16.53.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 16:53:34 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 25 Jan 2021 19:53:35 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Saravanan D <saravanand@outlook.com>, x86@kernel.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] x86/mm: Tracking linear mapping split events since boot
+Message-ID: <YA9oD2djENLo4975@slm.duckdns.org>
+References: <BYAPR01MB40856478D5BE74CB6A7D5578CFBD9@BYAPR01MB4085.prod.exchangelabs.com>
+ <30752f8e-16e9-d093-e6ec-31fd45715e9d@intel.com>
+ <YA8q3eSTuIrUmPeM@slm.duckdns.org>
+ <0d402da9-d7a2-a3b4-eb6f-bd1b768b3a85@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0d402da9-d7a2-a3b4-eb6f-bd1b768b3a85@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The integrity of a kernel can be verified by the boot loader on cold
-boot, and during kexec, by the current running kernel, before it is
-loaded. However, it is still possible that the new kernel being
-loaded is older than the current kernel, and/or has known
-vulnerabilities. Therefore, it is imperative that an attestation
-service be able to verify the version of the kernel being loaded on
-the client, from cold boot and subsequent kexec system calls,
-ensuring that only kernels with versions known to be good are loaded.
+Hello, Dave.
 
-Measure the kernel version using ima_measure_critical_data() early on
-in the boot sequence, reducing the chances of known kernel
-vulnerabilities being exploited. With IMA being part of the kernel,
-this overall approach makes the measurement itself more trustworthy.
+On Mon, Jan 25, 2021 at 04:47:42PM -0800, Dave Hansen wrote:
+> The patch here does not actually separate out pre-boot from post-boot,
+> so it's pretty hard to tell if the splits came from something like
+> tracing which is totally unnecessary or they were the result of
+> something at boot that we can't do anything about.
 
-To enable measuring the kernel version "ima_policy=critical_data"
-needs to be added to the kernel command line arguments.
-For example,
-        BOOT_IMAGE=/boot/vmlinuz-5.11.0-rc3+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset ima_policy=critical_data
+Ah, right, didn't know they also included splits during boot. It'd be a lot
+more useful if they were counting post-boot splits.
 
-If runtime measurement of the kernel version is ever needed, the
-following should be added to /etc/ima/ima-policy:
+> This would be a lot more useful if you could reset the counters.  Then
+> just reset them from userspace at boot.  Adding read-write debugfs
+> exports for these should be pretty trivial.
 
-        measure func=CRITICAL_DATA label=kernel_info
+While this would work for hands-on cases, I'm a bit worried that this might
+be more challenging to gain confidence in large production environments.
 
-To extract the measured data after boot, the following command can be used:
+Thanks.
 
-        grep -m 1 "kernel_version" \
-        /sys/kernel/security/integrity/ima/ascii_runtime_measurements
-
-Sample output from the command above:
-
-        10 a8297d408e9d5155728b619761d0dd4cedf5ef5f ima-buf
-        sha256:5660e19945be0119bc19cbbf8d9c33a09935ab5d30dad48aa11f879c67d70988
-        kernel_version 352e31312e302d7263332d31363138372d676564623634666537383234342d6469727479
-
-The above corresponds to the following (decoded) version string:
-
-        5.11.0-rc3-16187-gedb64fe78244-dirty
-
-Signed-off-by: Raphael Gianotti <raphgi@linux.microsoft.com>
----
-Change Log v3:
-        - Updated critical data label as kernel_info in
-          Documentation/ABI/testing/ima_policy
-        - Moved the ima_measure_critical_data() call to ima_init()
-
-Change Log v2:
-        - Changed the measurement to align with the latest version of
-          ima_measure_critical_data(), without the need for queueing
-        - Scoped the measurement to only measure the kernel version,
-          found in UTS_RELEASE, instead of the entire linux_banner
-          string
-
-This patch is based on
-commit e58bb688f2e4 "Merge branch 'measure-critical-data' into next-integrity"
-in "next-integrity-testing" branch
-
- Documentation/ABI/testing/ima_policy | 2 +-
- security/integrity/ima/ima_init.c    | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-index 8365596cb42b..bc8e1cbe5e61 100644
---- a/Documentation/ABI/testing/ima_policy
-+++ b/Documentation/ABI/testing/ima_policy
-@@ -52,7 +52,7 @@ Description:
- 			template:= name of a defined IMA template type
- 			(eg, ima-ng). Only valid when action is "measure".
- 			pcr:= decimal value
--			label:= [selinux]|[data_label]
-+			label:= [selinux]|[kernel_info]|[data_label]
- 			data_label:= a unique string used for grouping and limiting critical data.
- 			For example, "selinux" to measure critical data for SELinux.
- 
-diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
-index 4902fe7bd570..6e8742916d1d 100644
---- a/security/integrity/ima/ima_init.c
-+++ b/security/integrity/ima/ima_init.c
-@@ -15,6 +15,8 @@
- #include <linux/scatterlist.h>
- #include <linux/slab.h>
- #include <linux/err.h>
-+#include <linux/ima.h>
-+#include <generated/utsrelease.h>
- 
- #include "ima.h"
- 
-@@ -147,5 +149,8 @@ int __init ima_init(void)
- 
- 	ima_init_key_queue();
- 
-+	ima_measure_critical_data("kernel_info", "kernel_version",
-+				  UTS_RELEASE, strlen(UTS_RELEASE), false);
-+
- 	return rc;
- }
 -- 
-2.28.0
-
+tejun
