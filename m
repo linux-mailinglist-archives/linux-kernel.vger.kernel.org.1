@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00543044DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEC93044FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390007AbhAZRQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:16:12 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:28067 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387444AbhAZGWi (ORCPT
+        id S2390998AbhAZRUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388118AbhAZGnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:22:38 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UMxNTrM_1611642101;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMxNTrM_1611642101)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 Jan 2021 14:21:46 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     linux@roeck-us.net
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] hwmon: (pmbus) Simplify the calculation of variables
-Date:   Tue, 26 Jan 2021 14:21:40 +0800
-Message-Id: <1611642100-29937-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 26 Jan 2021 01:43:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6875DC061573;
+        Mon, 25 Jan 2021 22:42:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=XFJjQnlOmKPrpamUOymOwxeLZG
+        nTEr98Y7kNW8QS5NHaW0kkQddRAz7PSPmxL1BCFZYqcJNmVKoJ8teXKWfyx4f40ItG0mruV2CyAGH
+        BOWfEHlkBnTxTy2pdd/F79fQFpq92dPzOFmamckYfdzBf7viCXEBvVan0E7NvO4el4jaibngUVac5
+        UdbkRLkdIdTutyOG5Dv+VM7xpSDv5u8qqGHfK09SHX7Ir38+s1trQuozDDKgoerCBfxnt08NiWL2o
+        KdjcWatSfxwUNXhgtC3+Odn06CKkk1MDqSlnk+oiPoDbqxT0B1eOouyPg+lMvwrlWE/f3P1T+gmZ8
+        cPzaRC5w==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4I1j-005CI6-0T; Tue, 26 Jan 2021 06:40:59 +0000
+Date:   Tue, 26 Jan 2021 06:40:35 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>
+Subject: Re: [PATCH v11 04/13] mm/ioremap: rename ioremap_*_range to
+ vmap_*_range
+Message-ID: <20210126064035.GA1236944@infradead.org>
+References: <20210126044510.2491820-1-npiggin@gmail.com>
+ <20210126044510.2491820-5-npiggin@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126044510.2491820-5-npiggin@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+Looks good,
 
-./drivers/hwmon/pmbus/pmbus_core.c:1265:24-26: WARNING !A || A && B is
-equivalent to !A || B.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
----
- drivers/hwmon/pmbus/pmbus_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-index 192442b..a78ae70 100644
---- a/drivers/hwmon/pmbus/pmbus_core.c
-+++ b/drivers/hwmon/pmbus/pmbus_core.c
-@@ -1262,7 +1262,7 @@ static int pmbus_add_sensor_attrs_one(struct i2c_client *client,
- 		 * which global bit is set) for this page is accessible.
- 		 */
- 		if (!ret && attr->gbit &&
--		    (!upper || (upper && data->has_status_word)) &&
-+		    (!upper || data->has_status_word) &&
- 		    pmbus_check_status_register(client, page)) {
- 			ret = pmbus_add_boolean(data, name, "alarm", index,
- 						NULL, NULL,
--- 
-1.8.3.1
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
