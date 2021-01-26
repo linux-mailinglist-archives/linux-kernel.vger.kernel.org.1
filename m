@@ -2,132 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E20B303D9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA2A303D9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392049AbhAZMtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:49:15 -0500
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:46613 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391811AbhAZJ77 (ORCPT
+        id S2391979AbhAZMtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:49:01 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:47813 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730893AbhAZKBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:59:59 -0500
-Received: by mail-lj1-f179.google.com with SMTP id u11so18747283ljo.13;
-        Tue, 26 Jan 2021 01:59:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xmi28xkvyUxUdMMISjflxCIU4Qrn8nItoYK8w0cV+yo=;
-        b=bRY/0HP03LiNPTEXh22HhrXTz0OC2a/vwjixT3b5LyjDcGESWgWt7vXW9CSOx5rDN5
-         P9MqYeW/1m9iCwbFHJbMWQ6P+lzNcWqEMXpGSwoWePUBC35cr4+5d8raMUVp827uv1NN
-         bUdic2wN7R563Y3Afzh0GjsPX1lFt+k2nOMkMK2nYjJ9LiSAeFoG1Nczuoz4xkYzkKTU
-         AoDfPXsxBPBB8/dzylMkj9z1s2ioQ4oPy6BDOS+E6f0O/QTudiDhKdvHOIO0PH1FH5ym
-         EGZJKy8D8/6ZMFFnS/46C0vQmO0gTbUk2ypjzfByXqwReaiilygAwyhuxVpklVO/OpqV
-         NDBw==
-X-Gm-Message-State: AOAM530+PG0CX3Su6fWIif/fvM5EE/65ybbwDhpcNdRCtcQC0ospU/7s
-        K2rts4UxtKCl617gAM0KanbFBEo1WQg=
-X-Google-Smtp-Source: ABdhPJyLbthDt9qZuqRBd6OcRqpdtZTjkEa/7t5StwY1UpUD0WLMlYqsFA9p+pmJOsXRvHZwDvkehA==
-X-Received: by 2002:a05:651c:204f:: with SMTP id t15mr2540175ljo.161.1611655150121;
-        Tue, 26 Jan 2021 01:59:10 -0800 (PST)
-Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id r9sm779650lfm.69.2021.01.26.01.59.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 01:59:09 -0800 (PST)
-Subject: Re: [PATCH] floppy: reintroduce O_NDELAY fix
-To:     Kurt Garloff <kurt@garloff.de>, Jiri Kosina <jikos@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Wim Osterholt <wim@djo.tudelft.nl>
-References: <20160610230255.GA27770@djo.tudelft.nl>
- <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm>
- <20160614184308.GA6188@djo.tudelft.nl>
- <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm>
- <20160615132040.GZ14480@ZenIV.linux.org.uk>
- <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm>
- <20160615224722.GA9545@djo.tudelft.nl>
- <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm>
- <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm>
- <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
- <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm>
- <5cb57175-7f0b-5536-925d-337241bcda93@linux.com>
- <nycvar.YFH.7.76.2101211122290.5622@cbobk.fhfr.pm>
- <nycvar.YFH.7.76.2101211543230.5622@cbobk.fhfr.pm>
- <e503292b-5f51-eac5-771f-e35991d1084c@linux.com>
- <nycvar.YFH.7.76.2101211603590.5622@cbobk.fhfr.pm>
- <nycvar.YFH.7.76.2101221209060.5622@cbobk.fhfr.pm>
- <5ef748c9-9ab9-9a7e-6ae9-6e4a292b6842@linux.com>
- <f822ebde-89d6-dbbf-ae4e-b06a4aadedf5@garloff.de>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <baf2391f-be61-90b3-9f01-db769d288576@linux.com>
-Date:   Tue, 26 Jan 2021 12:59:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 26 Jan 2021 05:01:37 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10QA0gcE6022247, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10QA0gcE6022247
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 26 Jan 2021 18:00:42 +0800
+Received: from localhost.localdomain (172.21.132.186) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 26 Jan 2021 18:00:42 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>, <linux-bluetooth@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
+        <kidman@realtek.com>, <max.chou@realtek.com>,
+        <abhishekpandit@chromium.org>, <josephsih@chromium.org>
+Subject: [PATCH v5] Bluetooth: btrtl: Enable WBS for the specific Realtek devices
+Date:   Tue, 26 Jan 2021 18:00:38 +0800
+Message-ID: <20210126100038.1278-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <f822ebde-89d6-dbbf-ae4e-b06a4aadedf5@garloff.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.186]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS03.realtek.com.tw (172.21.6.96)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Max Chou <max.chou@realtek.com>
 
+By this change, it will enable WBS supported on the specific Realtek BT
+devices, such as RTL8822C and RTL8852A.
+In the future, it's able to maintain what the Realtek devices support WBS
+here.
 
-On 1/26/21 12:31 PM, Kurt Garloff wrote:
-> Hi Denis, Jiri, Jens,
-> 
-> Am 26.01.21 um 09:21 schrieb Denis Efremov:
->> On 1/22/21 2:13 PM, Jiri Kosina wrote:
->>> From: Jiri Kosina <jkosina@suse.cz>
->>>
->>> This issue was originally fixed in 09954bad4 ("floppy: refactor open() 
->>> flags handling").
->>>
->>> The fix as a side-effect, however, introduce issue for open(O_ACCMODE) 
->>> that is being used for ioctl-only open. I wrote a fix for that, but 
->>> instead of it being merged, full revert of 09954bad4 was performed, 
->>> re-introducing the O_NDELAY / O_NONBLOCK issue, and it strikes again.
->>>
->>> This is a forward-port of the original fix to current codebase; the 
->>> original submission had the changelog below:
->>>
->>> ====
->>> Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
->>> side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
->>> this is being used setfdprm userspace for ioctl-only open().
->>>
->>> Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE) 
->>> modes, while still keeping the original O_NDELAY bug fixed.
->>>
->>> Cc: stable@vger.kernel.org
->>> Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
->>> Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
->>> Reported-and-tested-by: Kurt Garloff <kurt@garloff.de>
->>> Fixes: 09954bad4 ("floppy: refactor open() flags handling")
->>> Fixes: f2791e7ead ("Revert "floppy: refactor open() flags handling"")
->>> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
->> Applied. I'll send it to Jens soon with a couple of cleanup patches.
->>
->> https://github.com/evdenis/linux-floppy/commit/e32f6163c47efbdbad06258560aa00d1c7e5b699
-> 
-> Great, thanks.
-> 
-> Due to libblkid (rightfully) using O_NONBLOCK these days when probing
-> devices, the floppy driver does spit loads of
-> [    9.533513] floppy0: disk absent or changed during operation
-> [    9.534989] blk_update_request: I/O error, dev fd0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-> [    9.537206] Buffer I/O error on dev fd0, logical block 0, async page read
-> [    9.546837] floppy0: disk absent or changed during operation
-> [    9.548389] blk_update_request: I/O error, dev fd0, sector 0 op 0x0:(READ) flags 0x80700 phys_seg 1
-> and fails a mount prior to being opened without O_NONBLOCK at least once.
-> (Reproduction is easy with qemu-kvm.)
-> 
-> The patch addresses it and I would suggest it to also be backported and
-> applied to the active stable kernel trees.
+Tested-by: Hilda Wu <hildawu@realtek.com>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Signed-off-by: Max Chou <max.chou@realtek.com>
 
-Yes, it will be backported to all stable trees including v4.4
+---
+change in v5
+ -remove the extra space between "enum" and "btrtl_chip_id"
+---
+ drivers/bluetooth/btrtl.c | 29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
-Thanks,
-Denis
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index 24f03a1f8d57..c80adf5f313d 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -38,6 +38,19 @@
+ 	.hci_ver = (hciv), \
+ 	.hci_bus = (bus)
+ 
++enum btrtl_chip_id {
++	CHIP_ID_8723A,
++	CHIP_ID_8723B,
++	CHIP_ID_8821A,
++	CHIP_ID_8761A,
++	CHIP_ID_8822B = 8,
++	CHIP_ID_8723D,
++	CHIP_ID_8821C,
++	CHIP_ID_8822C = 13,
++	CHIP_ID_8761B,
++	CHIP_ID_8852A = 18,
++};
++
+ struct id_table {
+ 	__u16 match_flags;
+ 	__u16 lmp_subver;
+@@ -58,6 +71,7 @@ struct btrtl_device_info {
+ 	u8 *cfg_data;
+ 	int cfg_len;
+ 	bool drop_fw;
++	int project_id;
+ };
+ 
+ static const struct id_table ic_id_table[] = {
+@@ -307,8 +321,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
+ 
+ 	/* Find project_id in table */
+ 	for (i = 0; i < ARRAY_SIZE(project_id_to_lmp_subver); i++) {
+-		if (project_id == project_id_to_lmp_subver[i].id)
++		if (project_id == project_id_to_lmp_subver[i].id) {
++			btrtl_dev->project_id = project_id;
+ 			break;
++		}
+ 	}
+ 
+ 	if (i >= ARRAY_SIZE(project_id_to_lmp_subver)) {
+@@ -719,18 +735,19 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+ 	 */
+ 	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
+ 
+-	if (!btrtl_dev->ic_info)
+-		goto done;
+-
+ 	/* Enable central-peripheral role (able to create new connections with
+ 	 * an existing connection in slave role).
+ 	 */
+-	switch (btrtl_dev->ic_info->lmp_subver) {
+-	case RTL_ROM_LMP_8822B:
++	/* Enable WBS supported for the specific Realtek devices. */
++	switch (btrtl_dev->project_id) {
++	case CHIP_ID_8822C:
++	case CHIP_ID_8852A:
+ 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
++		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
+ 		break;
+ 	default:
+ 		rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
++		rtl_dev_dbg(hdev, "WBS supported not enabled.");
+ 		break;
+ 	}
+ 
+-- 
+2.17.1
+
