@@ -2,180 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1109E303BF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079C5303C0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405471AbhAZLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:44:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392195AbhAZLPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:15:44 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB41C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:15:04 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id ke15so22345592ejc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:15:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Fal6U4PDNcYYqkpLjGA7YKgQHbc+tdNcYU+0SG4xNWs=;
-        b=I8pUBeN0C0kksUYa74WX8vZLjhLFjzyfgXlFq40db+CE4gX4Ukrja2LtCnl3wP2ACR
-         CwrFHnKe/OXsGFF4L6zdRJ+mutTUYWfuQRPBP0uSa4OIPe2BmLbuhajeCnrbbrqj53DD
-         9+bCz1sq2DxVS8nR+Yvujal/UW+qwHobxlmoiMFG9Kh4EakCM0wEeBFm8dDOjLroW6nq
-         gtW3XDYevKAHrw2jYOMaMOnnQVXOJyJqL++qxtR8I0YwlFvn9vqqVfHve58S0q+rE7eW
-         HSUG4mkoYLhI9zKRqnZrg2IAW+Up+TGH6uuR8UKq/DPnURGvKk7ECbFvRc8Vbav+xatL
-         qH7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Fal6U4PDNcYYqkpLjGA7YKgQHbc+tdNcYU+0SG4xNWs=;
-        b=LzdNh9OehZ8810jc9bf5TDzP03skqhPjD+HZyrwld/KWBf5fsFXdf6UWUK5VcfrD4z
-         4MKLIvnDhCLZZFIWA3sazOakPVBuGrGfupU07MNR/XaouMKGJlsxwd5jFkNQf9tG1paS
-         hVU6U9/c9MW9j+zkamWbYzi49HLQDLlxJ4exQNWWdtte8c5fGhsxChHMmQKkT+dRetlO
-         a8FkzOpzcPb/bN6ul0e2Z9iWEDV9tqO5kr9mOlMiMPa8vtg8xap8CVdKmnlW2Njmje3g
-         HRBNRPB6Qr9QRjsDszKh1RTO6iAappmxIgdO3thjOE6qQosquQ8usghUAUNFM+qMqpH9
-         lgrQ==
-X-Gm-Message-State: AOAM533BnAfhPtZ+zelpneb3rY4HF8Rd4mzeoQs92GAYPMFtGn+yzih/
-        GmouzkqfUl83vsAGp7VhnMNzqA==
-X-Google-Smtp-Source: ABdhPJyTqZwwWFE1qjJwQPesEkgMftkUVX3xvNbuz6Vt5rQ2ammt2BJe6x6nFborSoQgU6ZpkjsVpQ==
-X-Received: by 2002:a17:906:60c3:: with SMTP id f3mr3057881ejk.65.1611659702874;
-        Tue, 26 Jan 2021 03:15:02 -0800 (PST)
-Received: from ?IPv6:240e:304:2c80:dde0:4886:bf9:d177:bf2c? ([240e:304:2c80:dde0:4886:bf9:d177:bf2c])
-        by smtp.gmail.com with ESMTPSA id b17sm2002740edv.56.2021.01.26.03.14.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 03:15:02 -0800 (PST)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+raid@molgen.mpg.de
-References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
- <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
- <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
- <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
- <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
- <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
- <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
- <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
- <d95aa962-9750-c27c-639a-2362bdb32f41@cloud.ionos.com>
- <30576384-682c-c021-ff16-bebed8251365@molgen.mpg.de>
- <cdc0b03c-db53-35bc-2f75-93bbca0363b5@molgen.mpg.de>
- <bc342de0-98d2-1733-39cd-cc1999777ff3@molgen.mpg.de>
- <c3390ab0-d038-f1c3-5544-67ae9c8408b1@cloud.ionos.com>
- <a27c5a64-62bf-592c-e547-1e8e904e3c97@molgen.mpg.de>
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Message-ID: <6c7008df-942e-13b1-2e70-a058e96ab0e9@cloud.ionos.com>
-Date:   Tue, 26 Jan 2021 12:14:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2405449AbhAZLoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:44:16 -0500
+Received: from muru.com ([72.249.23.125]:53202 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392197AbhAZLPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 06:15:47 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id D77C58057;
+        Tue, 26 Jan 2021 11:15:08 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 13:15:01 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     =?utf-8?B?QW5kcsOp?= Hentschel <nerv@dawncrow.de>
+Cc:     robh+dt@kernel.org, bcousson@baylibre.com,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: omap3-echo: Add speaker sound card support
+Message-ID: <YA/5tcX+Fw3nCsPu@atomide.com>
+References: <20201227171353.2002674-1-nerv@dawncrow.de>
 MIME-Version: 1.0
-In-Reply-To: <a27c5a64-62bf-592c-e547-1e8e904e3c97@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201227171353.2002674-1-nerv@dawncrow.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Donald,
-
-On 1/26/21 10:50, Donald Buczek wrote:
-[...]
-
->>>
->>> diff --git a/drivers/md/md.c b/drivers/md/md.c
->>> index 2d21c298ffa7..f40429843906 100644
->>> --- a/drivers/md/md.c
->>> +++ b/drivers/md/md.c
->>> @@ -4687,11 +4687,13 @@ action_store(struct mddev *mddev, const char 
->>> *page, size_t len)
->>>               clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>>           if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
->>>               mddev_lock(mddev) == 0) {
->>> +            set_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
->>>               flush_workqueue(md_misc_wq);
->>>               if (mddev->sync_thread) {
->>>                   set_bit(MD_RECOVERY_INTR, &mddev->recovery);
->>>                   md_reap_sync_thread(mddev);
->>>               }
->>> +            clear_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
->>>               mddev_unlock(mddev);
->>>           }
->>>       } else if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
->>
->> Yes, it could break the deadlock issue, but I am not sure if it is the 
->> right way given we only set ALLOW_SB_UPDATE in suspend which makes 
->> sense since the io will be quiesced, but write idle action can't 
->> guarantee the  similar thing.
+* André Hentschel <nerv@dawncrow.de> [201227 19:18]:
+> This adds audio playback to the first generation Amazon Echo
 > 
-> Thinking (and documenting) MD_ALLOW_SB_UPDATE as "the holder of 
-> reconfig_mutex promises not to make any changes which would exclude 
-> superblocks from being written" might make it easier to accept the usage.
-
-I am not sure it is safe to set the flag here since write idle can't 
-prevent IO from fs while mddev_suspend can guarantee that.
-
+> Signed-off-by: André Hentschel <nerv@dawncrow.de>
+> ---
 > 
->> I prefer to make resync thread not wait forever here.
->>
+> It took me by far too long to get this working as the codec sets one important bit based on the
+> combination of provided supplies. That was just too hidden for me.
+> The first generation Amazon Echo was codenamed Misto, so I used that for the sound card name.
 
-[...]
+Cool, so it's now usable as a music player then :)
 
->>
->> -        sh = raid5_get_active_stripe(conf, new_sector, previous,
->> +        sh = raid5_get_active_stripe(conf, new_sector, previous, 0,
-> 
-> 
-> Mistake here (fourth argument added instead of third)
+Applying into omap-for-v5.12/dt thanks.
 
-Thanks for checking.
-
-[...]
-
-> Unfortunately, this patch did not fix the issue.
-> 
->      root@sloth:~/linux# cat /proc/$(pgrep md3_resync)/stack
->      [<0>] raid5_get_active_stripe+0x1e7/0x6b0
->      [<0>] raid5_sync_request+0x2a7/0x3d0
->      [<0>] md_do_sync.cold+0x3ee/0x97c
->      [<0>] md_thread+0xab/0x160
->      [<0>] kthread+0x11b/0x140
->      [<0>] ret_from_fork+0x22/0x30
-> 
-> which is ( according to objdump -d -Sl drivers/md/raid5.o ) at 
-> https://elixir.bootlin.com/linux/v5.11-rc5/source/drivers/md/raid5.c#L735
-> 
-> Isn't it still the case that the superblocks are not written, therefore 
-> stripes are not processed, therefore number of active stripes are not 
-> decreasing? Who is expected to wake up conf->wait_for_stripe waiters?
-
-Hmm, how about wake the waiter up in the while loop of raid5d?
-
-@@ -6520,6 +6532,11 @@ static void raid5d(struct md_thread *thread)
-                         md_check_recovery(mddev);
-                         spin_lock_irq(&conf->device_lock);
-                 }
-+
-+               if ((atomic_read(&conf->active_stripes)
-+                    < (conf->max_nr_stripes * 3 / 4) ||
-+                    (test_bit(MD_RECOVERY_INTR, &mddev->recovery))))
-+                       wake_up(&conf->wait_for_stripe);
-         }
-         pr_debug("%d stripes handled\n", handled);
-
-If the issue still appears then I will change the waiter to break just 
-if MD_RECOVERY_INTR is set, something like.
-
-wait_event_lock_irq(conf->wait_for_stripe,
-	(test_bit(MD_RECOVERY_INTR, &mddev->recovery) && sync_req) ||
-	 /* the previous condition */,
-	*(conf->hash_locks + hash));
-
-Thanks,
-Guoqing
+Tony
