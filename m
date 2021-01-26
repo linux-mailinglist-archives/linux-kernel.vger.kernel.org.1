@@ -2,143 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA51303EC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C371A303EBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404543AbhAZNcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:32:33 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:49478 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392317AbhAZN1A (ORCPT
+        id S2404243AbhAZNbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:31:04 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9154 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391687AbhAZNaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:27:00 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611667568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=38wr1OUdVY5qa4csrS5j+bDtc+hqgakuki0CQK0ebIE=;
-        b=OMw7J3LS5c7ufuqTDutW78aIq/jluzUTnTyEadi3wJVvQ1zF4X7N935cSoFLJBrBC17W5M
-        nAVdZj99JGIzIIWNMjrkDxVAsDxJFHbTyqtbfoz6Nzu7H4+Zw2vUKgTsNj3mYHUT8CEyEz
-        pY6cWJ+jpB9Wtm/jo4d+iaZDKRF8fPzWR/jfh9ZIlOxHuJTD+uusUeHK3/hIsEq/EFkI4q
-        eqCUVxJe7ay5QmLhtKxwxT76l6kRg4Sq7Yu4EaHDMamNJSjk4v3kGf+dkaJ5rb0GI/pJd5
-        MQqweICAPjPjUVS4JyR0iXlMQKcCpQgWjzmrnqwdCzTnRM9VkV9roVmV7S34sA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611667568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=38wr1OUdVY5qa4csrS5j+bDtc+hqgakuki0CQK0ebIE=;
-        b=1s14p9ZbXqlhNGgFhIRtMky00sdei5PWhNAwc7c5wJzVNQSJkRdP92RedGcWuZc2YmJwsQ
-        BuAUFYKVdhAllOCA==
-To:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 1/8] rtc: mc146818: Prevent reading garbage - bug
-In-Reply-To: <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net>
-References: <20201206214613.444124194@linutronix.de> <20201206220541.594826678@linutronix.de> <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net>
-Date:   Tue, 26 Jan 2021 14:26:07 +0100
-Message-ID: <871re7hlsg.fsf@nanos.tec.linutronix.de>
+        Tue, 26 Jan 2021 08:30:35 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601018e10000>; Tue, 26 Jan 2021 05:28:01 -0800
+Received: from [172.27.11.125] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 Jan
+ 2021 13:27:56 +0000
+Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
+        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
+        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
+        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
+        <gmataev@nvidia.com>, <cjia@nvidia.com>
+References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
+ <20210122122503.4e492b96@omen.home.shazbot.org>
+ <20210122200421.GH4147@nvidia.com>
+ <20210125172035.3b61b91b.cohuck@redhat.com>
+ <20210125180440.GR4147@nvidia.com>
+ <20210125163151.5e0aeecb@omen.home.shazbot.org>
+ <20210126004522.GD4147@nvidia.com>
+ <20210125203429.587c20fd@x1.home.shazbot.org>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <1419014f-fad2-9599-d382-9bba7686f1c4@nvidia.com>
+Date:   Tue, 26 Jan 2021 15:27:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210125203429.587c20fd@x1.home.shazbot.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611667681; bh=juhWC5dTGQeAy1Fhbof3EZbmu4mUUHMkzS2wBTTXEYI=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=LsA8l6OwVauHt1RRkPed3EC4aL3T9+zoJXvgDT6Rr1IMH/hWMO/N8ImZj0V2MyU2t
+         xvDYEK0MkltncWKY4+C/DejCe0QG6wkNUZGqcsFqW+6RGjsXeYulT1/0UKthd2GSCY
+         0HGHQqLWjQYwJSdza9lno9bU6NwBZpjfcqo026ENlksRoe77feW6POqzQDzJHEX5IN
+         ORwoNWCpxocbWD3E/8a/q0ptWrJ+RIJVo7oViU5a5kwzkuKU8aDoTcqsjtzl5Q3+vh
+         Ke3kzSGzSb1s1k3z0uOhs2Fp9FULq/V3fKLtzVwiWGc6+dai6togTQ6tLWI7EtbKXO
+         x7xlOWc0Hc9TA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25 2021 at 19:40, Micka=C3=ABl Sala=C3=BCn wrote:
-> After some bisecting, I found that commit 05a0302c3548 ("rtc: mc146818:
-> Prevent reading garbage", this patch, introduced since v5.11-rc1) makes
-> my VM hang at boot. Before this commit, I got this (and didn't notice)
-> at every boot:
-> rtc_cmos rtc_cmos: registered as rtc0
-> rtc_cmos rtc_cmos: hctosys: unable to read the hardware clock
-> rtc_cmos rtc_cmos: alarms up to one day, 114 bytes nvram
+Hi Alex, Cornelia and Jason,
+
+thanks for the reviewing this.
+
+On 1/26/2021 5:34 AM, Alex Williamson wrote:
+> On Mon, 25 Jan 2021 20:45:22 -0400
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
-> I notice that this patch creates infinite loops, which my VM falls into
-> (cf. below).
->> +	time->tm_sec =3D CMOS_READ(RTC_SECONDS);
->> +
->> +	if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
->> +		spin_unlock_irqrestore(&rtc_lock, flags);
->> +		mdelay(1);
+>> On Mon, Jan 25, 2021 at 04:31:51PM -0700, Alex Williamson wrote:
+>>
+>>> We're supposed to be enlightened by a vendor driver that does nothing
+>>> more than pass the opaque device_data through to the core functions,
+>>> but in reality this is exactly the point of concern above.  At a
+>>> minimum that vendor driver needs to look at the vdev to get the
+>>> pdev,
+>> The end driver already havs the pdev, the RFC doesn't go enough into
+>> those bits, it is a good comment.
+>>
+>> The dd_data pased to the vfio_create_pci_device() will be retrieved
+>> from the ops to get back to the end drivers data. This can cleanly
+>> include everything: the VF pci_device, PF pci_device, mlx5_core
+>> pointer, vfio_device and vfio_pci_device.
+>>
+>> This is why the example passes in the mvadev:
+>>
+>> +	vdev = vfio_create_pci_device(pdev, &mlx5_vfio_pci_ops, mvadev);
+>>
+>> The mvadev has the PF, VF, and mlx5 core driver pointer.
+>>
+>> Getting that back out during the ops is enough to do what the mlx5
+>> driver needs to do, which is relay migration related IOCTLs to the PF
+>> function via the mlx5_core driver so the device can execute them on
+>> behalf of the VF.
+>>
+>>> but then what else does it look at, consume, or modify.  Now we have
+>>> vendor drivers misusing the core because it's not clear which fields
+>>> are private and how public fields can be used safely,
+>> The kernel has never followed rigid rules for data isolation, it is
+>> normal to have whole private structs exposed in headers so that
+>> container_of can be used to properly compose data structures.
+> I reject this assertion, there are plenty of structs that clearly
+> indicate private vs public data or, as we've done in mdev, clearly
+> marking the private data in a "private" header and provide access
+> functions for public fields.  Including a "private" header to make use
+> of a "library" is just wrong.  In the example above, there's no way for
+> the mlx vendor driver to get back dd_data without extracting it from
+> struct vfio_pci_device itself.
+
+I'll create a better separation between private/public fields according 
+to my understanding for the V2.
+
+I'll just mention that beyond this separation, future improvements will 
+be needed and can be done incrementally.
+
+I don't think that we should do so many changes at one shut. The 
+incremental process is safer from subsystem point of view.
+
+I also think that upstreaming mlx5_vfio_pci.ko and upstreaming vfio-pci 
+separation into 2 modules doesn't have to happen in one-shut.
+
+But again, to make our point in this RFC, I'll improve it for V2.
+
 >
-> My VM loops here.
-> time->tm_sec is always 255.
+>> Look at struct device, for instance. Most of that is private to the
+>> driver core.
+>>
+>> A few 'private to vfio-pci-core' comments would help, it is good
+>> feedback to make that more clear.
+>>
+>>> extensions potentially break vendor drivers, etc.  We're only even hand
+>>> waving that existing device specific support could be farmed out to new
+>>> device specific drivers without even going to the effort to prove that.
+>> This is a RFC, not a complete patch series. The RFC is to get feedback
+>> on the general design before everyone comits alot of resources and
+>> positions get dug in.
+>>
+>> Do you really think the existing device specific support would be a
+>> problem to lift? It already looks pretty clean with the
+>> vfio_pci_regops, looks easy enough to lift to the parent.
+>>
+>>> So far the TODOs rather mask the dirty little secrets of the
+>>> extension rather than showing how a vendor derived driver needs to
+>>> root around in struct vfio_pci_device to do something useful, so
+>>> probably porting actual device specific support rather than further
+>>> hand waving would be more helpful.
+>> It would be helpful to get actual feedback on the high level design -
+>> someting like this was already tried in May and didn't go anywhere -
+>> are you surprised that we are reluctant to commit alot of resources
+>> doing a complete job just to have it go nowhere again?
+> That's not really what I'm getting from your feedback, indicating
+> vfio-pci is essentially done, the mlx stub driver should be enough to
+> see the direction, and additional concerns can be handled with TODO
+> comments.  Sorry if this is not construed as actual feedback, I think
+> both Connie and I are making an effort to understand this and being
+> hampered by lack of a clear api or a vendor driver that's anything more
+> than vfio-pci plus an aux bus interface.  Thanks,
 
-That means there is no RTC and therefore the CMOS_READ($REG) returns
-0xFF which makes the loop stuck because RTC_UIP is always set.
+I think I got the main idea and I'll try to summarize it:
 
-Yet another proof that VIRT creates more problems than it solves.
+The separation to vfio-pci.ko and vfio-pci-core.ko is acceptable, and we 
+do need it to be able to create vendor-vfio-pci.ko driver in the future 
+to include vendor special souse inside.
 
-Fix below.
+The separation implementation and the question of what is private and 
+what is public, and the core APIs to the various drivers should be 
+improved or better demonstrated in the V2.
 
-Thanks,
+I'll work on improving it and I'll send the V2.
 
-        tglx
----
-Subject: rtc: mc146818: Detect and handle broken RTCs
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Tue, 26 Jan 2021 11:38:40 +0100
 
-The recent fix for handling the UIP bit unearthed another issue in the RTC
-code. If the RTC is advertised but the readout is straight 0xFF because
-it's not available, the old code just proceeded with crappy values, but the
-new code hangs because it waits for the UIP bit to become low.
+If you have some feedback of the things/fields/structs you think should 
+remain private to vfio-pci-core please let us know.
 
-Add a sanity check in the RTC CMOS probe function which reads the RTC_VALID
-register (Register D) which should have bit 0-6 cleared. If that's not the
-case then fail to register the CMOS.
+Thanks for the effort in the review,
 
-Add the same check to mc146818_get_time(), warn once when the condition
-is true and invalidate the rtc_time data.
+-Max.
 
-Reported-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- drivers/rtc/rtc-cmos.c         |    8 ++++++++
- drivers/rtc/rtc-mc146818-lib.c |    7 +++++++
- 2 files changed, 15 insertions(+)
-
---- a/drivers/rtc/rtc-cmos.c
-+++ b/drivers/rtc/rtc-cmos.c
-@@ -805,6 +805,14 @@ cmos_do_probe(struct device *dev, struct
-=20
- 	spin_lock_irq(&rtc_lock);
-=20
-+	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
-+	if ((CMOS_READ(RTC_VALID) & 0x7f) !=3D 0) {
-+		spin_unlock_irq(&rtc_lock);
-+		dev_warn(dev, "not accessible\n");
-+		retval =3D -ENXIO;
-+		goto cleanup1;
-+	}
-+
- 	if (!(flags & CMOS_RTC_FLAGS_NOFREQ)) {
- 		/* force periodic irq to CMOS reset default of 1024Hz;
- 		 *
---- a/drivers/rtc/rtc-mc146818-lib.c
-+++ b/drivers/rtc/rtc-mc146818-lib.c
-@@ -21,6 +21,13 @@ unsigned int mc146818_get_time(struct rt
-=20
- again:
- 	spin_lock_irqsave(&rtc_lock, flags);
-+	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
-+	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x7f) !=3D 0)) {
-+		spin_unlock_irqrestore(&rtc_lock, flags);
-+		memset(time, 0xff, sizeof(time));
-+		return 0;
-+	}
-+
- 	/*
- 	 * Check whether there is an update in progress during which the
- 	 * readout is unspecified. The maximum update time is ~2ms. Poll
+> Alex
+>
