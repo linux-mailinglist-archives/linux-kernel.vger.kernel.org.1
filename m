@@ -2,278 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B811303E63
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00797303E6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392168AbhAZNQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:16:54 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11507 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391845AbhAZMrN (ORCPT
+        id S2404366AbhAZNSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391772AbhAZMpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:47:13 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DQ5yX1G7wzjDdr;
-        Tue, 26 Jan 2021 20:44:04 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 26 Jan 2021 20:45:07 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <xiexiangyou@huawei.com>, <zhengchuan@huawei.com>,
-        <yubihong@huawei.com>
-Subject: [RFC PATCH 7/7] kvm: arm64: Start up SW/HW combined dirty log
-Date:   Tue, 26 Jan 2021 20:44:44 +0800
-Message-ID: <20210126124444.27136-8-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210126124444.27136-1-zhukeqian1@huawei.com>
-References: <20210126124444.27136-1-zhukeqian1@huawei.com>
+        Tue, 26 Jan 2021 07:45:45 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B420C0611C2;
+        Tue, 26 Jan 2021 04:45:05 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id r4so9690760pls.11;
+        Tue, 26 Jan 2021 04:45:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=9a81CG4SHOE28Bf8JJ1zvGq039y62JTzwIy7vae083Y=;
+        b=ky0kWgI1LhXYaXsAmJ3DPyuoBYZMViZexpYgH+lpR2fKLFGoegxnu9/k3rbGHODZyk
+         Yr14jWtSXW7v5rStY+WOtp92vmAz+CqAlEcMBJxOQ9Bc6GjQbc/+4kUd9iNE3tLWEb3G
+         VVlFyl4iftXuDICb/Gg9Sz8lFN1hxhWZwgHLDGw4Kl7N1RZIdUSdtG+fu7ds1ah1OwVi
+         djgCyNSy9SP1y1FVl7T9/TstnplOWbfR7P4Uo2pgV1Orns/GptBAzM512RQAnKJKaXHw
+         9LEHAGFBou2Fk8FhC4h+8/uYPOP3zBGt00OV3ir+5PbX0F3vwhq2/pUDGfd/nU7lAA3i
+         hOTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=9a81CG4SHOE28Bf8JJ1zvGq039y62JTzwIy7vae083Y=;
+        b=X8UCF87zR495Cu3FMe7aIQ2jHdh53eCCgQneQ7oAqdsZRdEFBIDPkaLsp4vxJO8bE5
+         t0gHx4aYLXk9BTDtaA6JBbbGjGCJO9K6/pBPEhKkzDXMCfBtyQcsIqa+ht91dBt9c41x
+         /nfUREMxyO7HdlXnI9io3stu7J5DPeBQ9jyOedAp3QVD334PFNTJ2fVOO7GcZ0eamvcy
+         5iHzzi5lRiVIeuGhUYhuGXjcmCTL8hIwLj925pReHoOvQdF4nVmgr3Zx/6RF44zRYg/R
+         NTwOiJJ5DL2ZcqYMrVd+6mlyd4O4Atc2zfpMckuOC0ewropYM0z3UnRWTWUDcOMBiMGp
+         CXpg==
+X-Gm-Message-State: AOAM530Etcdzg0c2ojWIfM67u9PnbXUcI2JVK16aak+NYvQaJHDJmTg5
+        z7tdDXDr3QUhi+0dzi7sCpM=
+X-Google-Smtp-Source: ABdhPJxiCb7QZ0TikxQ7E5YkT7Pg9cG8f+dof/LTW/qDOqRE5N2oICgGiXNuVElqx4NoD4DJGnZazg==
+X-Received: by 2002:a17:90b:fd3:: with SMTP id gd19mr6134207pjb.129.1611665105027;
+        Tue, 26 Jan 2021 04:45:05 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id b203sm19214968pfb.11.2021.01.26.04.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 04:45:04 -0800 (PST)
+Date:   Tue, 26 Jan 2021 20:44:59 +0800
+From:   carlis <zhangxuezhi3@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
+        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
+        colin.king@canonical.com, zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v2] fbtft: add tearing signal detect
+Message-ID: <20210126204459.00002b7e@gmail.com>
+In-Reply-To: <20210126081745.GX2696@kadam>
+References: <1611564252-84205-1-git-send-email-zhangxuezhi3@gmail.com>
+        <20210126081745.GX2696@kadam>
+Organization: Tyzmig-ryrjum-8kedto
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We do not enable hardware dirty at start (do not add DBM bit). When
-an arbitrary PT occurs fault, we execute soft tracking for this PT
-and enable hardware tracking for its nearby PTs (Add DBM bit for
-nearby 64PTs). Then when sync dirty log, we have known all PTs with
-hardware dirty enabled, so we do not need to scan all PTs.
+On Tue, 26 Jan 2021 11:17:45 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
----
- arch/arm64/include/asm/kvm_host.h |   6 ++
- arch/arm64/kvm/arm.c              | 125 ++++++++++++++++++++++++++++++
- arch/arm64/kvm/mmu.c              |   7 +-
- arch/arm64/kvm/reset.c            |   8 +-
- 4 files changed, 141 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 8fcfab0c2567..e9ea5b546326 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -99,6 +99,8 @@ struct kvm_s2_mmu {
- };
- 
- struct kvm_arch_memory_slot {
-+	#define HWDBM_GRANULE_SHIFT 6  /* 64 pages per bit */
-+	unsigned long *hwdbm_bitmap;
- };
- 
- struct kvm_arch {
-@@ -565,6 +567,10 @@ struct kvm_vcpu_stat {
- 	u64 exits;
- };
- 
-+int kvm_arm_init_hwdbm_bitmap(struct kvm_memory_slot *memslot);
-+void kvm_arm_destroy_hwdbm_bitmap(struct kvm_memory_slot *memslot);
-+void kvm_arm_enable_nearby_hwdbm(struct kvm *kvm, gfn_t gfn);
-+
- int kvm_vcpu_preferred_target(struct kvm_vcpu_init *init);
- unsigned long kvm_arm_num_regs(struct kvm_vcpu *vcpu);
- int kvm_arm_copy_reg_indices(struct kvm_vcpu *vcpu, u64 __user *indices);
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 04c44853b103..9e05d45fa6be 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1257,9 +1257,134 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 	return r;
- }
- 
-+static unsigned long kvm_hwdbm_bitmap_bytes(struct kvm_memory_slot *memslot)
-+{
-+	unsigned long nbits = DIV_ROUND_UP(memslot->npages, 1 << HWDBM_GRANULE_SHIFT);
-+
-+	return ALIGN(nbits, BITS_PER_LONG) / 8;
-+}
-+
-+static unsigned long *kvm_second_hwdbm_bitmap(struct kvm_memory_slot *memslot)
-+{
-+	unsigned long len = kvm_hwdbm_bitmap_bytes(memslot);
-+
-+	return (void *)memslot->arch.hwdbm_bitmap + len;
-+}
-+
-+/*
-+ * Allocate twice space. Refer kvm_arch_sync_dirty_log() to see why the
-+ * second space is needed.
-+ */
-+int kvm_arm_init_hwdbm_bitmap(struct kvm_memory_slot *memslot)
-+{
-+	unsigned long bytes = 2 * kvm_hwdbm_bitmap_bytes(memslot);
-+
-+	if (!system_supports_hw_dbm())
-+		return 0;
-+
-+	if (memslot->arch.hwdbm_bitmap) {
-+		/* Inherited from old memslot */
-+		bitmap_clear(memslot->arch.hwdbm_bitmap, 0, bytes * 8);
-+	} else {
-+		memslot->arch.hwdbm_bitmap = kvzalloc(bytes, GFP_KERNEL_ACCOUNT);
-+		if (!memslot->arch.hwdbm_bitmap)
-+			return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+void kvm_arm_destroy_hwdbm_bitmap(struct kvm_memory_slot *memslot)
-+{
-+	if (!memslot->arch.hwdbm_bitmap)
-+		return;
-+
-+	kvfree(memslot->arch.hwdbm_bitmap);
-+	memslot->arch.hwdbm_bitmap = NULL;
-+}
-+
-+/* Add DBM for nearby pagetables but do not across memslot */
-+void kvm_arm_enable_nearby_hwdbm(struct kvm *kvm, gfn_t gfn)
-+{
-+	struct kvm_memory_slot *memslot;
-+
-+	memslot = gfn_to_memslot(kvm, gfn);
-+	if (memslot && kvm_slot_dirty_track_enabled(memslot) &&
-+	    memslot->arch.hwdbm_bitmap) {
-+		unsigned long rel_gfn = gfn - memslot->base_gfn;
-+		unsigned long dbm_idx = rel_gfn >> HWDBM_GRANULE_SHIFT;
-+		unsigned long start_page, npages;
-+
-+		if (!test_and_set_bit(dbm_idx, memslot->arch.hwdbm_bitmap)) {
-+			start_page = dbm_idx << HWDBM_GRANULE_SHIFT;
-+			npages = 1 << HWDBM_GRANULE_SHIFT;
-+			npages = min(memslot->npages - start_page, npages);
-+			kvm_stage2_set_dbm(kvm, memslot, start_page, npages);
-+		}
-+	}
-+}
-+
-+/*
-+ * We have to find a place to clear hwdbm_bitmap, and clear hwdbm_bitmap means
-+ * to clear DBM bit of all related pgtables. Note that between we clear DBM bit
-+ * and flush TLB, HW dirty log may occur, so we must scan all related pgtables
-+ * after flush TLB. Giving above, it's best choice to clear hwdbm_bitmap before
-+ * sync HW dirty log.
-+ */
- void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
- {
-+	unsigned long *second_bitmap = kvm_second_hwdbm_bitmap(memslot);
-+	unsigned long start_page, npages;
-+	unsigned int end, rs, re;
-+	bool has_hwdbm = false;
-+
-+	if (!memslot->arch.hwdbm_bitmap)
-+		return;
- 
-+	end = kvm_hwdbm_bitmap_bytes(memslot) * 8;
-+	bitmap_clear(second_bitmap, 0, end);
-+
-+	spin_lock(&kvm->mmu_lock);
-+	bitmap_for_each_set_region(memslot->arch.hwdbm_bitmap, rs, re, 0, end) {
-+		has_hwdbm = true;
-+
-+		/*
-+		 * Must clear bitmap before clear DBM bit. During we clear DBM
-+		 * (it releases the mmu spinlock periodly), SW dirty tracking
-+		 * has chance to add DBM which overlaps what we are clearing. So
-+		 * if we clear bitmap after clear DBM, we will face a situation
-+		 * that bitmap is cleared but DBM are lefted, then we may have
-+		 * no chance to scan these lefted pgtables anymore.
-+		 */
-+		bitmap_clear(memslot->arch.hwdbm_bitmap, rs, re - rs);
-+
-+		/* Record the bitmap cleared */
-+		bitmap_set(second_bitmap, rs, re - rs);
-+
-+		start_page = rs << HWDBM_GRANULE_SHIFT;
-+		npages = (re - rs) << HWDBM_GRANULE_SHIFT;
-+		npages = min(memslot->npages - start_page, npages);
-+		kvm_stage2_clear_dbm(kvm, memslot, start_page, npages);
-+	}
-+	spin_unlock(&kvm->mmu_lock);
-+
-+	if (!has_hwdbm)
-+		return;
-+
-+	/*
-+	 * Ensure vcpu write-actions that occur after we clear hwdbm_bitmap can
-+	 * be catched by guest memory abort handler.
-+	 */
-+	kvm_flush_remote_tlbs(kvm);
-+
-+	spin_lock(&kvm->mmu_lock);
-+	bitmap_for_each_set_region(second_bitmap, rs, re, 0, end) {
-+		start_page = rs << HWDBM_GRANULE_SHIFT;
-+		npages = (re - rs) << HWDBM_GRANULE_SHIFT;
-+		npages = min(memslot->npages - start_page, npages);
-+		kvm_stage2_sync_dirty(kvm, memslot, start_page, npages);
-+	}
-+	spin_unlock(&kvm->mmu_lock);
- }
- 
- void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 2f8c6770a4dc..1a8702035ddd 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -939,6 +939,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	 */
- 	if (fault_status == FSC_PERM && vma_pagesize == fault_granule) {
- 		ret = kvm_pgtable_stage2_relax_perms(pgt, fault_ipa, prot);
-+
-+		/* Put here with high probability that nearby PTEs are valid */
-+		if (!ret && vma_pagesize == PAGE_SIZE && writable)
-+			kvm_arm_enable_nearby_hwdbm(kvm, gfn);
- 	} else {
- 		ret = kvm_pgtable_stage2_map(pgt, fault_ipa, vma_pagesize,
- 					     __pfn_to_phys(pfn), prot,
-@@ -1407,11 +1411,12 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
- 	spin_unlock(&kvm->mmu_lock);
- out:
- 	mmap_read_unlock(current->mm);
--	return ret;
-+	return ret ? : kvm_arm_init_hwdbm_bitmap(memslot);
- }
- 
- void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
- {
-+	kvm_arm_destroy_hwdbm_bitmap(slot);
- }
- 
- void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen)
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index 47f3f035f3ea..231d11009db7 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -376,11 +376,11 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
- 	vtcr |= VTCR_EL2_LVLS_TO_SL0(lvls);
- 
- 	/*
--	 * Enable the Hardware Access Flag management, unconditionally
--	 * on all CPUs. The features is RES0 on CPUs without the support
--	 * and must be ignored by the CPUs.
-+	 * Enable the Hardware Access Flag and Dirty State management
-+	 * unconditionally on all CPUs. The features are RES0 on CPUs
-+	 * without the support and must be ignored by the CPUs.
- 	 */
--	vtcr |= VTCR_EL2_HA;
-+	vtcr |= VTCR_EL2_HA | VTCR_EL2_HD;
- 
- 	/* Set the vmid bits */
- 	vtcr |= (kvm_get_vmid_bits() == 16) ?
--- 
-2.19.1
-
+> On Mon, Jan 25, 2021 at 04:44:12PM +0800, Carlis wrote:
+> > From: "carlis.zhang_cp" <zhangxuezhi1@yulong.com>  
+> 
+> I was really expecting that you would fix this and Signed-off-by as
+> well.
+> 
+> regards,
+> dan carpenter
+> 
+I have fix this in patch v3
+> regards,
+> zhangxuezhi
