@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8033E30457A
+	by mail.lfdr.de (Postfix) with ESMTP id F332130457B
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392595AbhAZRiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:38:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389482AbhAZHuu (ORCPT
+        id S2392673AbhAZRjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:39:18 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:42048 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730808AbhAZHuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:50:50 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1F5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:50:02 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id t8so11077425ljk.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:50:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=QzNr7Y36ceZ98RJN+WjlQV3oeSFVn4zACIduR95Oy6w=;
-        b=YMB8K50GIVNRpC0zCf5QxVa16FCljbVWL2+bEBT+BXpkJvwwah/jjSyt3rAn2FV3eq
-         3Ht3q/hPN187G3xvyqaETyQkgy1AhyJ544lujYGu3JqBnYz9/OqJo71R7FMTJxE1BATB
-         UFSxUViJ1rOyidSmEJFKCCKjmouKQzyz9/fGmkxyuMNSEy82BnzYKml+mkcpjwvA58/N
-         dTWmFLIFs9pjMwj8mmqDSEsQpXl+nPIS3xxkMHNgt7EtSqdfEfU/dwN8YROOO0AU5BW5
-         rUN186YmBRr5gjXTjURMPYYDcvNR42MzcuGEbyNQqMLdICSW+KdLgda1KbED9ThhH03q
-         LOqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QzNr7Y36ceZ98RJN+WjlQV3oeSFVn4zACIduR95Oy6w=;
-        b=miG1Zw2QX7HcLdmeVDMCoqAGOxbsRqiEqAdUGFvQku6MeFD3bdw3u5Rr9Q9rWZNfXA
-         WNKzI5IiL1bzNZ4ml/HOaGlCLYi5/xRG9P7HelTJ/x9tcqEHRpZNcTQYK9Mnvx+xo6fN
-         z8ly7Btc36vJ3GYDMblNQjHxLNwVudUwgi23hI+/sLGcr5o1ivP475vc5h0Bl9SCt+X9
-         jhkzrgWzPo1X+ZIkDlbX00/o5CYRSpWfzf3HEXtb6hxOARy1bKcRURkLuBcbI+v9RKx0
-         XtHzY7aiU8DUAJcaKkjk6bE+cvR0hjeLpGtZN2ZZVxs726slYjOrEed5XJD9cKrTD+b5
-         iSHQ==
-X-Gm-Message-State: AOAM530pfaP0AAmzr2MmiB+dA3nsgMHHGR0lx1BNLu1CfzUkWoI8B1sJ
-        WR18hTsaurcWs7QSvJZtii/d5w==
-X-Google-Smtp-Source: ABdhPJzGj0hsn5+J9qBrOrmv41eiastPsTnom0tHpYcTffF0mdgOwieJ0RsqviboExS19wjT1ye9CQ==
-X-Received: by 2002:a2e:94d0:: with SMTP id r16mr2232979ljh.332.1611647400805;
-        Mon, 25 Jan 2021 23:50:00 -0800 (PST)
-Received: from localhost.localdomain ([85.249.43.69])
-        by smtp.googlemail.com with ESMTPSA id j2sm2401068lfe.134.2021.01.25.23.49.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 23:50:00 -0800 (PST)
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-To:     mchehab@kernel.org, dave.stevenson@raspberrypi.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sakari.ailus@linux.intel.com, peter.griffin@linaro.org,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Subject: [PATCH] media: i2c: imx219: Implement V4L2_CID_LINK_FREQ control
-Date:   Tue, 26 Jan 2021 10:49:34 +0300
-Message-Id: <20210126074934.26980-1-andrey.konovalov@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Tue, 26 Jan 2021 02:50:52 -0500
+Received: from dread.disaster.area (pa49-180-243-77.pa.nsw.optusnet.com.au [49.180.243.77])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 05DF38278DE;
+        Tue, 26 Jan 2021 18:49:57 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1l4J6q-002Wuh-24; Tue, 26 Jan 2021 18:49:56 +1100
+Date:   Tue, 26 Jan 2021 18:49:56 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Luis Lozano <llozano@chromium.org>, iant@google.com
+Subject: Re: [BUG] copy_file_range with sysfs file as input
+Message-ID: <20210126074956.GF4626@dread.disaster.area>
+References: <CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com>
+ <20210126013414.GE4626@dread.disaster.area>
+ <CANMq1KAgD_98607w308h3QSGaiRTkyVThmWmUuExxqh3r+tZsA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANMq1KAgD_98607w308h3QSGaiRTkyVThmWmUuExxqh3r+tZsA@mail.gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=juxvdbeFDU67v5YkIhU0sw==:117 a=juxvdbeFDU67v5YkIhU0sw==:17
+        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8 a=GcyzOjIWAAAA:8
+        a=J2zK9Hhgt6MEY7-RQMQA:9 a=CjuIK1q_8ugA:10 a=2fKfcJrRRacA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22 a=hQL3dl6oAZ8NdCsdz28n:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This control is needed for imx219 driver, as the link frequency
-is independent from the pixel rate in this case, and can't be
-calculated from the pixel rate.
+On Tue, Jan 26, 2021 at 11:50:50AM +0800, Nicolas Boichat wrote:
+> On Tue, Jan 26, 2021 at 9:34 AM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > On Mon, Jan 25, 2021 at 03:54:31PM +0800, Nicolas Boichat wrote:
+> > > Hi copy_file_range experts,
+> > >
+> > > We hit this interesting issue when upgrading Go compiler from 1.13 to
+> > > 1.15 [1]. Basically we use Go's `io.Copy` to copy the content of
+> > > `/sys/kernel/debug/tracing/trace` to a temporary file.
+> > >
+> > > Under the hood, Go now uses `copy_file_range` syscall to optimize the
+> > > copy operation. However, that fails to copy any content when the input
+> > > file is from sysfs/tracefs, with an apparent size of 0 (but there is
+> > > still content when you `cat` it, of course).
+> > >
+> > > A repro case is available in comment7 (adapted from the man page),
+> > > also copied below [2].
+> > >
+> > > Output looks like this (on kernels 5.4.89 (chromeos), 5.7.17 and
+> > > 5.10.3 (chromeos))
+> > > $ ./copyfrom /sys/kernel/debug/tracing/trace x
+> > > 0 bytes copied
+> >
+> > That's basically telling you that copy_file_range() was unable to
+> > copy anything. The man page says:
+> >
+> > RETURN VALUE
+> >        Upon  successful  completion,  copy_file_range() will return
+> >        the number of bytes copied between files.  This could be less
+> >        than the length originally requested.  If the file offset
+> >        of fd_in is at or past the end of file, no bytes are copied,
+> >        and copy_file_range() returns zero.
+> >
+> > THe man page explains it perfectly.
+> 
+> I'm not that confident the explanation is perfect ,-)
+> 
+> How does one define "EOF"? The read manpage
+> (https://man7.org/linux/man-pages/man2/read.2.html) defines it as a
+> zero return value.
 
-Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
----
- drivers/media/i2c/imx219.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+And so does copy_file_range(). That's the -API definition-, it does
+not define the kernel implementation of how to decide when the file
+is at EOF.
 
-diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-index 92a8d52776b8..6e3382b85a90 100644
---- a/drivers/media/i2c/imx219.c
-+++ b/drivers/media/i2c/imx219.c
-@@ -390,6 +390,10 @@ static const struct imx219_reg raw10_framefmt_regs[] = {
- 	{0x0309, 0x0a},
- };
- 
-+static const s64 imx219_link_freq_menu[] = {
-+	IMX219_DEFAULT_LINK_FREQ,
-+};
-+
- static const char * const imx219_test_pattern_menu[] = {
- 	"Disabled",
- 	"Color Bars",
-@@ -547,6 +551,7 @@ struct imx219 {
- 	struct v4l2_ctrl_handler ctrl_handler;
- 	/* V4L2 Controls */
- 	struct v4l2_ctrl *pixel_rate;
-+	struct v4l2_ctrl *link_freq;
- 	struct v4l2_ctrl *exposure;
- 	struct v4l2_ctrl *vflip;
- 	struct v4l2_ctrl *hflip;
-@@ -1269,7 +1274,7 @@ static int imx219_init_controls(struct imx219 *imx219)
- 	int i, ret;
- 
- 	ctrl_hdlr = &imx219->ctrl_handler;
--	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 11);
-+	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 12);
- 	if (ret)
- 		return ret;
- 
-@@ -1283,6 +1288,14 @@ static int imx219_init_controls(struct imx219 *imx219)
- 					       IMX219_PIXEL_RATE, 1,
- 					       IMX219_PIXEL_RATE);
- 
-+	imx219->link_freq =
-+		v4l2_ctrl_new_int_menu(ctrl_hdlr, &imx219_ctrl_ops,
-+				       V4L2_CID_LINK_FREQ,
-+				       ARRAY_SIZE(imx219_link_freq_menu) - 1, 0,
-+				       imx219_link_freq_menu);
-+	if (imx219->link_freq)
-+		imx219->link_freq->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-+
- 	/* Initial vblank/hblank/exposure parameters based on current mode */
- 	imx219->vblank = v4l2_ctrl_new_std(ctrl_hdlr, &imx219_ctrl_ops,
- 					   V4L2_CID_VBLANK, IMX219_VBLANK_MIN,
+> I don't think using the inode file size is
+> standard.
+
+It is the standard VFS filesystem definition of EOF.
+
+Indeed:
+
+copy_file_range()
+  vfs_copy_file_range()
+    generic_copy_file_checks()
+    .....
+
+        /* Shorten the copy to EOF */
+        size_in = i_size_read(inode_in);
+        if (pos_in >= size_in)
+                count = 0;
+        else
+                count = min(count, size_in - (uint64_t)pos_in);
+
+That inode size check for EOF is -exactly- what is triggering here,
+and a copy of zero length returns 0 bytes having done nothing.
+
+The page cache read path does similar things in
+generic_file_buffered_read() to avoid truncate races exposing
+stale/bad data to userspace:
+
+
+                /*
+                 * i_size must be checked after we know the pages are Uptodate.
+                 *
+                 * Checking i_size after the check allows us to calculate
+                 * the correct value for "nr", which means the zero-filled
+                 * part of the page is not copied back to userspace (unless
+                 * another truncate extends the file - this is desired though).
+                 */
+                isize = i_size_read(inode);
+                if (unlikely(iocb->ki_pos >= isize))
+                        goto put_pages;
+
+> > 'cat' "works" in this situation because it doesn't check the file
+> > size and just attempts to read unconditionally from the file. Hence
+> > it happily returns non-existent stale data from busted filesystem
+> > implementations that allow data to be read from beyond EOF...
+> 
+> `cp` also works, so does `dd` and basically any other file operation.
+
+They do not use a syscall interface that can offload work to
+filesystems, low level block layer software, hardware and/or remote
+systems. copy_file_range() is restricted to regular files and does
+complex stuff that read() and friends will never do, so we have
+strictly enforced rules to prevent people from playing fast and
+loose and silently corrupting user data with it....
+
+Cheers,
+
+Dave.
 -- 
-2.17.1
-
+Dave Chinner
+david@fromorbit.com
