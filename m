@@ -2,107 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE9D303BDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6978303BE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405302AbhAZLlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:41:19 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:56880 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404476AbhAZKwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:52:44 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BFE251A0678;
-        Tue, 26 Jan 2021 11:51:55 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B0CEB1A0392;
-        Tue, 26 Jan 2021 11:51:51 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 36509402A2;
-        Tue, 26 Jan 2021 11:51:46 +0100 (CET)
-From:   Biwen Li <biwen.li@oss.nxp.com>
-To:     mark.rutland@arm.com, leoyang.li@nxp.com, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, ran.wang_1@nxp.com,
-        Biwen Li <biwen.li@nxp.com>
-Subject: [PATCH] irqchip: ls-extirq: add flag IRQCHIP_SKIP_SET_WAKE to remove call trace
-Date:   Tue, 26 Jan 2021 19:00:27 +0800
-Message-Id: <20210126110027.39689-1-biwen.li@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2405428AbhAZLmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:42:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404791AbhAZLDL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 06:03:11 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C63C061573;
+        Tue, 26 Jan 2021 03:02:30 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id w1so22290987ejf.11;
+        Tue, 26 Jan 2021 03:02:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=tGus94grLYPWSUM0bMFUmChMXn+Sc5UCDSiVFm8Bk1g=;
+        b=ReLxtoNk/T9yXEhHKg8pHbxSJw3aJoyT/IEKEoIyVyeulTYz+4TP45B5rr4TihDhhv
+         17I+sgm2Ant/VgPBELLeO5DsCELkpNd8VASufye+/0aURAJIDZddTMAgWF7ImRzyxQEA
+         rVq9VqepJAu29BhI3wx9AQTCzqmObuq5/kZH5Qu9GKKX5zBbOtfoawLHK57+eYd71VZm
+         kH/TAv0BLQGfAcq04zf7TOp5jS+IlbY+qvgrzTUoVwHJDGAsmEEIla5U/PABcEf5J9NM
+         hxSDeyQezd8wS6bI7OppyoHqfzpcNfjWa9NJUp+k2Szj5UKgvfcm/3cHrdv9ptGGBSpS
+         yAlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tGus94grLYPWSUM0bMFUmChMXn+Sc5UCDSiVFm8Bk1g=;
+        b=ETS/UVs7nLTb+/wp+jZnnWr327SfBP/EJPS1PH+xuhOaoaNk53NWWzbqpR25I0Wq3A
+         i9CkYaKtw78EyP7brTHiXAf2/rXO1EWw+/0YUNZpQLWngTvwqJDcdIWYyBLW2HapPjwe
+         0oRP1Yn65lZTXxRkVfcdVT+FHLO3JilfMdpEvyeWZQT2yFVXS34OVQ9MywsSPBNw6SiY
+         25ovuz7OGH0idvvOLSdoaKH5eh/xeE1gyFnsr7cQs+i/mctXUdbz6lcoY6wiI5hO2Gyd
+         +3zuWqdEMSXlAEH5YuZl0CQBhGQqRuoYz0SIvq/nsUdaBgE/1dC6n8mOZAO4R/eAY5Ha
+         PR5g==
+X-Gm-Message-State: AOAM531U4nnS7O4Or4naFJzRBS2DaeUv1hYqyTAfZHWE/bGVXt1AMoGE
+        9FcyrfvzXAQD4FnaNEA0PYgZHnmkS+E=
+X-Google-Smtp-Source: ABdhPJweKLVCgdb55W52Fgzza7M8uQ3muJw6gFw6GteiCpKniAv8SkhaI6jSnMSRGamCzzANptF5tQ==
+X-Received: by 2002:a17:906:c954:: with SMTP id fw20mr3076916ejb.342.1611658949575;
+        Tue, 26 Jan 2021 03:02:29 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id a2sm9533408ejk.80.2021.01.26.03.02.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Jan 2021 03:02:28 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
+Date:   Tue, 26 Jan 2021 12:02:20 +0100
+Message-Id: <20210126110221.10815-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+A test with the command below aimed at powerpc generates
+notifications in the Rockchip ARM tree.
 
-Add flag IRQCHIP_SKIP_SET_WAKE to remove call trace as follow,
-[   45.605239] Unbalanced IRQ 120 wake disable
-[   45.609445] WARNING: CPU: 0 PID: 1124 at kernel/irq/manage.c:800 irq_set_irq_wake+0x154/0x1a0
-[   45.617965] Modules linked in: fsl_jr_uio caam_jr caamkeyblob_desc crypto_engine rng_core dpaa2_caam caamhash_desc caamalg_desc crct10dif_ce libdes caam error lm90 ina2xx
-[   45.633222] CPU: 0 PID: 1124 Comm: sh Not tainted 5.10.9 #1
-[   45.638789] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-[   45.645141] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
-[   45.651144] pc : irq_set_irq_wake+0x154/0x1a0
-[   45.655497] lr : irq_set_irq_wake+0x154/0x1a0
-[   45.659847] sp : ffff800012a83b00
-[   45.663156] x29: ffff800012a83b00 x28: 0000000000000000
-[   45.668469] x27: 0000000000000008 x26: ffffa74bd9d22cf0
-[   45.673781] x25: 0000000a5a1768a7 x24: ffffa74bda672e6c
-[   45.679092] x23: 0000000000000000 x22: ffff62f7f2a08000
-[   45.684404] x21: 00000000ffffffea x20: 0000000000000078
-[   45.689715] x19: ffff62f7f00b3e00 x18: 0000000000000030
-[   45.695026] x17: 0000000000000000 x16: 0000000000000001
-[   45.700337] x15: ffff62f7f2a08460 x14: ffffffffffffffff
-[   45.705648] x13: ffffa74bda6733f8 x12: 000000000000080d
-[   45.710959] x11: 00000000000002af x10: ffffa74bda6cb3f8
-[   45.716270] x9 : 00000000fffff000 x8 : ffffa74bda6733f8
-[   45.721581] x7 : ffffa74bda6cb3f8 x6 : 0000000000000000
-[   45.726892] x5 : 0000000000000000 x4 : 0000000000000000
-[   45.732203] x3 : 00000000ffffffff x2 : ffffa74bda673378
-[   45.737514] x1 : f27fea81bfee7700 x0 : 0000000000000000
-[   45.742825] Call trace:
-[   45.745268]  irq_set_irq_wake+0x154/0x1a0
-[   45.749278]  ds3232_resume+0x38/0x50
-[   45.752853]  dpm_run_callback.constprop.0+0x3c/0xe4
-[   45.757727]  device_resume+0x88/0x180
-[   45.761385]  dpm_resume+0xe8/0x220
-[   45.764782]  dpm_resume_end+0x18/0x30
-[   45.768447]  suspend_devices_and_enter+0x1a4/0x5a0
-[   45.773235]  pm_suspend+0x2e0/0x34c
-[   45.776720]  state_store+0x8c/0x110
-[   45.780205]  kobj_attr_store+0x1c/0x30
-[   45.783955]  sysfs_kf_write+0x48/0x60
-[   45.787613]  kernfs_fop_write+0xfc/0x220
-[   45.791539]  vfs_write+0xf0/0x2a4
-[   45.794849]  ksys_write+0x6c/0x100
-[   45.798248]  __arm64_sys_write+0x20/0x30
-[   45.802173]  el0_svc_common.constprop.0+0x78/0x1a0
-[   45.806960]  do_el0_svc+0x24/0x90
-[   45.810271]  el0_svc+0x14/0x20
-[   45.813320]  el0_sync_handler+0x1a4/0x1b0
-[   45.817326]  el0_sync+0x174/0x180
-[   45.820635] ---[ end trace ae76f63f1f1791a1 ]---
+Fix pinctrl "sleep" nodename by renaming it to "suspend"
+for rk3036-kylin and rk3288
 
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- drivers/irqchip/irq-ls-extirq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/rk3036-kylin.dts | 2 +-
+ arch/arm/boot/dts/rk3288.dtsi      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
-index 564e6de0bd8e..3c6ed7b4744d 100644
---- a/drivers/irqchip/irq-ls-extirq.c
-+++ b/drivers/irqchip/irq-ls-extirq.c
-@@ -65,7 +65,7 @@ static struct irq_chip ls_extirq_chip = {
- 	.irq_set_type		= ls_extirq_set_type,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_set_affinity	= irq_chip_set_affinity_parent,
--	.flags                  = IRQCHIP_SET_TYPE_MASKED,
-+	.flags                  = IRQCHIP_SET_TYPE_MASKED | IRQCHIP_SKIP_SET_WAKE,
- };
+diff --git a/arch/arm/boot/dts/rk3036-kylin.dts b/arch/arm/boot/dts/rk3036-kylin.dts
+index 7154b827e..e817eba8c 100644
+--- a/arch/arm/boot/dts/rk3036-kylin.dts
++++ b/arch/arm/boot/dts/rk3036-kylin.dts
+@@ -390,7 +390,7 @@
+ 		};
+ 	};
  
- static int
+-	sleep {
++	suspend {
+ 		global_pwroff: global-pwroff {
+ 			rockchip,pins = <2 RK_PA7 1 &pcfg_pull_none>;
+ 		};
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 29ffe2eb9..7dec6935f 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -1593,7 +1593,7 @@
+ 			drive-strength = <12>;
+ 		};
+ 
+-		sleep {
++		suspend {
+ 			global_pwroff: global-pwroff {
+ 				rockchip,pins = <0 RK_PA0 1 &pcfg_pull_none>;
+ 			};
 -- 
-2.17.1
+2.11.0
 
