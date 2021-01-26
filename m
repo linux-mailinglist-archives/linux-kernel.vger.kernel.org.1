@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C62304DB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3853C304DC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387883AbhAZXOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:14:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727377AbhAZFJT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 00:09:19 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC40C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 21:08:20 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d4so9179400plh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 21:08:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=FU71qPbIJQVTuxT6YbCDyAvn+zOVqEswtHSNOm8FjI0=;
-        b=Xhu/uOys82DIaKhKIWPIOFCE+R/lI/8W9VQ12UqkRsnR2WYYvyGb5vYTUwDmE39gg2
-         oyuI/FBGErVKFGrytbnMunurR/1y4by7R3UaxrH/dWmhJAmMergoLtpg5amFowBZoDmI
-         kAjKCrbP6BpuzCCgb8Vv+Ftu4AMzeF5k/VDiRqUBdvzHFRvkOMfTrqIyLnvuJO00+bax
-         xCK8y/Pw1UwXXPG9FGbzS+13SlgWQKi2wIuPDB1mCJFBTd35J4foW9JD+yDHOSygLWHR
-         cZmA8YwyGOIsoOvm6/JozQExERFKYmknox+Y2nkjsY1H9JaOajzEJKbMrD2Zn6BAQ5Rv
-         9u3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=FU71qPbIJQVTuxT6YbCDyAvn+zOVqEswtHSNOm8FjI0=;
-        b=YHTPtatz0e/jkVezZkRy7H1hq1tWlAVqLVuUDdv3aQ2OCUnRVwFLv5qiDUfmQG3BOh
-         qXQpGauxzJ2rH7kFzIscfVrmmU0uQ62MdyakNKN0MvRDeoeTjaZKfBbMPgV4SM/VvOlp
-         WhTlnl26q4rhEijrXsvcxqitGXrPVBJPiiISuiO/unG7CIYdlEXh2N7UYx9CYNSOBYDd
-         JFfwg3t4FsiIz5k9084zdLemmQmcHYWwjVZ3d9Nsh2ZDzJEWkCnpojpYcEma77A10fk+
-         n8UrKfRgJ2gDgAukRHkKPiKGEYW7mY0/0QUOIDqGyGL4Q+yGb8h29P5ntVbrQWteBHXX
-         Q2/w==
-X-Gm-Message-State: AOAM533XDS7hl9VkQSrHdoRDGpyhBHlTSWFpN8EXbuNiHvhVBeCMXjC7
-        WmdkarHxAkaWtfKK76am/j/InA==
-X-Google-Smtp-Source: ABdhPJyfHrpS93QjLT54XIVTxubgwCp8usm7xe/w0kMToYGrbPz6QqD6EeIEfcusqUuEtd2A4GZnZA==
-X-Received: by 2002:a17:902:523:b029:dc:1aa4:28e7 with SMTP id 32-20020a1709020523b02900dc1aa428e7mr4379086plf.4.1611637700060;
-        Mon, 25 Jan 2021 21:08:20 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:dd5e:ff29:33fe:cad2])
-        by smtp.gmail.com with ESMTPSA id fv19sm933893pjb.20.2021.01.25.21.08.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 21:08:19 -0800 (PST)
-Date:   Mon, 25 Jan 2021 21:08:17 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: pinctl.rst instead of pinctrl.rst?
-Message-ID: <20210126050817.GA187797@x1>
+        id S2388056AbhAZXPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:15:46 -0500
+Received: from mga11.intel.com ([192.55.52.93]:61097 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732673AbhAZFZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 00:25:48 -0500
+IronPort-SDR: TJQpT4MYSAJotnUotqi6mG6pkcroWnk637aB9abt2/Iea8NHhDEv9xWYrVVQ7CR9q7ARjIwj5p
+ Fz5Q4YFCTzCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="176339202"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="asc'?scan'208";a="176339202"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:23:57 -0800
+IronPort-SDR: eaBlv4AGGijngGP3ws/b3rP3NdBkcHvxQf2pWxo6jNO0z+G6Pw5uviBojrjszIlien2DQ2S0Pf
+ zWsQp+kD/zbQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="asc'?scan'208";a="573943834"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
+  by fmsmga006.fm.intel.com with ESMTP; 25 Jan 2021 21:23:54 -0800
+Date:   Tue, 26 Jan 2021 13:09:01 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Zhi Wang <zhi.a.wang@intel.com>
+Subject: Re: [PATCH] drm/i915/gvt: fix uninitialized return in
+ intel_gvt_update_reg_whitelist()
+Message-ID: <20210126050901.GF1538@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <YA6F3oF8mRaNQWjb@mwanda>
+ <161156789392.31416.7341729779003502151@build.alporthouse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="/WwmFnJnmDyWGHa4"
 Content-Disposition: inline
+In-Reply-To: <161156789392.31416.7341729779003502151@build.alporthouse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was having trouble finding the pinctrl rst documentation until I
-realized it is named pinctl with no 'r':
 
-Documentation/driver-api/pinctl.rst
+--/WwmFnJnmDyWGHa4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Is there a reason for this?
+On 2021.01.25 09:44:53 +0000, Chris Wilson wrote:
+> Quoting Dan Carpenter (2021-01-25 08:48:30)
+> > Smatch found an uninitialized variable bug in this code:
+> >=20
+> >     drivers/gpu/drm/i915/gvt/cmd_parser.c:3191 intel_gvt_update_reg_whi=
+telist()
+> >     error: uninitialized symbol 'ret'.
+> >=20
+> > The first thing that Smatch complains about is that "ret" isn't set if
+> > we don't enter the "for_each_engine(engine, &dev_priv->gt, id) {" loop.
+> > Presumably we always have at least one engine so that's a false
+> > positive.
+> >=20
+> > But it's definitely a bug to not set "ret" if i915_gem_object_pin_map()
+> > fails.
+>=20
+> True.
+> =20
+> > Let's fix the bug and silence the false positive.
+> >=20
+> > Fixes: 493f30cd086e ("drm/i915/gvt: parse init context to update cmd ac=
+cessible reg whitelist")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
 
-Is it worth me submitting a patch to rename and change tree-wide
-references?
+Thanks, Dan & Chris! Queued this up.
 
-Thanks,
-Drew
+--/WwmFnJnmDyWGHa4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYA+j6AAKCRCxBBozTXgY
+J5cJAJ9sFEZY0fDpLiQtUxokU7lBHau3GQCePa3i/LHx5XYBX6y/5g6zbXsx+DQ=
+=ooGI
+-----END PGP SIGNATURE-----
+
+--/WwmFnJnmDyWGHa4--
