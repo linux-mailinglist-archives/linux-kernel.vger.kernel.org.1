@@ -2,115 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A043042D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4CE3042CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391245AbhAZPoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:44:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391332AbhAZPiy (ORCPT
+        id S2391346AbhAZPmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:42:38 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54070 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392006AbhAZPkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:38:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5761C061A31
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:38:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7DH/rPV2wbpZFTFBKKpX3xvfLsUFCflTm0uKcXCTFHE=; b=RphfTLAfuZzVmn1QU3lI116THA
-        y2vDd7wJQH7VMwfmr7uO2tULC+0N/7+anjPg9oZURVIjo9YqR4e1HDkHAniYSqbWNsmOXtgC+ss4V
-        xRAlzLVIcdR5dxOOWy4oPYHaL4iHfxZJuI0Velf47Cbw/ajKL2/waaqpmyuhCMEQEpAr+lkk13sXE
-        Ids3tBw4ufXacJUwdjoauMkSf93Pqr9w9WAvuFtLGEru0beA9QZQPpmlDHP56PHy2JGox2jmHhyIt
-        V2WxZ1UWBsPU6nR1ZIjvhZK7I6hOvVCaO6fafmkcwjgyKACMi1hvxizVinsO2fJi/Xb84MZMhdejQ
-        8JMFNgTg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4QPo-0004FV-Ro; Tue, 26 Jan 2021 15:38:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 89CFD3003D8;
-        Tue, 26 Jan 2021 16:37:59 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6A4F120731992; Tue, 26 Jan 2021 16:37:59 +0100 (CET)
-Date:   Tue, 26 Jan 2021 16:37:59 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com
-Subject: Re: [PATCH 03/12] perf/x86/intel: Add perf core PMU support for
- Sapphire Rapids
-Message-ID: <YBA3V59bsOA9j/wj@hirez.programming.kicks-ass.net>
-References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
- <1611088711-17177-4-git-send-email-kan.liang@linux.intel.com>
+        Tue, 26 Jan 2021 10:40:03 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 597A62C1;
+        Tue, 26 Jan 2021 16:39:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611675558;
+        bh=Pby13UJp8gKyOcj8Zok5aTPgmkef0wuX4nO2OfrKUYk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JVeM4bcqDjxxdAD+nQ13zTsSWvUJ5ZJDWt9bb9F63f/ZwuYA8k3X+nt59FAEb3i54
+         Ha7mANWTihATYJPSa31itWIUCByNh59ib248T8h9iLaadibpHUc1d9oNw16gHQrDKn
+         cecKKPgkz5aSA4fj3bylfWvgGWb63ZgCTNQxLX7Y=
+Date:   Tue, 26 Jan 2021 17:38:58 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 04/12] media: uvcvideo: Provide sync and async
+ uvc_ctrl_status_event
+Message-ID: <YBA3krpfIfIB2vYc@pendragon.ideasonboard.com>
+References: <20201223133528.55014-1-ribalda@chromium.org>
+ <20201223133528.55014-5-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1611088711-17177-4-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <20201223133528.55014-5-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 12:38:22PM -0800, kan.liang@linux.intel.com wrote:
-> @@ -1577,9 +1668,20 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
+Hi Ricardo,
+
+Thank you for the patch.
+
+On Wed, Dec 23, 2020 at 02:35:20PM +0100, Ricardo Ribalda wrote:
+> Split the functionality of void uvc_ctrl_status_event_work in two, so it
+> can be called by functions outside interrupt context and not part of an
+> URB.
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c   | 25 +++++++++++++++----------
+>  drivers/media/usb/uvc/uvc_status.c |  3 ++-
+>  drivers/media/usb/uvc/uvcvideo.h   |  4 +++-
+>  3 files changed, 20 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 9f6174a10e73..4d43f4c3e349 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -1254,17 +1254,12 @@ static void uvc_ctrl_send_slave_event(struct uvc_video_chain *chain,
+>  	uvc_ctrl_send_event(chain, handle, ctrl, mapping, val, changes);
+>  }
+>  
+> -static void uvc_ctrl_status_event_work(struct work_struct *work)
+> +void uvc_ctrl_status_event(struct uvc_video_chain *chain,
+> +			   struct uvc_control *ctrl, const u8 *data)
+>  {
+> -	struct uvc_device *dev = container_of(work, struct uvc_device,
+> -					      async_ctrl.work);
+> -	struct uvc_ctrl_work *w = &dev->async_ctrl;
+> -	struct uvc_video_chain *chain = w->chain;
+>  	struct uvc_control_mapping *mapping;
+> -	struct uvc_control *ctrl = w->ctrl;
+>  	struct uvc_fh *handle;
+>  	unsigned int i;
+> -	int ret;
+>  
+>  	mutex_lock(&chain->ctrl_mutex);
+>  
+> @@ -1272,7 +1267,7 @@ static void uvc_ctrl_status_event_work(struct work_struct *work)
+>  	ctrl->handle = NULL;
+>  
+>  	list_for_each_entry(mapping, &ctrl->info.mappings, list) {
+> -		s32 value = __uvc_ctrl_get_value(mapping, w->data);
+> +		s32 value = __uvc_ctrl_get_value(mapping, data);
+>  
+>  		/*
+>  		 * handle may be NULL here if the device sends auto-update
+> @@ -1291,6 +1286,16 @@ static void uvc_ctrl_status_event_work(struct work_struct *work)
 >  	}
 >  
->  	if (format_size & PEBS_DATACFG_MEMINFO) {
-> +		if (sample_type & PERF_SAMPLE_WEIGHT) {
-> +			u64 weight = meminfo->latency;
+>  	mutex_unlock(&chain->ctrl_mutex);
+> +}
 > +
-> +			if (x86_pmu.flags & PMU_FL_INSTR_LATENCY)
-> +				weight >>= PEBS_CACHE_LATENCY_OFFSET;
-> +			data->weight = weight & PEBS_LATENCY_MASK ?:
->  				intel_get_tsx_weight(meminfo->tsx_tuning);
-> +		}
+> +static void uvc_ctrl_status_event_work(struct work_struct *work)
+> +{
+> +	struct uvc_device *dev = container_of(work, struct uvc_device,
+> +					      async_ctrl.work);
+> +	struct uvc_ctrl_work *w = &dev->async_ctrl;
+> +	int ret;
 > +
-> +		if (sample_type & PERF_SAMPLE_WEIGHT_EXT) {
-> +			data->weight_ext.val = 0;
-> +			if (x86_pmu.flags & PMU_FL_INSTR_LATENCY)
-> +				data->weight_ext.instr_latency = meminfo->latency & PEBS_LATENCY_MASK;
-> +		}
+> +	uvc_ctrl_status_event(w->chain, w->ctrl, w->data);
 >  
->  		if (sample_type & PERF_SAMPLE_DATA_SRC)
->  			data->data_src.val = get_data_src(event, meminfo->aux);
+>  	/* Resubmit the URB. */
+>  	w->urb->interval = dev->int_ep->desc.bInterval;
+> @@ -1300,8 +1305,8 @@ static void uvc_ctrl_status_event_work(struct work_struct *work)
+>  			   ret);
+>  }
+>  
+> -bool uvc_ctrl_status_event(struct urb *urb, struct uvc_video_chain *chain,
+> -			   struct uvc_control *ctrl, const u8 *data)
+> +bool uvc_ctrl_status_event_async(struct urb *urb, struct uvc_video_chain *chain,
+> +				 struct uvc_control *ctrl, const u8 *data)
+>  {
+>  	struct uvc_device *dev = chain->dev;
+>  	struct uvc_ctrl_work *w = &dev->async_ctrl;
+> diff --git a/drivers/media/usb/uvc/uvc_status.c b/drivers/media/usb/uvc/uvc_status.c
+> index 2bdb0ff203f8..3e26d82a906d 100644
+> --- a/drivers/media/usb/uvc/uvc_status.c
+> +++ b/drivers/media/usb/uvc/uvc_status.c
+> @@ -179,7 +179,8 @@ static bool uvc_event_control(struct urb *urb,
+>  
+>  	switch (status->bAttribute) {
+>  	case UVC_CTRL_VALUE_CHANGE:
+> -		return uvc_ctrl_status_event(urb, chain, ctrl, status->bValue);
+> +		return uvc_ctrl_status_event_async(urb, chain, ctrl,
+> +						   status->bValue);
+>  
+>  	case UVC_CTRL_INFO_CHANGE:
+>  	case UVC_CTRL_FAILURE_CHANGE:
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index c50b0546901f..be784ed8354d 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -843,7 +843,9 @@ int uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+>  int uvc_ctrl_init_device(struct uvc_device *dev);
+>  void uvc_ctrl_cleanup_device(struct uvc_device *dev);
+>  int uvc_ctrl_restore_values(struct uvc_device *dev);
+> -bool uvc_ctrl_status_event(struct urb *urb, struct uvc_video_chain *chain,
+> +bool uvc_ctrl_status_event_async(struct urb *urb, struct uvc_video_chain *chain,
+> +				 struct uvc_control *ctrl, const u8 *data);
+> +void uvc_ctrl_status_event(struct uvc_video_chain *chain,
+>  			   struct uvc_control *ctrl, const u8 *data);
+>  
+>  int uvc_ctrl_begin(struct uvc_video_chain *chain);
 
-Talk to me about that SAMPLE_WEIGHT stuff.... I'm not liking it.
+-- 
+Regards,
 
-Sure you want multiple dimensions, but urgh.
-
-Also, afaict, as proposed you're wasting 80/128 bits. That is, all data
-you want to export fits in a single u64 and yet you're using two, which
-is mighty daft.
-
-Sure, pebs::lat / pebs_meminfo::latency is defined as a u64, but you
-can't tell me that that is ever actually more than 4G cycles. Even the
-TSX block latency is u32.
-
-So how about defining SAMPLE_WEIGHT_STRUCT which uses the exact same
-data as SAMPLE_WEIGHT but unions it with a struct. I'm not sure if we
-want:
-
-union sample_weight {
-	u64 weight;
-
-	struct {
-		u32	low_dword;
-		u32	high_dword;
-	};
-
-	/* or */
-
-	struct {
-		u32	low_dword;
-		u16	high_word;
-		u16	higher_word;
-	};
-};
-
-Then have the core code enforce SAMPLE_WEIGHT ^ SAMPLE_WEIGHT_STRUCT and
-make the existing code never set the high dword.
-
-Hmmm?
+Laurent Pinchart
