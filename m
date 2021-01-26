@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0C0304EF1
+	by mail.lfdr.de (Postfix) with ESMTP id 0D90E304EF0
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404267AbhA0B3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:29:18 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:53987 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730929AbhAZSdY (ORCPT
+        id S2392191AbhA0B3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387826AbhAZScZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:33:24 -0500
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 10QIVnHR008303;
-        Wed, 27 Jan 2021 03:31:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10QIVnHR008303
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611685909;
-        bh=/cbf7e8LmV7x9OtCuoBUae5y80EWIXt9JqqUtFKiUGQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rxycYHt8rCDfLSHGFXvlHRXizbEMfEEz9NHGNRQbyY35IfYEGaF+rJ3r/IVkCBrck
-         f16WOjgwPsGIb6FKuNTTWsZQXFca12XpglKRd+MB0Ufwq5GUMcD7rTVgJCZDPXJOeT
-         ZhBHe/T84o8zqoXH4CyUh4A+fDjSFGAUQvgC5RufEmFGURABCGWFgCOQ+ld5XaYQ2a
-         xxTpSn+9k0+zEByg5UTYWdI6LqVIfOsS8y2URi4Lg8i2uiCo/aANu7jFcqEIDsscBV
-         MeSf1I51Da5WSSZYfhUwbkK1F5c9FJxVDdFdtXOPlBeQQYhDDKeXwbbZ9fbiMqVOM2
-         +IN6JWgOnCl4Q==
-X-Nifty-SrcIP: [209.85.215.175]
-Received: by mail-pg1-f175.google.com with SMTP id c132so11997138pga.3;
-        Tue, 26 Jan 2021 10:31:49 -0800 (PST)
-X-Gm-Message-State: AOAM533D55PuOtXwBpezd5kwaV4i6L2esi9ZordAq7/cCmDyernsBeyz
-        u26b7Hms0lFMAHJn6xt2W+2gLYmTrfRvakrqRzI=
-X-Google-Smtp-Source: ABdhPJyI9P2i1eBVt1LJ8nZ/tmGy3m7Kd7gmq+2nA5uZ+g8cMWLfh9ilb8p7qv4I5POT6DncROCedKctHD/HTs8qyzA=
-X-Received: by 2002:aa7:8602:0:b029:1bb:4dfd:92fc with SMTP id
- p2-20020aa786020000b02901bb4dfd92fcmr6488077pfn.63.1611685908608; Tue, 26 Jan
- 2021 10:31:48 -0800 (PST)
+        Tue, 26 Jan 2021 13:32:25 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEA3C061574;
+        Tue, 26 Jan 2021 10:31:42 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id i63so10920247pfg.7;
+        Tue, 26 Jan 2021 10:31:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8rV/HbSiYayvD3RTtK+KMS472kjs7vW7gVS6mrTeKvM=;
+        b=AHagMapSsIQ8CaSz0N4QNFXZTxr1GIjTrdWkRGTT4lspjQGl+uy9+GLezyNAKVK1Pg
+         7nV5Jhcxy2zCkqkA8b5ADHPhZOt/efpEN9zgSP3BFhRE2xjxbqZiSwslCEyr62PtzWrc
+         eP6Kzq+guDWtxjwGNaPNDJoriv/MsK572+d2aG612tEkb7fo8J63/Ywylfuh3LR7pa8Z
+         +Yzhx0geVW4tCDcoLmoPWerlCf2pM8xsPDX9PjvaArjJxBLtlVRNs9wW1PN8/klooVko
+         MMAxb+HzB92TwlNcvm/JwZw+YkdxNfCjFaoJDF0eGUdJl+Zf5xTwZZ0JBAApYk+O+m25
+         AIaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8rV/HbSiYayvD3RTtK+KMS472kjs7vW7gVS6mrTeKvM=;
+        b=CdD0GQWaihkQz7drnGPNig2WA/lIj7RZWxcKyX1TWzwp6t0mXUoWFp84NK+9EzqSY5
+         3eX0c4mWK7xobw/XRmp2CRK5bTaO+hk7usS0cA+uHF8XI9GhWPwMwX5+FiaAdYPriR4I
+         GLVwWOVlTt2hgrWzQq8O3hEyclMl7hSxmmrkBeANLQCcfIUhXRWkXfvCazzDqzvMdcUk
+         yPlNpndRVVJr+PmnxIfvOJVfmDijuSd9Of01JeM9nmdC1auvwGXdnNsDImzk7CDVrvgR
+         3cOyQIHcWS7dTrkyh4OkRWavh55GCLXnLg2IuZokaqzeR7CCxzWQTwBHt6eQYq3cofRy
+         YVsQ==
+X-Gm-Message-State: AOAM5337k5kl+DeeFdhG6wOFEwdBSedMxOHR4oJpRhMSBv8l/GLrbq3G
+        1wz09nTnHvi1+bS5wOdU8ZIktHJTCEkLPQHrtsI=
+X-Google-Smtp-Source: ABdhPJx14wVj4lbt4kIXgjVE3peDkGtCbbrY/LnxCa7EuGMuV/n6YlUGKewrYIe/L/9rH/4fU+uGqE07TXypLz1oykw=
+X-Received: by 2002:a63:e50:: with SMTP id 16mr6858687pgo.74.1611685901959;
+ Tue, 26 Jan 2021 10:31:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20210120040403.2897639-1-masahiroy@kernel.org>
-In-Reply-To: <20210120040403.2897639-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 27 Jan 2021 03:31:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARqYOEySMvVQx31KPOPKeB+UZ3wn4-NF2qcGf=ajOdsyw@mail.gmail.com>
-Message-ID: <CAK7LNARqYOEySMvVQx31KPOPKeB+UZ3wn4-NF2qcGf=ajOdsyw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: stop removing stale <linux/version.h> file
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210122193600.1415639-1-saravanak@google.com>
+ <CAHp75VfKiuVd7JO-0nwCuvy7tgPZScOpKX8Q4+oT+JSBR+d=ew@mail.gmail.com> <CAGETcx_FmOvLe4fN8ZZ_Kno-DnUy2DcPayk9Szmx2vrihr0KoQ@mail.gmail.com>
+In-Reply-To: <CAGETcx_FmOvLe4fN8ZZ_Kno-DnUy2DcPayk9Szmx2vrihr0KoQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 26 Jan 2021 20:32:31 +0200
+Message-ID: <CAHp75Vfjs-AwqZrcF+o77eYim-tmZtD6ZZHd+_k+b8LNcBteHw@mail.gmail.com>
+Subject: Re: [PATCH v2] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 1:04 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Revert commit 223c24a7dba9 ("kbuild: Automatically remove stale
-> <linux/version.h> file").
->
-> It was more than 6 years ago. I do not expect anybody to start
-> git-bisect for such a big window.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+On Tue, Jan 26, 2021 at 8:17 PM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Jan 26, 2021 at 1:40 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Friday, January 22, 2021, Saravana Kannan <saravanak@google.com> wrote:
 
-Applied to linux-kbuild.
+...
 
+> >> Case 1: The driver for "foo" populates struct device for these gpio*
 
+the struct
 
->  Makefile | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 23d0494e48bc..ebbf7158dfa0 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -257,7 +257,6 @@ export building_out_of_srctree srctree objtree VPATH
->  # of make so .config is not included in this case either (for *config).
->
->  version_h := include/generated/uapi/linux/version.h
-> -old_version_h := include/linux/version.h
->
->  clean-targets := %clean mrproper cleandocs
->  no-dot-config-targets := $(clean-targets) \
-> @@ -1261,7 +1260,6 @@ endef
->
->  $(version_h): FORCE
->         $(call filechk,version.h)
-> -       $(Q)rm -f $(old_version_h)
->
->  include/generated/utsrelease.h: include/config/kernel.release FORCE
->         $(call filechk,utsrelease.h)
-> --
-> 2.27.0
->
+> >> nodes and then probes them using a driver that binds with "acme,bar".
+> >> This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
+> >> This lines up with how DT nodes with the "compatible" property are
+> >> typically converted to struct devices and then registered with driver
+> >> core to probe them. This also allows the gpio* devices to hook into all
+> >> the driver core capabilities like runtime PM, probe deferral,
+> >> suspend/resume ordering, device links, etc.
+> >>
+> >> Case 2: The driver for "foo" doesn't populate struct devices for these
+> >> gpio* nodes before registering them with gpiolib. Instead it just loops
+> >> through its child nodes and directly registers the gpio* nodes with
+> >> gpiolib.
+> >>
+> >> Drivers that follow case 2 cause problems with fw_devlink=on. This is
+> >> because fw_devlink will prevent bazz from probing until there's a struct
 
+prevent the bazz
+
+> >> device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
+> >> supplier). Once the struct device is available, fw_devlink will create a
+> >> device link with gpio0 device as the supplier and bazz device as the
+> >> consumer. After this point, since the gpio0 device will never bind to a
+> >> driver, the device link will prevent bazz device from ever probing.
+> >>
+> >> Finding and refactoring all the instances of drivers that follow case 2
+> >> will cause a lot of code churn and it is not something that can be done
+> >> in one shot. In some instances it might not even be possible to refactor
+> >> them cleanly. Examples of such instances are [1] [2].
+> >>
+> >> This patch works around this problem and avoids all the code churn by
+> >> simply setting the fwnode of the gpio_device and creating a stub driver
+> >> to bind to the gpio_device. This allows all the consumers to continue
+> >> probing when the driver follows case 2.
+
+...
+
+> > Do we need to unregister it at __exit initcall?
+> > What side effects would be of the stub driver presence on the GPIO bus? Any traverse on it will work as before?
+>
+> I checked. There is no __exit initcall.
+
+You might have checked further out of curiosity, but yeah, I used the
+attribute name while the initcall name is __exitcall().
 
 -- 
-Best Regards
-Masahiro Yamada
+With Best Regards,
+Andy Shevchenko
