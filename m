@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4782304F44
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5108C304F45
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405492AbhA0Bre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:47:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56640 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730989AbhAZTGB (ORCPT
+        id S2405508AbhA0Brj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388455AbhAZTHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:06:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611687874;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ZGdEc60KAecPlxEjKLfHIPIF9lQTPmew9gSACISr/M=;
-        b=bODFJiNee/ik8BNIHPoT7GVB6rRC0eq+/kxpqxpdJhGB8nH7niqTivmT+DH0UnUQQKemZL
-        zdgE6vxGevAw+zQGwM1ckvVepqkF+7rkxBuu0asTZma7Ovflhg/dVbsgCftAiNY5QSqF78
-        usrN2rwLKWgn4Qz3BEEGn5HbYaumXak=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-I6zRFouzNj6RNsWkP7pEqw-1; Tue, 26 Jan 2021 14:04:30 -0500
-X-MC-Unique: I6zRFouzNj6RNsWkP7pEqw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00769B8101;
-        Tue, 26 Jan 2021 19:04:29 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6CDA15D760;
-        Tue, 26 Jan 2021 19:04:20 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 14:04:18 -0500
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     menglong8.dong@gmail.com
-Cc:     paul@paul-moore.com, Yang Yang <yang.yang29@zte.com.cn>,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] audit: Make audit_filter_syscall() return void
-Message-ID: <20210126190418.GM2015948@madcap2.tricolour.ca>
-References: <20210126131151.10418-1-yang.yang29@zte.com.cn>
+        Tue, 26 Jan 2021 14:07:01 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88298C061574;
+        Tue, 26 Jan 2021 11:06:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=zUcP2Ekow40wDr8LQu56g1JOWBLSxsWCwNUDwttWnJY=; b=ad84LgFWJ8FgdoRvBSNVnAdb+
+        0I6Sw5zFHnURG6DddKEQ8HbimmJVGhfZNBE+p4AhrkuGcqgL8wXJS/82Ulh3PCv17KG3N45R7A4lo
+        nmAWv3AnHF/mSc9xZD1jBN9qCv/KUXD01csQwhWLG+rkGDTkxKX1bLlQ1gn5TyX5Nq4qryobh41F5
+        DB4HHmb9nD2Xu3mV8TLNo+8B+nWoKTBy48lo4Q1JucKdB4IQ7QCREGM7mwYt646OKNjClWNUO1E6M
+        j60U9ebf7BAEOHy7IwgCDiy4Xjl4pjGwcbLID7o2kdNIzvVrdpvSEcEUXs6vOb5LBBAMtPHo30HE4
+        oAMpwR9Vw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53070)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l4TeW-0004lN-0N; Tue, 26 Jan 2021 19:05:24 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l4TeJ-00042E-C4; Tue, 26 Jan 2021 19:05:11 +0000
+Date:   Tue, 26 Jan 2021 19:05:11 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-rtc@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-serial@vger.kernel.org, coresight@lists.linaro.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-crypto@vger.kernel.org,
+        kernel@pengutronix.de, Leo Yan <leo.yan@linaro.org>,
+        dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCH v3 4/5] amba: Make the remove callback return void
+Message-ID: <20210126190511.GK1551@shell.armlinux.org.uk>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210126165835.687514-5-u.kleine-koenig@pengutronix.de>
+ <3e42b2ea-c713-31b2-9c86-c49a70d8e1f4@arm.com>
+ <20210126175652.3caoqfnsky2es42f@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210126131151.10418-1-yang.yang29@zte.com.cn>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126175652.3caoqfnsky2es42f@pengutronix.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-26 05:11, menglong8.dong@gmail.com wrote:
-> From: Yang Yang <yang.yang29@zte.com.cn>
-> 
-> No invoker users the return value of audit_filter_syscall().
-> So make it return void.
+On Tue, Jan 26, 2021 at 06:56:52PM +0100, Uwe Kleine-König wrote:
+> I'm surprised to see that the remove callback introduced in 2952ecf5df33
+> ("coresight: etm4x: Refactor probing routine") has an __exit annotation.
 
-That was my oversight when ripping out the AUDIT_FILTER_ENTRY list:
-5260ecc2e048 <rgb@redhat.com> 2018-02-14 ("audit: deprecate the AUDIT_FILTER_ENTRY filter")
+In general, remove callbacks should not have an __exit annotation.
+__exit _can_ be discarded at link time for built-in stuff.
 
-Might as well also amend the function comment block to remove the
-reference to syscall entry since that is no longer relevant.
-
-> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-
-> ---
->  kernel/auditsc.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index ce8c9e2279ba..c8e16b9c0f21 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -804,7 +804,7 @@ static int audit_in_mask(const struct audit_krule *rule, unsigned long val)
->   * also not high enough that we already know we have to write an audit
->   * record (i.e., the state is AUDIT_SETUP_CONTEXT or AUDIT_BUILD_CONTEXT).
->   */
-> -static enum audit_state audit_filter_syscall(struct task_struct *tsk,
-> +static void audit_filter_syscall(struct task_struct *tsk,
->  					     struct audit_context *ctx,
->  					     struct list_head *list)
->  {
-> @@ -812,7 +812,7 @@ static enum audit_state audit_filter_syscall(struct task_struct *tsk,
->  	enum audit_state state;
->  
->  	if (auditd_test_task(tsk))
-> -		return AUDIT_DISABLED;
-> +		return;
->  
->  	rcu_read_lock();
->  	list_for_each_entry_rcu(e, list, list) {
-> @@ -821,11 +821,11 @@ static enum audit_state audit_filter_syscall(struct task_struct *tsk,
->  				       &state, false)) {
->  			rcu_read_unlock();
->  			ctx->current_state = state;
-> -			return state;
-> +			return;
->  		}
->  	}
->  	rcu_read_unlock();
-> -	return AUDIT_BUILD_CONTEXT;
-> +	return;
->  }
->  
->  /*
-> -- 
-> 2.25.1
-> 
-> --
-> Linux-audit mailing list
-> Linux-audit@redhat.com
-> https://www.redhat.com/mailman/listinfo/linux-audit
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
