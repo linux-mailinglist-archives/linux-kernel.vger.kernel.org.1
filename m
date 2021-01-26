@@ -2,251 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BFA304006
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8FA304012
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405805AbhAZOTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405792AbhAZOSW (ORCPT
+        id S2405886AbhAZOUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:20:31 -0500
+Received: from smtp-190c.mail.infomaniak.ch ([185.125.25.12]:58323 "EHLO
+        smtp-190c.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405794AbhAZOSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:18:22 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4B0C061D73
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:17:42 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id n7so6697742oic.11
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:17:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=snAymklEUhwSnE6aOil+eGqTT5ec5tFwcRj260sAvks=;
-        b=AMFZuV9yP/xMgYabEyMv/EUu/qJ/qpAPDwpK8EMDiOG6J7DiOGO2GDX2qxUne9vKEP
-         u1OnjabAO8O9DMwyNPu2gvLtW0363Hqu9SRiuOU7Kt+z2L9hYJgtau8tbQ/3WqjaW7fU
-         y1KToE8sVncgKcwdejK80E+YSzDtUGNMGSCjgrr1EY0UQm/J/Rt4v8/w0PurijO+E+YY
-         KjA2quD1t4ux6L0T1q4lt652Y1D+Nbu/1LSpwWOCqiriN+L3uLKeLIseKFsGGF/2iCh2
-         HTSwbt9lDbkJ65B4yUQan7lg6YhdawnuMk1cIRG2p0AGvuYr21M0X7dUmb0+LPpM13jo
-         ZvLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=snAymklEUhwSnE6aOil+eGqTT5ec5tFwcRj260sAvks=;
-        b=FegGndz1sDbFHki1gcmLJSGPwRHV96ki/d2MvkGVvGw46nQqr55RrTP7wVBtQt2u36
-         Tj+iPpGDcZ/65w1mSWj7cfL/V+vFDYnVPS5Tk5QKWjPSn6j7YYvlok/+1J2IEmpRThZ/
-         xYP5NS7MHoUXfNjxqm/XT+3Sf0s49Ed1pcdl8vHf73b6I5a3xtLbPxLtORO5xcDMvE/X
-         llSkTEi2L199RKtv1Ap1Gi/zC8dVvI+6YT6Y67hx8wrUUgyACXahv5h68JozqnmsDBqO
-         JUqK4PEjVQx2z1MB0inArqazz/5jGbv8Q7BnIA7vdsCm4Bf7qF+fo8D+nFPrwwg9z06T
-         839w==
-X-Gm-Message-State: AOAM533zH96uBUm8b+uUmpOKhRE/iRS+8rFu/wmXUZ4FRTYhyDTc9F5o
-        S3POWzAAjbcJgpEXYchdH9pGUg==
-X-Google-Smtp-Source: ABdhPJxNTGPmEEttjHeUpsyXi818x5CmAZskBGX+az9F3WmnzzxmjbDFdzfNlsG1QuNSweOXoCQn/g==
-X-Received: by 2002:a05:6808:115:: with SMTP id b21mr9995oie.16.1611670661326;
-        Tue, 26 Jan 2021 06:17:41 -0800 (PST)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e14sm1851753oou.19.2021.01.26.06.17.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 06:17:40 -0800 (PST)
-Date:   Tue, 26 Jan 2021 08:17:38 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 4/5] dt-bindings: clock: Add SM8350 GCC clock bindings
-Message-ID: <20210126141738.GH1241218@yoga>
-References: <20210118044321.2571775-1-vkoul@kernel.org>
- <20210118044321.2571775-5-vkoul@kernel.org>
- <YA7+9xaAY0JT5csh@builder.lan>
- <20210126080058.GN2771@vkoul-mobl>
+        Tue, 26 Jan 2021 09:18:45 -0500
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DQ82Z31YDzMpnZb;
+        Tue, 26 Jan 2021 15:17:42 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DQ82Y3xD6zlpq0M;
+        Tue, 26 Jan 2021 15:17:41 +0100 (CET)
+Subject: Re: [patch 1/8] rtc: mc146818: Prevent reading garbage - bug
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+References: <20201206214613.444124194@linutronix.de>
+ <20201206220541.594826678@linutronix.de>
+ <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net>
+ <871re7hlsg.fsf@nanos.tec.linutronix.de>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net>
+Date:   Tue, 26 Jan 2021 15:17:40 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126080058.GN2771@vkoul-mobl>
+In-Reply-To: <871re7hlsg.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26 Jan 02:00 CST 2021, Vinod Koul wrote:
+Thanks for the fix! It boots now with a new message:
+rtc_cmos rtc_cmos: not accessible
 
-> On 25-01-21, 11:25, Bjorn Andersson wrote:
-> > On Sun 17 Jan 22:43 CST 2021, Vinod Koul wrote:
-> > 
-> > > Add device tree bindings for global clock controller on SM8350 SoCs.
-> > > 
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > > ---
-> > >  .../bindings/clock/qcom,gcc-sm8350.yaml       |  96 +++++++
-> > >  include/dt-bindings/clock/qcom,gcc-sm8350.h   | 261 ++++++++++++++++++
-> > >  2 files changed, 357 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
-> > >  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm8350.h
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
-> > > new file mode 100644
-> > > index 000000000000..78f35832aa41
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
-> > > @@ -0,0 +1,96 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/clock/qcom,gcc-sm8350.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Qualcomm Global Clock & Reset Controller Binding for SM8350
-> > > +
-> > > +maintainers:
-> > > +  - Vinod Koul <vkoul@kernel.org>
-> > > +
-> > > +description: |
-> > > +  Qualcomm global clock control module which supports the clocks, resets and
-> > > +  power domains on SM8350.
-> > > +
-> > > +  See also:
-> > > +  - dt-bindings/clock/qcom,gcc-sm8350.h
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: qcom,gcc-sm8350
-> > > +
-> > > +  clocks:
-> > > +    items:
-> > > +      - description: Board XO source
-> > > +      - description: Sleep clock source
-> > > +      - description: PLL test clock source (Optional clock)
-> > > +      - description: PCIE 0 Pipe clock source (Optional clock)
-> > > +      - description: PCIE 1 Pipe clock source (Optional clock)
-> > > +      - description: UFS card Rx symbol 0 clock source (Optional clock)
-> > > +      - description: UFS card Rx symbol 1 clock source (Optional clock)
-> > > +      - description: UFS card Tx symbol 0 clock source (Optional clock)
-> > > +      - description: UFS phy Rx symbol 0 clock source (Optional clock)
-> > > +      - description: UFS phy Rx symbol 1 clock source (Optional clock)
-> > > +      - description: UFS phy Tx symbol 0 clock source (Optional clock)
-> > > +      - description: USB3 phy wrapper pipe clock source (Optional clock)
-> > > +      - description: USB3 phy sec pipe clock source (Optional clock)
-> > > +    minItems: 2
-> > > +    maxItems: 13
-> > > +
-> > > +  clock-names:
-> > > +    items:
-> > > +      - const: bi_tcxo
-> > > +      - const: sleep_clk
-> > > +      - const: core_bi_pll_test_se # Optional clock
-> > > +      - const: pcie_0_pipe_clk # Optional clock
-> > > +      - const: pcie_1_pipe_clk # Optional clock
-> > > +      - const: ufs_card_rx_symbol_0_clk # Optional clock
-> > > +      - const: ufs_card_rx_symbol_1_clk # Optional clock
-> > > +      - const: ufs_card_tx_symbol_0_clk # Optional clock
-> > > +      - const: ufs_phy_rx_symbol_0_clk # Optional clock
-> > > +      - const: ufs_phy_rx_symbol_1_clk # Optional clock
-> > > +      - const: ufs_phy_tx_symbol_0_clk # Optional clock
-> > > +      - const: usb3_phy_wrapper_gcc_usb30_pipe_clk # Optional clock
-> > > +      - const: usb3_uni_phy_sec_gcc_usb30_pipe_clk # Optional clock
-> > > +    minItems: 2
-> > > +    maxItems: 13
-> > > +
-> > > +  '#clock-cells':
-> > > +    const: 1
-> > > +
-> > > +  '#reset-cells':
-> > > +    const: 1
-> > > +
-> > > +  '#power-domain-cells':
-> > > +    const: 1
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - clocks
-> > > +  - clock-names
-> > > +  - reg
-> > > +  - '#clock-cells'
-> > > +  - '#reset-cells'
-> > > +  - '#power-domain-cells'
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/clock/qcom,rpmh.h>
-> > > +    clock-controller@100000 {
-> > > +      compatible = "qcom,gcc-sm8350";
-> > > +      reg = <0x00100000 0x1f0000>;
-> > > +      clocks = <&rpmhcc RPMH_CXO_CLK>,
-> > > +               <&sleep_clk>;
-> > > +      clock-names = "bi_tcxo", "sleep_clk";
-> > > +      #clock-cells = <1>;
-> > > +      #reset-cells = <1>;
-> > > +      #power-domain-cells = <1>;
-> > > +    };
-> > > +
-> > > +...
-> > > diff --git a/include/dt-bindings/clock/qcom,gcc-sm8350.h b/include/dt-bindings/clock/qcom,gcc-sm8350.h
-> > > new file mode 100644
-> > > index 000000000000..2b289c5c109f
-> > > --- /dev/null
-> > > +++ b/include/dt-bindings/clock/qcom,gcc-sm8350.h
-> > > @@ -0,0 +1,261 @@
-> > > +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-> > > +/*
-> > > + * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
-> > > + * Copyright (c) 2020-2021, Linaro Limited
-> > > + */
-> > > +
-> > > +#ifndef _DT_BINDINGS_CLK_QCOM_GCC_SM8350_H
-> > > +#define _DT_BINDINGS_CLK_QCOM_GCC_SM8350_H
-> > > +
-> > > +/* GCC HW clocks */
-> > > +#define CORE_BI_PLL_TEST_SE					0
-> > > +#define PCIE_0_PIPE_CLK						1
-> > > +#define PCIE_1_PIPE_CLK						2
-> > > +#define UFS_CARD_RX_SYMBOL_0_CLK				3
-> > > +#define UFS_CARD_RX_SYMBOL_1_CLK				4
-> > > +#define UFS_CARD_TX_SYMBOL_0_CLK				5
-> > > +#define UFS_PHY_RX_SYMBOL_0_CLK					6
-> > > +#define UFS_PHY_RX_SYMBOL_1_CLK					7
-> > > +#define UFS_PHY_TX_SYMBOL_0_CLK					8
-> > > +#define USB3_PHY_WRAPPER_GCC_USB30_PIPE_CLK			9
-> > > +#define USB3_UNI_PHY_SEC_GCC_USB30_PIPE_CLK			10
-> > > +
-> > > +/* GCC clocks */
-> > > +#define GCC_AGGRE_NOC_PCIE_0_AXI_CLK				11
-> > > +#define GCC_AGGRE_NOC_PCIE_1_AXI_CLK				12
-> > > +#define GCC_AGGRE_NOC_PCIE_TBU_CLK				13
-> > > +#define GCC_AGGRE_UFS_CARD_AXI_CLK				14
-> > > +#define GCC_AGGRE_UFS_CARD_AXI_HW_CTL_CLK			15
-> > > +#define GCC_AGGRE_UFS_PHY_AXI_CLK				16
-> > > +#define GCC_AGGRE_UFS_PHY_AXI_HW_CTL_CLK			17
-> > > +#define GCC_AGGRE_USB3_PRIM_AXI_CLK				18
-> > > +#define GCC_AGGRE_USB3_SEC_AXI_CLK				19
-> > > +#define GCC_BOOT_ROM_AHB_CLK					20
-> > > +#define GCC_CAMERA_AHB_CLK					21
-> > 
-> > You removed these from the driver, so no need to expose them in the
-> > dt-binding either.
+I tested with rtc=on and rtc=off (which didn't make a difference before
+this fix) on a microvm:
+https://github.com/qemu/qemu/blob/master/docs/system/i386/microvm.rst
+
+There is one issue with the memset though:
+
+On 26/01/2021 14:26, Thomas Gleixner wrote:
+> On Mon, Jan 25 2021 at 19:40, Mickaël Salaün wrote:
+>> After some bisecting, I found that commit 05a0302c3548 ("rtc: mc146818:
+>> Prevent reading garbage", this patch, introduced since v5.11-rc1) makes
+>> my VM hang at boot. Before this commit, I got this (and didn't notice)
+>> at every boot:
+>> rtc_cmos rtc_cmos: registered as rtc0
+>> rtc_cmos rtc_cmos: hctosys: unable to read the hardware clock
+>> rtc_cmos rtc_cmos: alarms up to one day, 114 bytes nvram
+>>
+>> I notice that this patch creates infinite loops, which my VM falls into
+>> (cf. below).
+>>> +	time->tm_sec = CMOS_READ(RTC_SECONDS);
+>>> +
+>>> +	if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
+>>> +		spin_unlock_irqrestore(&rtc_lock, flags);
+>>> +		mdelay(1);
+>>
+>> My VM loops here.
+>> time->tm_sec is always 255.
 > 
-> I did think about that and thought maybe it is better to leave the
-> defines. We can always update the driver to use if we ever felt the
-> need.
+> That means there is no RTC and therefore the CMOS_READ($REG) returns
+> 0xFF which makes the loop stuck because RTC_UIP is always set.
 > 
-> But then I dont think we will ever do that so makes sense, will update
-> this and send with acks collected
+> Yet another proof that VIRT creates more problems than it solves.
+> 
+> Fix below.
+> 
+> Thanks,
+> 
+>         tglx
+> ---
+> Subject: rtc: mc146818: Detect and handle broken RTCs
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Tue, 26 Jan 2021 11:38:40 +0100
+> 
+> The recent fix for handling the UIP bit unearthed another issue in the RTC
+> code. If the RTC is advertised but the readout is straight 0xFF because
+> it's not available, the old code just proceeded with crappy values, but the
+> new code hangs because it waits for the UIP bit to become low.
+> 
+> Add a sanity check in the RTC CMOS probe function which reads the RTC_VALID
+> register (Register D) which should have bit 0-6 cleared. If that's not the
+> case then fail to register the CMOS.
+> 
+> Add the same check to mc146818_get_time(), warn once when the condition
+> is true and invalidate the rtc_time data.
+> 
+> Reported-by: Mickaël Salaün <mic@digikod.net>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  drivers/rtc/rtc-cmos.c         |    8 ++++++++
+>  drivers/rtc/rtc-mc146818-lib.c |    7 +++++++
+>  2 files changed, 15 insertions(+)
+> 
+> --- a/drivers/rtc/rtc-cmos.c
+> +++ b/drivers/rtc/rtc-cmos.c
+> @@ -805,6 +805,14 @@ cmos_do_probe(struct device *dev, struct
+>  
+>  	spin_lock_irq(&rtc_lock);
+>  
+> +	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
+> +	if ((CMOS_READ(RTC_VALID) & 0x7f) != 0) {
+> +		spin_unlock_irq(&rtc_lock);
+> +		dev_warn(dev, "not accessible\n");
+> +		retval = -ENXIO;
+> +		goto cleanup1;
+> +	}
+> +
+>  	if (!(flags & CMOS_RTC_FLAGS_NOFREQ)) {
+>  		/* force periodic irq to CMOS reset default of 1024Hz;
+>  		 *
+> --- a/drivers/rtc/rtc-mc146818-lib.c
+> +++ b/drivers/rtc/rtc-mc146818-lib.c
+> @@ -21,6 +21,13 @@ unsigned int mc146818_get_time(struct rt
+>  
+>  again:
+>  	spin_lock_irqsave(&rtc_lock, flags);
+> +	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
+> +	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x7f) != 0)) {
+> +		spin_unlock_irqrestore(&rtc_lock, flags);
+> +		memset(time, 0xff, sizeof(time));
+
+This should be: sizeof(*time)
+
+> +		return 0;
+> +	}
+> +
+>  	/*
+>  	 * Check whether there is an update in progress during which the
+>  	 * readout is unspecified. The maximum update time is ~2ms. Poll
 > 
 
-Given that the actual value isn't significant (just need to be stable),
-we can easily add those as new defines at the end of the list when that
-day comes.
-
-Regards,
-Bjorn
+Tested-by: Mickaël Salaün <mic@linux.microsoft.com>
