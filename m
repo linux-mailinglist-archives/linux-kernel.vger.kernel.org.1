@@ -2,198 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63822304F10
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41504304F14
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392286AbhA0BlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:41:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391738AbhAZSlc (ORCPT
+        id S2392319AbhA0Blh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:41:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47941 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394836AbhAZSob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:41:32 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029D8C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:40:52 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u15so1060740plf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:40:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gHW9fONbamfIOSD/jiG5utLruM4EG0wf2DaVHQnD+Sw=;
-        b=vPBZzbKAIhTx7/MjPOk7W0gbW3dGTIKqQfJkwRslV5l7IoCqQmKvFm3qF6WOL4H/hV
-         ajbDTIMEyrtVpeK20G7F/UzCxHqzuM42nDVQD5PpOxpLrzNMCYajsO99z//OA5knWcYS
-         zqLfjpzpga2CdH1n9eqBTljQqYfKbJ6aabnacSetN+obG5chZjCMQkm4M2TWwoCJ2bhB
-         GJcf7mbgrMkzidmFqKtXJ3/9GIIPu2P2SuGEH6JZ0pnlbJyowQjGM4dd8piieFuOzRUz
-         KTaSfs+dBanhJzKnHHwucQAQbyDvHpA6f9J5AFF/Sg9/3AjpF97mgNKAhthuspue2ILY
-         QUkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gHW9fONbamfIOSD/jiG5utLruM4EG0wf2DaVHQnD+Sw=;
-        b=ZqIfvuy+U977pOmeGFa1IVj9ZF9TFRsllu1nJkzn4d4k6qGkREIpweYNx5p4Fyc+HY
-         LTaWfrarlUSNihrxS6YE5qxzt09i9IJaHKd6oPvXnFl1h5YHGJAf8/skgJdMPVs5u4vU
-         LH6QHPIrifPBQC42eEQsWeAjNgIajZKeqc8TKQEKZVRQ7Uej5yw3D7OqDvN1y9puSqOB
-         x+1UO7CZ1VZAiTfCPv6fQSmnEeKz3D1n+k/TuLrdjzB4JzzSuwKuwnEoAqeucxGRlohB
-         3ZfINS/a9x4KB5Xo25hQbUYAeOWEJe2P5VQey2JxxNWWhS87I65+67HPcwqWP57y02CV
-         U+3w==
-X-Gm-Message-State: AOAM530Myx1QpqGqBngL9GGfYlwHRk3LkvVt6/7I7VCsMLN7OPsrpoO9
-        RTHGWexQvyOfcsVLNPIVXKY=
-X-Google-Smtp-Source: ABdhPJx8cgvQ3sU645kfcPvEgeMgAO1l7Ti6pMTWkdv9U6JihOEN1fgiQvTOhIdh0Ce7WhKG0cs9ZQ==
-X-Received: by 2002:a17:90a:4a08:: with SMTP id e8mr1131216pjh.149.1611686451533;
-        Tue, 26 Jan 2021 10:40:51 -0800 (PST)
-Received: from localhost.localdomain ([49.207.195.86])
-        by smtp.gmail.com with ESMTPSA id 34sm9854302pgn.56.2021.01.26.10.40.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 10:40:50 -0800 (PST)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "Zqiang linux-usb @ vger . kernel . org" <qiang.zhang@windriver.com>,
+        Tue, 26 Jan 2021 13:44:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611686582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KGHdetCJush3K+fWXeFM7UR5m16TdWTXEUMSsFL3aak=;
+        b=CG9EKbSevOmtCUjNNxmoaQfCR8z04SjMXR0RNeosaml64SrlY0sZFVDXNCtF7GQdO5e7Vj
+        3Ob8v0Z7BheKqIAWrACLE9M0K3iIg+vO+0nRkQ4sBdBwUJtFpNzVv2MERSxMLh+mzRiETC
+        XcEQ8jTPG/8uwdGnWEreKKbpAYQpgEk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-277-5chqgj35MoeUn93n_XVp9Q-1; Tue, 26 Jan 2021 13:43:00 -0500
+X-MC-Unique: 5chqgj35MoeUn93n_XVp9Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28C111005504;
+        Tue, 26 Jan 2021 18:42:58 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 76BE65D761;
+        Tue, 26 Jan 2021 18:42:49 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 13:42:46 -0500
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
         linux-kernel@vger.kernel.org
-Subject: 
-Date:   Wed, 27 Jan 2021 00:10:43 +0530
-Message-Id: <20210126184043.915235-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
-References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+Subject: Re: [PATCH v24 21/25] audit: add support for non-syscall auxiliary
+ records
+Message-ID: <20210126184246.GM1762914@madcap2.tricolour.ca>
+References: <20210126164108.1958-1-casey@schaufler-ca.com>
+ <20210126164108.1958-22-casey@schaufler-ca.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126164108.1958-22-casey@schaufler-ca.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: [PATCH v3 12/12] usb: misc: usbtest: update to use the
- usb_control_msg_{send|recv}() API
+On 2021-01-26 08:41, Casey Schaufler wrote:
+> Standalone audit records have the timestamp and serial number generated
+> on the fly and as such are unique, making them standalone.  This new
+> function audit_alloc_local() generates a local audit context that will
+> be used only for a standalone record and its auxiliary record(s).  The
+> context is discarded immediately after the local associated records are
+> produced.
+> 
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Cc: linux-audit@redhat.com
+> To: Richard Guy Briggs <rgb@redhat.com>
 
-The newer usb_control_msg_{send|recv}() API are an improvement on the
-existing usb_control_msg() as it ensures that a short read/write is treated
-as an error, data can be used off the stack, and raw usb pipes need not be
-created in the calling functions.
-For this reason, instances of usb_control_msg() have been replaced with
-usb_control_msg_{recv|send}() and the return value checking conditions have
-also been modified appropriately.
+This has been minorly bothering me for several revisions...  Is there a
+way for the development/authorship to be accurately reflected
+if/when this patch is merged before the contid patch set?
 
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
- drivers/usb/misc/usbtest.c | 69 ++++++++++++++++----------------------
- 1 file changed, 29 insertions(+), 40 deletions(-)
+> ---
+>  include/linux/audit.h |  8 ++++++++
+>  kernel/audit.h        |  1 +
+>  kernel/auditsc.c      | 33 ++++++++++++++++++++++++++++-----
+>  3 files changed, 37 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/audit.h b/include/linux/audit.h
+> index 418a485af114..97cd7471e572 100644
+> --- a/include/linux/audit.h
+> +++ b/include/linux/audit.h
+> @@ -289,6 +289,8 @@ static inline int audit_signal_info(int sig, struct task_struct *t)
+>  				/* Public API */
+>  extern int  audit_alloc(struct task_struct *task);
+>  extern void __audit_free(struct task_struct *task);
+> +extern struct audit_context *audit_alloc_local(gfp_t gfpflags);
+> +extern void audit_free_context(struct audit_context *context);
+>  extern void __audit_syscall_entry(int major, unsigned long a0, unsigned long a1,
+>  				  unsigned long a2, unsigned long a3);
+>  extern void __audit_syscall_exit(int ret_success, long ret_value);
+> @@ -552,6 +554,12 @@ static inline void audit_log_nfcfg(const char *name, u8 af,
+>  extern int audit_n_rules;
+>  extern int audit_signals;
+>  #else /* CONFIG_AUDITSYSCALL */
+> ++static inline struct audit_context *audit_alloc_local(gfp_t gfpflags)
+> +{
+> +	return NULL;
+> +}
+> +static inline void audit_free_context(struct audit_context *context)
+> +{ }
+>  static inline int audit_alloc(struct task_struct *task)
+>  {
+>  	return 0;
+> diff --git a/kernel/audit.h b/kernel/audit.h
+> index ce41886807bb..3f2285e1c6e0 100644
+> --- a/kernel/audit.h
+> +++ b/kernel/audit.h
+> @@ -99,6 +99,7 @@ struct audit_proctitle {
+>  struct audit_context {
+>  	int		    dummy;	/* must be the first element */
+>  	int		    in_syscall;	/* 1 if task is in a syscall */
+> +	bool		    local;	/* local context needed */
+>  	enum audit_state    state, current_state;
+>  	unsigned int	    serial;     /* serial number for record */
+>  	int		    major;      /* syscall number */
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index de2b2ecb3aea..479b3933d788 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -927,11 +927,13 @@ static inline void audit_free_aux(struct audit_context *context)
+>  	}
+>  }
+>  
+> -static inline struct audit_context *audit_alloc_context(enum audit_state state)
+> +static inline struct audit_context *audit_alloc_context(enum audit_state state,
+> +							gfp_t gfpflags)
+>  {
+>  	struct audit_context *context;
+>  
+> -	context = kzalloc(sizeof(*context), GFP_KERNEL);
+> +	/* We can be called in atomic context via audit_tg() */
+> +	context = kzalloc(sizeof(*context), gfpflags);
+>  	if (!context)
+>  		return NULL;
+>  	context->state = state;
+> @@ -967,7 +969,8 @@ int audit_alloc(struct task_struct *tsk)
+>  		return 0;
+>  	}
+>  
+> -	if (!(context = audit_alloc_context(state))) {
+> +	context = audit_alloc_context(state, GFP_KERNEL);
+> +	if (!context) {
+>  		kfree(key);
+>  		audit_log_lost("out of memory in audit_alloc");
+>  		return -ENOMEM;
+> @@ -979,8 +982,27 @@ int audit_alloc(struct task_struct *tsk)
+>  	return 0;
+>  }
+>  
+> -static inline void audit_free_context(struct audit_context *context)
+> +struct audit_context *audit_alloc_local(gfp_t gfpflags)
+>  {
+> +	struct audit_context *context = NULL;
+> +
+> +	context = audit_alloc_context(AUDIT_RECORD_CONTEXT, gfpflags);
+> +	if (!context) {
+> +		audit_log_lost("out of memory in audit_alloc_local");
+> +		goto out;
+> +	}
+> +	context->serial = audit_serial();
+> +	ktime_get_coarse_real_ts64(&context->ctime);
+> +	context->local = true;
+> +out:
+> +	return context;
+> +}
+> +EXPORT_SYMBOL(audit_alloc_local);
+> +
+> +void audit_free_context(struct audit_context *context)
+> +{
+> +	if (!context)
+> +		return;
+>  	audit_free_module(context);
+>  	audit_free_names(context);
+>  	unroll_tree_refs(context, NULL, 0);
+> @@ -991,6 +1013,7 @@ static inline void audit_free_context(struct audit_context *context)
+>  	audit_proctitle_free(context);
+>  	kfree(context);
+>  }
+> +EXPORT_SYMBOL(audit_free_context);
+>  
+>  static int audit_log_pid_context(struct audit_context *context, pid_t pid,
+>  				 kuid_t auid, kuid_t uid,
+> @@ -2214,7 +2237,7 @@ EXPORT_SYMBOL_GPL(__audit_inode_child);
+>  int auditsc_get_stamp(struct audit_context *ctx,
+>  		       struct timespec64 *t, unsigned int *serial)
+>  {
+> -	if (!ctx->in_syscall)
+> +	if (!ctx->in_syscall && !ctx->local)
+>  		return 0;
+>  	if (!ctx->serial)
+>  		ctx->serial = audit_serial();
+> -- 
+> 2.25.4
+> 
 
-diff --git a/drivers/usb/misc/usbtest.c b/drivers/usb/misc/usbtest.c
-index 150090ee4ec1..4337eff2a749 100644
---- a/drivers/usb/misc/usbtest.c
-+++ b/drivers/usb/misc/usbtest.c
-@@ -672,19 +672,15 @@ static int get_altsetting(struct usbtest_dev *dev)
- 	struct usb_device	*udev = interface_to_usbdev(iface);
- 	int			retval;
- 
--	retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
--			USB_REQ_GET_INTERFACE, USB_DIR_IN|USB_RECIP_INTERFACE,
--			0, iface->altsetting[0].desc.bInterfaceNumber,
--			dev->buf, 1, USB_CTRL_GET_TIMEOUT);
--	switch (retval) {
--	case 1:
--		return dev->buf[0];
--	case 0:
--		retval = -ERANGE;
--		fallthrough;
--	default:
-+	retval = usb_control_msg_recv(udev, 0, USB_REQ_GET_INTERFACE,
-+				      USB_DIR_IN|USB_RECIP_INTERFACE,
-+				      0, iface->altsetting[0].desc.bInterfaceNumber,
-+				      dev->buf, 1, USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
-+
-+	if (retval < 0)
- 		return retval;
--	}
-+
-+	return dev->buf[0];
- }
- 
- static int set_altsetting(struct usbtest_dev *dev, int alternate)
-@@ -872,14 +868,15 @@ static int ch9_postconfig(struct usbtest_dev *dev)
- 		 * ... although some cheap devices (like one TI Hub I've got)
- 		 * won't return config descriptors except before set_config.
- 		 */
--		retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
--				USB_REQ_GET_CONFIGURATION,
--				USB_DIR_IN | USB_RECIP_DEVICE,
--				0, 0, dev->buf, 1, USB_CTRL_GET_TIMEOUT);
--		if (retval != 1 || dev->buf[0] != expected) {
-+		retval = usb_control_msg_recv(udev, 0, USB_REQ_GET_CONFIGURATION,
-+					      USB_DIR_IN | USB_RECIP_DEVICE,  0,
-+					      0, dev->buf, 1, USB_CTRL_GET_TIMEOUT,
-+					      GFP_KERNEL);
-+
-+		if (retval != 0 || dev->buf[0] != expected) {
- 			dev_err(&iface->dev, "get config --> %d %d (1 %d)\n",
- 				retval, dev->buf[0], expected);
--			return (retval < 0) ? retval : -EDOM;
-+			return retval;
- 		}
- 	}
- 
-@@ -1683,10 +1680,10 @@ static int test_halt(struct usbtest_dev *tdev, int ep, struct urb *urb)
- 		return retval;
- 
- 	/* set halt (protocol test only), verify it worked */
--	retval = usb_control_msg(urb->dev, usb_sndctrlpipe(urb->dev, 0),
--			USB_REQ_SET_FEATURE, USB_RECIP_ENDPOINT,
--			USB_ENDPOINT_HALT, ep,
--			NULL, 0, USB_CTRL_SET_TIMEOUT);
-+	retval = usb_control_msg_send(urb->dev, 0, USB_REQ_SET_FEATURE,
-+				      USB_RECIP_ENDPOINT, USB_ENDPOINT_HALT,
-+				      ep, NULL, 0, USB_CTRL_SET_TIMEOUT,
-+				      GFP_KERNEL);
- 	if (retval < 0) {
- 		ERROR(tdev, "ep %02x couldn't set halt, %d\n", ep, retval);
- 		return retval;
-@@ -1845,30 +1842,22 @@ static int ctrl_out(struct usbtest_dev *dev,
- 		/* write patterned data */
- 		for (j = 0; j < len; j++)
- 			buf[j] = (u8)(i + j);
--		retval = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
--				0x5b, USB_DIR_OUT|USB_TYPE_VENDOR,
--				0, 0, buf, len, USB_CTRL_SET_TIMEOUT);
--		if (retval != len) {
-+		retval = usb_control_msg_send(udev, 0, 0x5b,
-+					      USB_DIR_OUT | USB_TYPE_VENDOR, 0,
-+					      0, buf, len, USB_CTRL_SET_TIMEOUT,
-+					      GFP_KERNEL);
-+		if (retval < 0) {
- 			what = "write";
--			if (retval >= 0) {
--				ERROR(dev, "ctrl_out, wlen %d (expected %d)\n",
--						retval, len);
--				retval = -EBADMSG;
--			}
- 			break;
- 		}
- 
- 		/* read it back -- assuming nothing intervened!!  */
--		retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
--				0x5c, USB_DIR_IN|USB_TYPE_VENDOR,
--				0, 0, buf, len, USB_CTRL_GET_TIMEOUT);
--		if (retval != len) {
-+		retval = usb_control_msg_recv(udev, 0,
-+					      0x5c, USB_DIR_IN|USB_TYPE_VENDOR,
-+					      0, 0, buf, len, USB_CTRL_GET_TIMEOUT,
-+					      GFP_KERNEL);
-+		if (retval < 0) {
- 			what = "read";
--			if (retval >= 0) {
--				ERROR(dev, "ctrl_out, rlen %d (expected %d)\n",
--						retval, len);
--				retval = -EBADMSG;
--			}
- 			break;
- 		}
- 
--- 
-2.25.1
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
