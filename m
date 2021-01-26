@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81ABD3030D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 01:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579E13030D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 01:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732098AbhAZAHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 19:07:37 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:33898 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732186AbhAZAF0 (ORCPT
+        id S1732498AbhAZAIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 19:08:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732672AbhAZAHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 19:05:26 -0500
-Received: by mail-oi1-f175.google.com with SMTP id h192so16788019oib.1;
-        Mon, 25 Jan 2021 16:05:11 -0800 (PST)
+        Mon, 25 Jan 2021 19:07:43 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DD8C06174A;
+        Mon, 25 Jan 2021 16:07:02 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id r9so11079827qtp.11;
+        Mon, 25 Jan 2021 16:07:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N6LXBrjg+bB/2+WBjCTrxF6qvgdWtiQma/8rh0wKxUk=;
+        b=hW/YdWhwfBFWw3mYF6n5RNvWDzReO5HABiplOpXnk0/ieoSFPQsH1IvkMaM3AMykKC
+         xy09myn4AaRDPUrNAC+bKbY2CAunsU8/xTN3ZeZnnjjqXIyPHcZuGdrbeo7EVgjRCjSy
+         h0FDbG2H6SaSSEJcj8jOuoYHNUDKYwMIPctrkQQG/fs9HzwQeP4A99VWn7tY4+0Lcr3R
+         aEr3G1IHUZjVLuyhaKBwcWXFACA2Uoj6j4pbOBALFmZRKeSJdpx7JhNl60HISl5XZFIX
+         LO+jnjPfWUbid+35dE9V+BB9ie3dLUZaBTUdM9w/FD4zGKxYFkKCn/A6gJSD6YR+o/+2
+         BJKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5FTRQMQR2ih35r3X59niVzE0TzLmbbqDggAUfz/28Wg=;
-        b=sp6ZAoTDBNoGmEeC2KtVdItQarMIelaetUTgjQ82b/BUjC5Y2jhlpPcAs96G+6K+hC
-         KfVn5ZLSdRix8K1laR/VQCwYvYzdbB1u2alwkjU4hELAV3ln8KRvDiBkqY6X00Lkrcdf
-         z5hph3IY9GCrJbJSBQr8soBBUO/5Ifvwhqp5/khum+DA97OLGi5fb2IHQ8kjIb/WpEHB
-         O4LFC9heoK39BqapAicBaSe2LnKt1phdNXW/Z6/75yrPOvwN6baKkSOyzSNoSeHsfnWh
-         Vp+YZn587xkHL4EtsGCLAXcnGWOuWpbPDLTl7GVKyQjnM/eBGUyESkP9uTzrd4ByyGfe
-         LawA==
-X-Gm-Message-State: AOAM533Hzqkik3BK01OjxquPkmNhPu7XlfqtYddNNAOuO5vcp+iGvu8I
-        hgqWW4HWOQxpx8zPpO8cOg==
-X-Google-Smtp-Source: ABdhPJwPgy6Zz8wcdpbFSAg+p6w1ktKW/dTzzjT0M0bJrrHC9Mb1T96ctJ6h2nxHB0K1dup7VArzPQ==
-X-Received: by 2002:aca:d5cf:: with SMTP id m198mr1592801oig.99.1611619485613;
-        Mon, 25 Jan 2021 16:04:45 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s8sm2359022ood.39.2021.01.25.16.04.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N6LXBrjg+bB/2+WBjCTrxF6qvgdWtiQma/8rh0wKxUk=;
+        b=gZqkvytEJ7HfJnSn7JaeExreZSL3wJ7DKB5A9fMA0q6GAerOFQP0A8AVPNj4QlOCRV
+         /OEqgtjj3Z7joVz/vmkLn1eSmiDSrfR2Tjgz6sw9LMNxFu3Fq3JYMIhioWLMzHnwvr3q
+         pskhiHVMRhxwV2GwP8MPBniv4bVY/nIPTKbFtFAJke1JNnfyfFJ+vg5dmCr9Oc3hF0pa
+         w+B4O/DX4DtcsinnHXGlPToqZZt+40NgMiKihZisKCriQRrKcSp4AQKiUfdjs4gaOf8u
+         teiFmyjjD0s8iXpXw3GQD1ysw7Tcuos0niXUU9oY5es7s5MUSZRXDfQBk7/K6mRmhLGf
+         z6Hg==
+X-Gm-Message-State: AOAM533rl9FeSs3oQosmuNnn5iiVCXwSV0wwy7u4eM56UrLU2PeGrgV1
+        wACcuqu1GqM2YA7GfYIRADc=
+X-Google-Smtp-Source: ABdhPJzGPNNQphuBVAFkY4woM8KHgzTBfveuo+G8JIC5qbpE+3i4pkNtg6YkvgrAGubfaLLObWZNuw==
+X-Received: by 2002:ac8:6049:: with SMTP id k9mr2933402qtm.104.1611619622060;
+        Mon, 25 Jan 2021 16:07:02 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:c7f3:98:3560:1329])
+        by smtp.googlemail.com with ESMTPSA id t14sm3148128qkt.50.2021.01.25.16.07.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 16:04:44 -0800 (PST)
-Received: (nullmailer pid 1310160 invoked by uid 1000);
-        Tue, 26 Jan 2021 00:04:43 -0000
-Date:   Mon, 25 Jan 2021 18:04:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        David Lechner <david@lechnology.com>,
-        devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Subject: Re: [PATCH] dt-bindings: irqchip: Add #address-cells to PRUSS INTC
-Message-ID: <20210126000443.GA1223706@robh.at.kernel.org>
-References: <20210115205819.19426-1-s-anna@ti.com>
+        Mon, 25 Jan 2021 16:07:01 -0800 (PST)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     ztong0001@gmail.com
+Subject: [PATCH v1] scsi: lpfc: Add auto select on IRQ_POLL
+Date:   Mon, 25 Jan 2021 19:05:54 -0500
+Message-Id: <20210126000554.309858-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115205819.19426-1-s-anna@ti.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 02:58:19PM -0600, Suman Anna wrote:
-> The '#address-cells' property looks to be a required property for
-> interrupt controller nodes as indicated by a warning message seen
-> when building dtbs with W=2. Adding the property to the PRUSS INTC
-> dts nodes though fails the dtbs_check. Add this property to the
-> PRUSS INTC binding to make it compliant with both dtbs_check and
-> building dtbs.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
-> Hi Rob,
-> 
-> This patch is also part of our effort to get rid of the warnings seen
-> around interrupt providers on TI K3 dtbs [1]. I needed this in the PRUSS
-> INTC bindings to not get a warning with dtbs_check while also ensuring
-> no warnings while building dtbs with W=2.
-> 
-> I would have expected the '#address-cells' requirement to be inherited
-> automatically. And looking through the schema files, I actually do not
-> see the interrupt-controller.yaml included automatically anywhere. You
-> had asked us to drop the inclusion in this binding in our first version
-> with YAML [3]. Am I missing something, and how do we ensure that this
-> is enforced automatically for everyone?
+lpfc depends on irq_poll library, but it is not selected automatically.
+When irq_poll is not selected, compiling it can run into following error
 
-interrupt-controller.yaml is applied to any node named 
-'interrupt-controller'. More generally, if 'compatible' is not present, 
-then we look at $nodename for the default 'select'. In your case, you 
-didn't name the node appropriately.
- 
-We can't check this in interrupt-controller.yaml because #address-cells 
-is not always 0. GICv3 is one notable exception.
+ERROR: modpost: "irq_poll_init" [drivers/scsi/lpfc/lpfc.ko] undefined!
+ERROR: modpost: "irq_poll_sched" [drivers/scsi/lpfc/lpfc.ko] undefined!
+ERROR: modpost: "irq_poll_complete" [drivers/scsi/lpfc/lpfc.ko] undefined!
 
-> 
-> regards
-> Suman
-> 
-> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115083003.27387-1-lokeshvutla@ti.com/
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/scsi/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-I've commented on this thread now in regards to #address-cells.
+diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+index 701b61ec76ee..c79ac0731b13 100644
+--- a/drivers/scsi/Kconfig
++++ b/drivers/scsi/Kconfig
+@@ -1159,6 +1159,7 @@ config SCSI_LPFC
+ 	depends on NVME_TARGET_FC || NVME_TARGET_FC=n
+ 	depends on NVME_FC || NVME_FC=n
+ 	select CRC_T10DIF
++	select IRQ_POLL
+ 	help
+           This lpfc driver supports the Emulex LightPulse
+           Family of Fibre Channel PCI host adapters.
+-- 
+2.25.1
 
-Rob
-
-> [2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210114194805.8231-1-s-anna@ti.com/
-> [3] https://patchwork.kernel.org/comment/23484523/
-> 
->  .../bindings/interrupt-controller/ti,pruss-intc.yaml        | 6 ++++++
->  1 file changed, 6 insertions(+)
