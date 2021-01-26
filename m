@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F4A304F8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AA9304F90
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235034AbhA0DPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:15:22 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:51500 "EHLO
+        id S235086AbhA0DPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:15:34 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:51524 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405243AbhAZUFj (ORCPT
+        with ESMTP id S2391612AbhAZUFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:05:39 -0500
-Date:   Tue, 26 Jan 2021 20:04:54 -0000
+        Tue, 26 Jan 2021 15:05:43 -0500
+Date:   Tue, 26 Jan 2021 20:04:58 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611691497;
+        s=2020; t=1611691500;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=NZoAieMEnGnWWeNUy3L3XDYai+5LqqqiWY5B3wFNvwM=;
-        b=FVfpmLpAP8bGI6oNhSNbEMe2sT5xB90uD8vl3anR7vWxsL0ojJwI3XHnpYI4WGI5vO0MgS
-        SSpulFiVy8GS/4742T6uTTym76cWxQkJy8ffsFT4jsvYEHe7LqqxSz+EplTmyuf/Wc8Gh0
-        mnFzoNwR5QzIDLO2fck3S6MLjSShItLqwTWTXlK0BaAKzTb7TfIEaoHL+gWyCE13pS7wEc
-        bT0+S56Sx8AgnLWJF/5dr65spM5leydmQknBcotFjrgI9SnkKL9Dahuc4C5i19YsOBlvcp
-        Nke1Dvfrmt1GhgIhOla020UEfkCNuSfQ+Rez5It9T2acw1TtwWvOF1Ife+QB/w==
+        bh=5i1bS5xaTAzafC9EVeTJB6D98YZjamO0Dtekf7yIRFU=;
+        b=4lFnXwcFbbmfP0QlWfwl6Bew2XQXZWx8Q86ekIHSJcYcHbK/ZRPEPL+uRkkFcPnzQ5ohxr
+        rchtOgFl8UVuSQJRF6fh35WiJm7GobXahni23suPHyfgAkIJDN5Bbj83ZKRMIVN9olGWkQ
+        rByKPEmgz+XzbrSC/mDuPO9bFHgJW76/WPKwUqZ9qQdYUu8/8VgDFyUYJoQ6EcoWAsQ/PX
+        4JWzWdfzOX0k+ApDSiFFTozKePx/bDDyTFzXPG4LSzjHWWaGWyYBDnqMCGyo+Fqd7C3NfG
+        w0UecyJY8v/78tpn/8MLR11sUQZDhUAQ4lxvvXP19EXeBe+z/Q2Turovft4/SA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611691497;
+        s=2020e; t=1611691501;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=NZoAieMEnGnWWeNUy3L3XDYai+5LqqqiWY5B3wFNvwM=;
-        b=dXPPbmoDsOvE2HmZMFeOm70qLu4Behgp94xboCLIGb0VvZjnQE1CvYbJ8edLTE20E1hynj
-        Hbu5O6iEXfrEKiAw==
+        bh=5i1bS5xaTAzafC9EVeTJB6D98YZjamO0Dtekf7yIRFU=;
+        b=j9n7LRQo5GGA5QbiinsRz1TFJqY2QuzYAxGb7ktwCcHUuLRVzO0zM/hGnYze0yG/wE1Vea
+        GzNuJTyo0ejHIPDA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] futex: Simplify fixup_pi_state_owner()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+Subject: [tip: locking/urgent] futex: Provide and use pi_state_update_owner()
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161169149477.414.3526220969551023147.tip-bot2@tip-bot2>
+Message-ID: <161169149846.414.14379352589492636849.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,139 +52,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/urgent branch of tip:
 
-Commit-ID:     f2dac39d93987f7de1e20b3988c8685523247ae2
-Gitweb:        https://git.kernel.org/tip/f2dac39d93987f7de1e20b3988c8685523247ae2
+Commit-ID:     c5cade200ab9a2a3be9e7f32a752c8d86b502ec7
+Gitweb:        https://git.kernel.org/tip/c5cade200ab9a2a3be9e7f32a752c8d86b502ec7
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 19 Jan 2021 16:26:38 +01:00
+AuthorDate:    Tue, 19 Jan 2021 15:21:35 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 26 Jan 2021 15:10:59 +01:00
+CommitterDate: Tue, 26 Jan 2021 15:10:58 +01:00
 
-futex: Simplify fixup_pi_state_owner()
+futex: Provide and use pi_state_update_owner()
 
-Too many gotos already and an upcoming fix would make it even more
-unreadable.
+Updating pi_state::owner is done at several places with the same
+code. Provide a function for it and use that at the obvious places.
 
+This is also a preparation for a bug fix to avoid yet another copy of the
+same code or alternatively introducing a completely unpenetratable mess of
+gotos.
+
+Originally-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: stable@vger.kernel.org
 ---
- kernel/futex.c | 53 ++++++++++++++++++++++++-------------------------
- 1 file changed, 26 insertions(+), 27 deletions(-)
+ kernel/futex.c | 66 ++++++++++++++++++++++++-------------------------
+ 1 file changed, 33 insertions(+), 33 deletions(-)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index a0fe63c..7a38ead 100644
+index 5dc8f89..7837f9e 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -2329,18 +2329,13 @@ static void unqueue_me_pi(struct futex_q *q)
- 	spin_unlock(q->lock_ptr);
+@@ -763,6 +763,29 @@ static struct futex_pi_state *alloc_pi_state(void)
+ 	return pi_state;
  }
  
--static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
--				struct task_struct *argowner)
-+static int __fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
-+				  struct task_struct *argowner)
++static void pi_state_update_owner(struct futex_pi_state *pi_state,
++				  struct task_struct *new_owner)
++{
++	struct task_struct *old_owner = pi_state->owner;
++
++	lockdep_assert_held(&pi_state->pi_mutex.wait_lock);
++
++	if (old_owner) {
++		raw_spin_lock(&old_owner->pi_lock);
++		WARN_ON(list_empty(&pi_state->list));
++		list_del_init(&pi_state->list);
++		raw_spin_unlock(&old_owner->pi_lock);
++	}
++
++	if (new_owner) {
++		raw_spin_lock(&new_owner->pi_lock);
++		WARN_ON(!list_empty(&pi_state->list));
++		list_add(&pi_state->list, &new_owner->pi_state_list);
++		pi_state->owner = new_owner;
++		raw_spin_unlock(&new_owner->pi_lock);
++	}
++}
++
+ static void get_pi_state(struct futex_pi_state *pi_state)
  {
- 	struct futex_pi_state *pi_state = q->pi_state;
--	u32 uval, curval, newval;
- 	struct task_struct *oldowner, *newowner;
--	u32 newtid;
--	int ret, err = 0;
--
--	lockdep_assert_held(q->lock_ptr);
--
--	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
-+	u32 uval, curval, newval, newtid;
-+	int err = 0;
- 
- 	oldowner = pi_state->owner;
- 
-@@ -2374,14 +2369,12 @@ retry:
- 			 * We raced against a concurrent self; things are
- 			 * already fixed up. Nothing to do.
- 			 */
--			ret = 0;
--			goto out_unlock;
-+			return 0;
- 		}
- 
- 		if (__rt_mutex_futex_trylock(&pi_state->pi_mutex)) {
- 			/* We got the lock. pi_state is correct. Tell caller. */
--			ret = 1;
--			goto out_unlock;
-+			return 1;
- 		}
- 
- 		/*
-@@ -2408,8 +2401,7 @@ retry:
- 			 * We raced against a concurrent self; things are
- 			 * already fixed up. Nothing to do.
- 			 */
--			ret = 1;
--			goto out_unlock;
-+			return 1;
- 		}
- 		newowner = argowner;
+ 	WARN_ON_ONCE(!refcount_inc_not_zero(&pi_state->refcount));
+@@ -1521,26 +1544,15 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_
+ 			ret = -EINVAL;
  	}
-@@ -2440,7 +2432,6 @@ retry:
- 	 * itself.
- 	 */
- 	pi_state_update_owner(pi_state, newowner);
--	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
- 
- 	return argowner == current;
- 
-@@ -2463,17 +2454,16 @@ handle_err:
- 
- 	switch (err) {
- 	case -EFAULT:
--		ret = fault_in_user_writeable(uaddr);
-+		err = fault_in_user_writeable(uaddr);
- 		break;
- 
- 	case -EAGAIN:
- 		cond_resched();
--		ret = 0;
-+		err = 0;
- 		break;
- 
- 	default:
- 		WARN_ON_ONCE(1);
--		ret = err;
- 		break;
- 	}
- 
-@@ -2483,17 +2473,26 @@ handle_err:
- 	/*
- 	 * Check if someone else fixed it for us:
- 	 */
--	if (pi_state->owner != oldowner) {
--		ret = argowner == current;
--		goto out_unlock;
--	}
-+	if (pi_state->owner != oldowner)
-+		return argowner == current;
  
 -	if (ret)
 -		goto out_unlock;
-+	/* Retry if err was -EAGAIN or the fault in succeeded */
-+	if (!err)
-+		goto retry;
+-
+-	/*
+-	 * This is a point of no return; once we modify the uval there is no
+-	 * going back and subsequent operations must not fail.
+-	 */
+-
+-	raw_spin_lock(&pi_state->owner->pi_lock);
+-	WARN_ON(list_empty(&pi_state->list));
+-	list_del_init(&pi_state->list);
+-	raw_spin_unlock(&pi_state->owner->pi_lock);
+-
+-	raw_spin_lock(&new_owner->pi_lock);
+-	WARN_ON(!list_empty(&pi_state->list));
+-	list_add(&pi_state->list, &new_owner->pi_state_list);
+-	pi_state->owner = new_owner;
+-	raw_spin_unlock(&new_owner->pi_lock);
+-
+-	postunlock = __rt_mutex_futex_unlock(&pi_state->pi_mutex, &wake_q);
++	if (!ret) {
++		/*
++		 * This is a point of no return; once we modified the uval
++		 * there is no going back and subsequent operations must
++		 * not fail.
++		 */
++		pi_state_update_owner(pi_state, new_owner);
++		postunlock = __rt_mutex_futex_unlock(&pi_state->pi_mutex, &wake_q);
++	}
  
--	goto retry;
-+	return err;
-+}
- 
--out_unlock:
-+static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
-+				struct task_struct *argowner)
-+{
-+	struct futex_pi_state *pi_state = q->pi_state;
-+	int ret;
-+
-+	lockdep_assert_held(q->lock_ptr);
-+
-+	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
-+	ret = __fixup_pi_state_owner(uaddr, q, argowner);
+ out_unlock:
  	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
- 	return ret;
- }
+@@ -2433,19 +2445,7 @@ retry:
+ 	 * We fixed up user space. Now we need to fix the pi_state
+ 	 * itself.
+ 	 */
+-	if (pi_state->owner != NULL) {
+-		raw_spin_lock(&pi_state->owner->pi_lock);
+-		WARN_ON(list_empty(&pi_state->list));
+-		list_del_init(&pi_state->list);
+-		raw_spin_unlock(&pi_state->owner->pi_lock);
+-	}
+-
+-	pi_state->owner = newowner;
+-
+-	raw_spin_lock(&newowner->pi_lock);
+-	WARN_ON(!list_empty(&pi_state->list));
+-	list_add(&pi_state->list, &newowner->pi_state_list);
+-	raw_spin_unlock(&newowner->pi_lock);
++	pi_state_update_owner(pi_state, newowner);
+ 	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
+ 
+ 	return argowner == current;
