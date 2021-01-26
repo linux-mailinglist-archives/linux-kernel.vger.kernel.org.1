@@ -2,87 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6731E303C3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1D1303C50
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405223AbhAZL4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:56:24 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11194 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405206AbhAZL4J (ORCPT
+        id S2405378AbhAZL7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:59:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405079AbhAZL5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:56:09 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DQ4rg1t7Yzl2wG;
-        Tue, 26 Jan 2021 19:53:55 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Tue, 26 Jan 2021
- 19:55:17 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm/hugetlb: Fix use after free when subpool max_hpages accounting is not enabled
-Date:   Tue, 26 Jan 2021 06:55:10 -0500
-Message-ID: <20210126115510.53374-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        Tue, 26 Jan 2021 06:57:54 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7BAC06174A;
+        Tue, 26 Jan 2021 03:57:06 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id i9so2517477wmq.1;
+        Tue, 26 Jan 2021 03:57:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bC1xZCmdZ+IRgftlF79fVLCQMAhOapBGa0B/um1CcO8=;
+        b=NvLuiFaNEsDhP1ZT0XPyH0ZKdRAsqatHGT5unjbajWjdArRkVDJVOK62L8+MNYZaqW
+         ldu05rKhXRBtGlL4Az5POr82yGwm34tbWZ9UHGXmTB3bC6AzbbLIlqiZ4/L54/6+4fUX
+         IYC9WPWKNOyCffsVRWDF3A5tN8acJt6m1pTsS47ER1JX6kCgHeUHHIKyhoOR1XVSVMZc
+         siTtM4OBn+or7zkXn4pT2u+vMXAwsC7viaHq9bYco+ytZ5lCW9+fnLY7KZZPVZMDu75C
+         JY5jT3Xb+jfFmG6AsueC050KJxcZv63tj6ufNyjUkKrffTPpQM6i5iEJJvhh6M7nbEfu
+         yXtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bC1xZCmdZ+IRgftlF79fVLCQMAhOapBGa0B/um1CcO8=;
+        b=TUJM54xfwBIQXRQKqpULdZCZsfEfxk61604TBzdguf1OXR71bXHCHJD9hto5//zpMu
+         MEN1+F4JKqBTk38TPckrK+vsjpHHylI+J+upQdv4bc1Sd76KdhutkLBVzGGcFXs+K1Mq
+         BqBxBIR9M0i1IMsMXIx7kKLmAwy8kH6pdg7ndmn033DJ4lJaNpKMEyzPlNYDVpok9yCG
+         ZQXHBkhWDvBwmmLuUdne05RkcybWclIdQE5AKMzTFBvvrt9ookhwFCO5VC9j8xoJJ6U6
+         jQum9jXKB6VhpFps8kXtZ5XOj7mWyXe4ydg5ca+D0FaY5qS9CEF8rSPcn/UC0+BrQbVb
+         WbDQ==
+X-Gm-Message-State: AOAM533lReK9EzcVTH5CjYSYP4EgA+d5UJVHXt9ay+jgJbuBOfmdiI8r
+        aunldcwyJ0XHsGcOeaVJxRpwx2okq9Slo+dc
+X-Google-Smtp-Source: ABdhPJxAGmp/2Q5U5eZgPzQBNLYgAVOsmF0XfLf4kQKtFcTGrEYhjftqslWZDJ2Pry78yUQ6ZA5CXw==
+X-Received: by 2002:a1c:4984:: with SMTP id w126mr4262426wma.139.1611662224976;
+        Tue, 26 Jan 2021 03:57:04 -0800 (PST)
+Received: from anparri.mshome.net (host-95-238-70-33.retail.telecomitalia.it. [95.238.70.33])
+        by smtp.gmail.com with ESMTPSA id z185sm3330283wmb.0.2021.01.26.03.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 03:57:04 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, x86@kernel.org,
+        linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 0/4] Drivers: hv: vmbus: Restrict devices and configurations on 'isolated' guests
+Date:   Tue, 26 Jan 2021 12:56:37 +0100
+Message-Id: <20210126115641.2527-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When subpool max_hpages accounting is not enabled, used_hpages is always 0
-and might lead to release subpool prematurely because it indicates no pages
-are used now while there might be.
+Changes since v1 [1]:
+  - improve/add logging (Haiyang Zhang)
+  - move NVSC version check after version negotiation (Haiyang Zhang)
 
-In order to fix this issue, we should check used_hpages == 0 iff max_hpages
-accounting is enabled. As max_hpages accounting should be enabled in most
-common case, this is not worth a Cc stable.
+[1] https://lkml.kernel.org/r/20210119175841.22248-1-parri.andrea@gmail.com
 
-Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/hugetlb.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: x86@kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: netdev@vger.kernel.org
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 777bc0e45bf3..53ea65d1c5ab 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -97,16 +97,26 @@ static inline void ClearPageHugeFreed(struct page *head)
- /* Forward declaration */
- static int hugetlb_acct_memory(struct hstate *h, long delta);
- 
--static inline void unlock_or_release_subpool(struct hugepage_subpool *spool)
-+static inline bool subpool_is_free(struct hugepage_subpool *spool)
- {
--	bool free = (spool->count == 0) && (spool->used_hpages == 0);
-+	if (spool->count)
-+		return false;
-+	if (spool->max_hpages != -1)
-+		return spool->used_hpages == 0;
-+	if (spool->min_hpages != -1)
-+		return spool->rsv_hpages == spool->min_hpages;
- 
-+	return true;
-+}
-+
-+static inline void unlock_or_release_subpool(struct hugepage_subpool *spool)
-+{
- 	spin_unlock(&spool->lock);
- 
- 	/* If no pages are used, and no other handles to the subpool
- 	 * remain, give up any reservations based on minimum size and
- 	 * free the subpool */
--	if (free) {
-+	if (subpool_is_free(spool)) {
- 		if (spool->min_hpages != -1)
- 			hugetlb_acct_memory(spool->hstate,
- 						-spool->min_hpages);
+Andrea Parri (Microsoft) (4):
+  x86/hyperv: Load/save the Isolation Configuration leaf
+  Drivers: hv: vmbus: Restrict vmbus_devices on isolated guests
+  Drivers: hv: vmbus: Enforce 'VMBus version >= 5.2' on isolated guests
+  hv_netvsc: Restrict configurations on isolated guests
+
+ arch/x86/hyperv/hv_init.c          | 15 +++++++++++++
+ arch/x86/include/asm/hyperv-tlfs.h | 15 +++++++++++++
+ arch/x86/kernel/cpu/mshyperv.c     |  9 ++++++++
+ drivers/hv/channel_mgmt.c          | 36 ++++++++++++++++++++++++++++++
+ drivers/hv/connection.c            | 13 +++++++++++
+ drivers/net/hyperv/netvsc.c        | 27 +++++++++++++++++++---
+ include/asm-generic/hyperv-tlfs.h  |  1 +
+ include/asm-generic/mshyperv.h     |  5 +++++
+ include/linux/hyperv.h             |  1 +
+ 9 files changed, 119 insertions(+), 3 deletions(-)
+
 -- 
-2.19.1
+2.25.1
 
