@@ -2,145 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDAC304619
+	by mail.lfdr.de (Postfix) with ESMTP id 6A346304618
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394337AbhAZSPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:15:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39856 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2393391AbhAZRsz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:48:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611683248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TLtZhIl7orO56MT5FcvC4puD6EhsLgMtbBTl1Sh9rT4=;
-        b=ROeHlGry6v6pXrjKDCe/eDFEOK6G5AUiEjms4jHD3lLAC+qZnefwLsum9OWbpx14l/KPv3
-        R4+b26Vku1fXEsguPCuwre1ZnAkvzpsNXu0GcK3kLW9aMzfvUWyzl87PE+EF1aL0r1xqN3
-        t3sf0HthondGOYrqQLpMJGuN0ztQcvg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-sZBPqrYnOqqIZjly65phPg-1; Tue, 26 Jan 2021 12:47:26 -0500
-X-MC-Unique: sZBPqrYnOqqIZjly65phPg-1
-Received: by mail-wm1-f70.google.com with SMTP id q24so1690513wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:47:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TLtZhIl7orO56MT5FcvC4puD6EhsLgMtbBTl1Sh9rT4=;
-        b=aDBbSsuHMVjfI2U0/1zWMZ9rHCjM1ZasL911WCZTaK0BKQuhU2eBp2BYb4kSqQyVG8
-         crUojTTHEsoJeCTv7UJFmwNQLLsEcCj+7imfOw13fiAtRNeVlPX+DWfWX6e2K7AnWek0
-         Q3j8WIFaJibnDDfr1hSkqH9hwhOr+M3Au3JoVJs5TJUj8z0Hy8psp0MrtZgdC+nXhrlS
-         bMVykGcWReMDYZzv2lKPERozVEpQKMyoD7rTUKJr65cmCahtD0mX0IqINqVdDHJ6L4Hu
-         THRAiMMIzZ5cE9xSgDYq/pHSOZO8nuu05nnKBdm0HnbNVasrDM6TRY/qMTNzy87qflGx
-         0l7A==
-X-Gm-Message-State: AOAM5321Bz4wMKq9L4ItVlChpI8SxsHNpYVVI77U65lR8WqMvQn4QVAM
-        AFLyC2SO8ziIjUwYYAgnDEzp2SpcdxZqQJ4o0xWJFITE61Pxztn6EVqGi578fvxGbAn8RZ/CXlA
-        jSEkBX3VzodbeashedIGZQSB+UKQFfIAe9l/VX9sM
-X-Received: by 2002:a5d:58fa:: with SMTP id f26mr7484826wrd.33.1611683245138;
-        Tue, 26 Jan 2021 09:47:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwhd+iinKcflKNYA9Dx5KommJVvFrT+60OnG5/sGYPVn+fLyB1sTBsc/zurV6mdURylsrCX/29OYiu+hF8Lt+8=
-X-Received: by 2002:a5d:58fa:: with SMTP id f26mr7484806wrd.33.1611683244863;
- Tue, 26 Jan 2021 09:47:24 -0800 (PST)
+        id S2394318AbhAZSPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:15:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389909AbhAZRui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:50:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF4BD2224C;
+        Tue, 26 Jan 2021 17:49:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611683398;
+        bh=ix5zJ6JWxdoag7Pi/sGk5niBB/BRtMgouJs8I7834qI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QlmBe9gDOtXQz1sz7N3XMxwQGKMs/kj/5q94ltAL+JYThZi2SOYOO/qoDyHa5+qIr
+         JE56dqfoBYM7SOGJj1LFEGSI5KdlbEsJ1OGvB+asxu+UzpPRMyQS7HCEl9ZC9EWHK3
+         qdcDshfRJ7tGjJ2edO1Aw8EDjHUUgKxBPkG1eAKs=
+Date:   Tue, 26 Jan 2021 18:49:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        Yu Chen <chenyu56@huawei.com>, linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Alex Dewar <alex.dewar90@gmail.com>
+Subject: Re: [PATCH v4 0/5] Promote Hikey 970 USB phy out of staging
+Message-ID: <YBBWQeglmuDn1g11@kroah.com>
+References: <cover.1611052729.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210125220757.vxdsf6sttpy46cq7@treble> <YA/PLdX5m9f4v+Yl@kroah.com>
- <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
- <YBAeYaDReAc9VscA@kroah.com> <20210126145155.kcfbnzfqg5qugvcl@treble>
- <YBAyGU7H8E98xKng@hirez.programming.kicks-ass.net> <20210126154651.itfrnhwfistia3ss@treble>
- <YBA9r13+1uuyDYuR@hirez.programming.kicks-ass.net> <CAFbkSA1CibJ6sp+LPLy3hpchLLH2B5__Lk31TLeVThXi5eZV7Q@mail.gmail.com>
- <20210126161934.z6sng4irl5teonvj@treble> <YBBML2eB/IXcTvcn@kroah.com>
-In-Reply-To: <YBBML2eB/IXcTvcn@kroah.com>
-From:   Justin Forbes <jforbes@redhat.com>
-Date:   Tue, 26 Jan 2021 11:47:13 -0600
-Message-ID: <CAFbkSA2do8hyh8hwyA5f+GTstcv561UePu-msxPuKXN3+No_Rg@mail.gmail.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
-To:     Greg KH <greg@kroah.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1611052729.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:07 AM Greg KH <greg@kroah.com> wrote:
->
-> On Tue, Jan 26, 2021 at 10:19:34AM -0600, Josh Poimboeuf wrote:
-> > On Tue, Jan 26, 2021 at 10:15:52AM -0600, Justin Forbes wrote:
-> > > On Tue, Jan 26, 2021 at 10:05 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > >
-> > > > On Tue, Jan 26, 2021 at 09:46:51AM -0600, Josh Poimboeuf wrote:
-> > > > > On Tue, Jan 26, 2021 at 04:15:37PM +0100, Peter Zijlstra wrote:
-> > > > > > On Tue, Jan 26, 2021 at 08:51:55AM -0600, Josh Poimboeuf wrote:
-> > > > > > > User space mixes compiler versions all the time.  The C ABI is stable.
-> > > > > > >
-> > > > > > > What specifically is the harder issue you're referring to?
-> > > > > >
-> > > > > > I don't think the C ABI captures nearly enough. Imagine trying to mix a
-> > > > > > compiler with and without asm-goto support (ok, we fail to build without
-> > > > > > by now, but just imagine).
-> > > > > >
-> > > > > > No C ABI violated, but having that GCC extention vs not having it
-> > > > > > radically changes the kernel ABI.
-> > > > > >
-> > > > > > I think I'm with Greg here, just don't do it.
-> > > > >
-> > > > > Ok, thank you for an actual example.  asm goto is a good one.
-> > > > >
-> > > > > But it's not a cut-and-dry issue.  Otherwise how could modversions
-> > > > > possibly work?
-> > > > >
-> > > > > So yes, we should enforce GCC versions, but I still haven't seen a
-> > > > > reason it should be more than just "same compiler and *major* version".
-> > > >
-> > > > Why bother? rebuilding the kernel and all modules is a matter of 10
-> > > > minutes at most on a decently beefy build box.
-> > > >
-> > > > What actual problem are we trying to solve here?
-> > >
-> > > This is true for those of us used to working with source and building
-> > > by hand. For users who want everything packaged, rebuilding a kernel
-> > > package for install is considerably longer, and for distros providing
-> > > builds for multiple arches, we are looking at a couple of hours at
-> > > best.  From a Fedora standpoint, I am perfectly fine with it failing
-> > > if someone tries to build a module on gcc10 when the kernel was built
-> > > with gcc11.  It's tedious when the kernel was built with gcc11
-> > > yesterday, and a new gcc11 build today means that kernel needs to be
-> > > rebuilt.
-> >
-> > Right.  It's a problem for distro users.  The compiler and kernel are in
-> > separate packages, with separate release cadences.  The latest compiler
-> > version may not exactly match what was used to build the latest kernel.
->
-> Given that distros _should_ be updating their kernel faster than the
-> compiler updates, what's the real issue here?  You build a kernel, and
-> all external modules, at the same time.  If you want to build them at
-> different times, you make your build system ensure they were the same
-> compiler so that you are "bug compatible".
->
-> And yes, it might be a pain if gcc11 gets updated every other day, but
-> as someone living with a "rolling-distro" you get used to it, otherwise
-> you just "pin" the build tools and keep that from happening.
->
-> This isn't a new thing, we've been doing this for decades, why is this
-> surprising?
+On Tue, Jan 19, 2021 at 11:44:38AM +0100, Mauro Carvalho Chehab wrote:
+> Hi Vinod/Rob,
+> 
+> This series moves  the Hikey 970 USB PHY driver out of staging.
+> 
+> Patches 1 to 4 contain the fixes from staging. Patch 5 moves the
+> driver from staging:
+> 
+> 	$ git show 82ce73ac9a38 --summary
+> 	...
+> 	 rename drivers/staging/hikey9xx/phy-hi3670-usb3.yaml => Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml (100%)
+> 	 rename drivers/{staging/hikey9xx => phy/hisilicon}/phy-hi3670-usb3.c (100%)
+> 
+> I opted to use --no-renames on this series in order to make easier to
+> review via e-mail, as the entire driver and DT bindings will be seen
+> at the last patch on this series.
 
-We definitely build considerably more kernels than toolchains. From a
-rawhide standpoint though, a number of testers are willing to test RC
-releases, but are not willing to run debug kernels, so they installed
-rc4 yesterday, but will not install today's snapshot.  I will build
-3-5 new kernels before they update to rc5.  We have been doing things
-this way for over a decade. It has never been a problem until we
-turned on CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL.  Suddenly I am
-getting complaints.
+First 4 patches applied to my tree, thanks.
 
+greg k-h
