@@ -2,158 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AA7303BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474B0303BB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405056AbhAZLcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:32:04 -0500
-Received: from mail-eopbgr40092.outbound.protection.outlook.com ([40.107.4.92]:12675
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391609AbhAZJxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:53:16 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SBb8T4eFB9MQGPjQtWjkX3EFP336qP6aewUMMmwXSv5YgNcScCx7PT733RbWktTrACrRXRP009/rv8kMVpPTgk3pRvt3c3O607R+K9C5vsCRHgirf7hzXA696VzXwY7H77kXL10I4Z2ShfLmUtH6G7C2Vx8d0AZJ4Gie41JXk8og3anmjqfBag0ehrHx+9wI6pGje5zBuNfYOv0aJKhv6gGlceiIjudcGLdoAQJwS5exG5BLl46j0Y/bjZR7miftHj+u90OnA6i1lGFOgofNWJ/Mx0S1OzbhX4uNqECbJ3aVqVkQn+8rJKJC+0mtQicSGR6BANuaLCzrucdVoWzsXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L2HOai1RO9f/Z1Bbh41GX84mXOSIIb6CrFeZKoOGka4=;
- b=CVOAgcgK4sJ4zDL073fSzL5Vh3FhqZX5D3VDrGkG18F0JjjRfyITbSPCHVTdbsqPpt7jPRGSlF9RCgYoMJqqzlWU28M59OPBh4dvkD+k/c872XDAOtLtgGp3seJWBGEDhtLPx+y5+O9TTOyV5BNhPC3VR/+3xJbcYWl6vbODSBVuhRS7tiPiF0XGbTZY84YvJHTglk+8KrOQzUp2jeyok1inYmybd48HC2DjlMR+M/C5T1V1axoJjAA3F7zMCB1vufQ1SL1+Ci9Sg4tclk9/A0PFM/yMjTI7tInK/7Dux4lfU9jG9nW7eJRNTUleodUc4l7DLiyc+EL3Yyo6eC5AzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L2HOai1RO9f/Z1Bbh41GX84mXOSIIb6CrFeZKoOGka4=;
- b=K4Q/KKh6C6YFoj7KLHQfaYWYBPrvSWgyA805LMvDeE5Ynw2U4rMh9z3tEXGs93ZSHWJa4/HiJ1X1vUEd26faXRhhvv+5tgW4+nT6mySLxkoeF1akabIAmtQy8SRqSHqmbx7vDKwWJPgmv0ZlOLifKt/n24pGyBcQld3KquhykaE=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM0PR10MB3011.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.17; Tue, 26 Jan
- 2021 09:52:24 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::58b2:6a2a:b8f9:bc1a]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::58b2:6a2a:b8f9:bc1a%3]) with mapi id 15.20.3784.017; Tue, 26 Jan 2021
- 09:52:24 +0000
-Subject: Re: [PATCH 4.19 46/58] net: dsa: mv88e6xxx: also read STU state in
- mv88e6250_g1_vtu_getnext
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20210125183156.702907356@linuxfoundation.org>
- <20210125183158.687957547@linuxfoundation.org>
- <8447247a-6147-32b6-541d-0dd717ac9882@prevas.dk>
- <b3be188e-f874-72be-d3bc-2c0cc06aba53@prevas.dk> <YA/XvmZrTj4NGqdJ@kroah.com>
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Message-ID: <a91dabc4-3bdc-b379-e47f-85fc44b170df@prevas.dk>
-Date:   Tue, 26 Jan 2021 10:52:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <YA/XvmZrTj4NGqdJ@kroah.com>
-Content-Type: text/plain; charset=windows-1252
+        id S2404843AbhAZLcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:32:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27157 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391735AbhAZJy5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:54:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611654809;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IUod4ETbztcXWv5kUceZZzVauSHrXgAqLfR6bEGhJrw=;
+        b=gcQISBwjC9oS0YagKFO5AQYmS2voSMsXxTmgFug/MdXAEeO+UtfevQrezyPmjZRnNIjrU7
+        a0NZFSatD17LO+pv3X0tRSbKq4WIDT5+eqhfr6ZPUgIH5zPitvPXJ3fho8BRcRJfq6n0wc
+        yA+HPGx1rQ05MgFs4176KyIBnTtq7lE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-74-Upuk_9QSN6-qAucf0rE94A-1; Tue, 26 Jan 2021 04:53:25 -0500
+X-MC-Unique: Upuk_9QSN6-qAucf0rE94A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7562F107ACFB;
+        Tue, 26 Jan 2021 09:53:19 +0000 (UTC)
+Received: from [10.36.114.192] (ovpn-114-192.ams2.redhat.com [10.36.114.192])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 024AB19D80;
+        Tue, 26 Jan 2021 09:53:09 +0000 (UTC)
+Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-7-rppt@kernel.org> <20210125170122.GU827@dhcp22.suse.cz>
+ <20210125213618.GL6332@kernel.org> <20210126071614.GX827@dhcp22.suse.cz>
+ <20210126083311.GN6332@kernel.org> <20210126090013.GF827@dhcp22.suse.cz>
+ <20210126092011.GP6332@kernel.org> <20210126094903.GI827@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <23850371-a19f-51fa-d813-6e78624ee8f8@redhat.com>
+Date:   Tue, 26 Jan 2021 10:53:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20210126094903.GI827@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [5.186.115.188]
-X-ClientProxiedBy: AM5PR0602CA0010.eurprd06.prod.outlook.com
- (2603:10a6:203:a3::20) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.149] (5.186.115.188) by AM5PR0602CA0010.eurprd06.prod.outlook.com (2603:10a6:203:a3::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 26 Jan 2021 09:52:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8b77c5a7-fc10-460e-31be-08d8c1e014ff
-X-MS-TrafficTypeDiagnostic: AM0PR10MB3011:
-X-Microsoft-Antispam-PRVS: <AM0PR10MB3011E2850046ED43D4D2930F93BC0@AM0PR10MB3011.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yYz0CYH7E8UQa6JCJeg+VH2Vvr5ZRBKz7l0QETsGgnxS5E2nkF+FugQijSJTDI1+iwugBYmjvKPD2w/7rpNmv7HvDV5uyg663DKunDN2b1u6WE1qBAxY5fHNrQjk5wPWKz/xQEzD3LJ/GtzswM2GhoD/xy1izc1l8h9GwIzxVhQ/9Y+PhHwFtnpwPDdJQHsk5hRSq1FtrYShHVklX74oq89wpJW7S/U5XK60+QHNffli6PK7Kvv3BOTCEMKUlg3BZBl7FyrFV96n8XXiN20r0dU2fsh9SZSpa3AuoCvNY3f+/FbuPhT4cX1MEEseSj2gSLeINcatoJr1FqzKMxjxklarI61riWKkrIetL6cncy7mEGitzQLUsmylZcokQ+h32OqmmNxrOGgU+8OpqrqjeJS3iICKWlYFQpyL09+YMnRJkQ6LqDLHsmEnF1hbyIQ03T9zyYXBq8L3T6D1iAuHKEhWXXSoK9jLN7vA+KiPW6I=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(366004)(39830400003)(376002)(346002)(136003)(2906002)(478600001)(8676002)(52116002)(31686004)(2616005)(956004)(316002)(16576012)(66476007)(66556008)(44832011)(4326008)(54906003)(66946007)(5660300002)(8936002)(16526019)(8976002)(83380400001)(186003)(86362001)(6916009)(6486002)(36756003)(31696002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?rU9q6kBPVMCejdsNnpXrZIHooSSNj4Eo+Y45BBuZ+dsE1ak8pYOIiwTj?=
- =?Windows-1252?Q?d7sY0dh9+JpbpCkX7+kl2MWNbSH0Mzrk8/a3B4LMVHQc/KsgqnpLB1Wr?=
- =?Windows-1252?Q?Juvk04zFuFqpParoqLzu3Lf3PI+ydZaz4YqQVW2WFqG91MehbCJGImm/?=
- =?Windows-1252?Q?6auQoPHy37DMVJkHT8DKLC0YlH74Xih14MKU2flh2xhwyXqDxOi+8u+O?=
- =?Windows-1252?Q?1FgwqJSm1H/3GA+QHOo3Fi0VFuTqP+5/2EkD6a2OTJ4e9xlYRQAKab8M?=
- =?Windows-1252?Q?/ep5jBAaqxQc/1z6w0e4QSUZVK46StynLWgWkzpwP8na83ddTNWJigfd?=
- =?Windows-1252?Q?63AUrHXGbW1M78kjL/alfLLG22Sd+YRhslJAAsFXNGKl6X3vMM94hAcU?=
- =?Windows-1252?Q?ZTE05j/n8wkhfgRdxnguWjdU2UxD9VKIF0IKdk9Wmq8GKIFZhKh2FQTb?=
- =?Windows-1252?Q?m1R7oxPB7F6AqR9vJWE89cZmYGvyUDZ+OSZMXWrVK5j75GV0wTRjNntC?=
- =?Windows-1252?Q?iJy1m8SbSQgNaqBH70tXHKawUC0Ku+20Rk+dv5gvTA7IVV+nJrpcvSVi?=
- =?Windows-1252?Q?q2OHn3UW9bjFdq54XIvjsXFjXMZmqL6ZT91rvFqltbVJjg99yB9EKIxz?=
- =?Windows-1252?Q?tfURca1G6LrkJf3RCkdrPQjAgOwHysFCuKt3PPvf7vf+GhUjd/485DJP?=
- =?Windows-1252?Q?1jV/AYVClIFeu2iRvVNIMuCShdhHGuvu+Bq3YwgPaUwCK09EOT9ZvgHU?=
- =?Windows-1252?Q?wgbcunwIWGo+rScDgBxXVUYAdDTUVC45+q9XPmnrGTJ5+XlS3xfJYvKb?=
- =?Windows-1252?Q?/xSPMNfEOxe0w2FKTX8zJbGirRfR8L0ibsWPBRUz2VMltuAcRzrbseK7?=
- =?Windows-1252?Q?IS+fQ5wUgctJ/tNIPMaqB0gn7Au+oSG3n+dZ0+9cbyGR9vwzNE80JCC/?=
- =?Windows-1252?Q?6QeRNnAxJVdL6XTyBCo8tyNbPmxxe2lNG8ITQdpsvrqqH5rqrwepbS2Z?=
- =?Windows-1252?Q?3LX+LeU+S8HQ6SIkcswciQ7n3pX04MM4QyyP7OcU1zF9ezWWoGdejFa2?=
- =?Windows-1252?Q?s8WO5jV1e+PrglUVJDg4RLnl+yb645LJb0SVOyhSHmppS0jkOI2TIKfB?=
- =?Windows-1252?Q?XMOXreaZ3rez6kgSzEJwawJS?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b77c5a7-fc10-460e-31be-08d8c1e014ff
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 09:52:24.3907
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9TdkIpv8hSepaxLzZ1JHN4qpVbpnPtZTck+c9t3wXIMwZ06IJ+su1ocNDxPTtQMlp5OvL2h6dVklWW2vUBpcYs03ashPm70cClW6To2GT6I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3011
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/01/2021 09.50, Greg Kroah-Hartman wrote:
-> On Mon, Jan 25, 2021 at 08:59:54PM +0100, Rasmus Villemoes wrote:
->> On 25/01/2021 20.40, Rasmus Villemoes wrote:
->>> On 25/01/2021 19.39, Greg Kroah-Hartman wrote:
->>>> From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
->>>>
->>>> commit 87fe04367d842c4d97a77303242d4dd4ac351e46 upstream.
->>>>
->>>
->>> Greg, please drop this from 4.19-stable. Details:
->>>
->>>>
->>>> --- a/drivers/net/dsa/mv88e6xxx/global1_vtu.c
->>>> +++ b/drivers/net/dsa/mv88e6xxx/global1_vtu.c
->>>> @@ -357,6 +357,10 @@ int mv88e6185_g1_vtu_getnext(struct mv88
->>>>  		if (err)
->>>>  			return err;
+On 26.01.21 10:49, Michal Hocko wrote:
+> On Tue 26-01-21 11:20:11, Mike Rapoport wrote:
+>> On Tue, Jan 26, 2021 at 10:00:13AM +0100, Michal Hocko wrote:
+>>> On Tue 26-01-21 10:33:11, Mike Rapoport wrote:
+>>>> On Tue, Jan 26, 2021 at 08:16:14AM +0100, Michal Hocko wrote:
+>>>>> On Mon 25-01-21 23:36:18, Mike Rapoport wrote:
+>>>>>> On Mon, Jan 25, 2021 at 06:01:22PM +0100, Michal Hocko wrote:
+>>>>>>> On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
+>>>>>>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>>>>>>
+>>>>>>>> Introduce "memfd_secret" system call with the ability to create memory
+>>>>>>>> areas visible only in the context of the owning process and not mapped not
+>>>>>>>> only to other processes but in the kernel page tables as well.
+>>>>>>>>
+>>>>>>>> The user will create a file descriptor using the memfd_secret() system
+>>>>>>>> call. The memory areas created by mmap() calls from this file descriptor
+>>>>>>>> will be unmapped from the kernel direct map and they will be only mapped in
+>>>>>>>> the page table of the owning mm.
+>>>>>>>>
+>>>>>>>> The secret memory remains accessible in the process context using uaccess
+>>>>>>>> primitives, but it is not accessible using direct/linear map addresses.
+>>>>>>>>
+>>>>>>>> Functions in the follow_page()/get_user_page() family will refuse to return
+>>>>>>>> a page that belongs to the secret memory area.
+>>>>>>>>
+>>>>>>>> A page that was a part of the secret memory area is cleared when it is
+>>>>>>>> freed.
+>>>>>>>>
+>>>>>>>> The following example demonstrates creation of a secret mapping (error
+>>>>>>>> handling is omitted):
+>>>>>>>>
+>>>>>>>> 	fd = memfd_secret(0);
+>>>>>>>> 	ftruncate(fd, MAP_SIZE);
+>>>>>>>> 	ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+>>>>>>>
+>>>>>>> I do not see any access control or permission model for this feature.
+>>>>>>> Is this feature generally safe to anybody?
+>>>>>>
+>>>>>> The mappings obey memlock limit. Besides, this feature should be enabled
+>>>>>> explicitly at boot with the kernel parameter that says what is the maximal
+>>>>>> memory size secretmem can consume.
+>>>>>
+>>>>> Why is such a model sufficient and future proof? I mean even when it has
+>>>>> to be enabled by an admin it is still all or nothing approach. Mlock
+>>>>> limit is not really useful because it is per mm rather than per user.
+>>>>>
+>>>>> Is there any reason why this is allowed for non-privileged processes?
+>>>>> Maybe this has been discussed in the past but is there any reason why
+>>>>> this cannot be done by a special device which will allow to provide at
+>>>>> least some permission policy?
 >>>>  
->>>> +		err = mv88e6185_g1_stu_data_read(chip, entry);
->>>> +		if (err)
->>>> +			return err;
->>>> +
+>>>> Why this should not be allowed for non-privileged processes? This behaves
+>>>> similarly to mlocked memory, so I don't see a reason why secretmem should
+>>>> have different permissions model.
 >>>
->>> The function that this patch applied to in mainline did not exist in
->>> v4.19. It seems that this hunk has been applied in the similar
->>> mv88e6185_g1_vtu_getnext(), and indeed, in current 4.19.y, just one more
->>> line of context shows this:
+>>> Because appart from the reclaim aspect it fragments the direct mapping
+>>> IIUC. That might have an impact on all others, right?
 >>
->> Bah, that was from 4.14, so the line numbers are a bit off, but I see
->> you've also added it to the 4.14 queue. Same comment for that one: Drop
->> this from both 4.19.y and 4.14.y.
+>> It does fragment the direct map, but first it only splits 1G pages to 2M
+>> pages and as was discussed several times already it's not that clear which
+>> page size in the direct map is the best and this is very much workload
+>> dependent.
 > 
-> Odd, but ok, the Fixes: line lied :)
+> I do appreciate this has been discussed but this changelog is not
+> specific on any of that reasoning and I am pretty sure nobody will
+> remember details in few years in the future. Also some numbers would be
+> appropriate.
+> 
+>> These are the results of the benchmarks I've run with the default direct
+>> mapping covered with 1G pages, with disabled 1G pages using "nogbpages" in
+>> the kernel command line and with the entire direct map forced to use 4K
+>> pages using a simple patch to arch/x86/mm/init.c.
+>>
+>> https://docs.google.com/spreadsheets/d/1tdD-cu8e93vnfGsTFxZ5YdaEfs2E1GELlvWNOGkJV2U/edit?usp=sharing
+> 
+> A good start for the data I am asking above.
 
-Sorry, but no, it did not.
+I assume you've seen the benchmark results provided by Xing Zhengjun
 
-The commit 92307069a96c mentioned in Fixes changed the semantics of the
-helper mv88e6185_g1_vtu_data_read(), splitting half its functionality to
-a new helper mv88e6185_g1_stu_data_read(), and it also added a call of
-that new helper in mv88e6185_g1_vtu_getnext().
+https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
 
-But the other user of mv88e6185_g1_vtu_data_read(), namely
-mv88e6250_g1_vtu_getnext(), was not updated, which is precisely what
-87fe04367d842c4d97a77303242d4dd4ac351e46 fixes. However, that other user
-of mv88e6185_g1_vtu_data_read() did not exist in 4.19, so the backports
-of 92307069a96c to those earlier stable trees didn't introduce that bug.
+-- 
+Thanks,
 
-Rasmus
+David / dhildenb
+
