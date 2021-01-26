@@ -2,66 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4122304601
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DDD304602
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394093AbhAZSKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:10:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54752 "EHLO mail.kernel.org"
+        id S2394109AbhAZSKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:10:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:47348 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389836AbhAZQhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:37:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A940C22241;
-        Tue, 26 Jan 2021 16:36:41 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 16:36:39 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, stable@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] arm64: Fix kernel address detection of __is_lm_address()
-Message-ID: <20210126163638.GA3509@gaia>
-References: <20210126134056.45747-1-vincenzo.frascino@arm.com>
+        id S2390025AbhAZQhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:37:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 125C431B;
+        Tue, 26 Jan 2021 08:36:46 -0800 (PST)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65A983F66E;
+        Tue, 26 Jan 2021 08:36:44 -0800 (PST)
+Date:   Tue, 26 Jan 2021 16:36:41 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Dietmar Eggeman <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] sched/fair: Rate limit calls to
+ update_blocked_averages() for NOHZ
+Message-ID: <20210126163641.2cptgrksaeefitzw@e107158-lin>
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
+ <20210122183927.ivqyapttzd6lflwk@e107158-lin>
+ <CAKfTPtA=Cv3N6EQ7UcgeUsRaAMy7U242xzH+rfJJzE73bYFZ5A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210126134056.45747-1-vincenzo.frascino@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAKfTPtA=Cv3N6EQ7UcgeUsRaAMy7U242xzH+rfJJzE73bYFZ5A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 01:40:56PM +0000, Vincenzo Frascino wrote:
-> Currently, the __is_lm_address() check just masks out the top 12 bits
-> of the address, but if they are 0, it still yields a true result.
-> This has as a side effect that virt_addr_valid() returns true even for
-> invalid virtual addresses (e.g. 0x0).
+On 01/25/21 14:23, Vincent Guittot wrote:
+> On Fri, 22 Jan 2021 at 19:39, Qais Yousef <qais.yousef@arm.com> wrote:
+> >
+> > On 01/22/21 17:56, Vincent Guittot wrote:
+> > > > ---
+> > > >  kernel/sched/fair.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index 04a3ce20da67..fe2dc0024db5 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -8381,7 +8381,7 @@ static bool update_nohz_stats(struct rq *rq, bool force)
+> > > >         if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
+> > > >                 return false;
+> > > >
+> > > > -       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick))
+> > > > +       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick + (HZ/20)))
+> > >
+> > > This condition is there to make sure to update blocked load at most
+> > > once a tick in order to filter newly idle case otherwise the rate
+> > > limit is already done by load balance interval
+> > > This hard coded (HZ/20) looks really like an ugly hack
+> >
+> > This was meant as an RFC patch to discuss the problem really.
+> >
+> > Joel is seeing update_blocked_averages() taking ~100us. Half of it seems in
+> > processing __update_blocked_fair() and the other half in sugov_update_shared().
+> > So roughly 50us each. Note that each function is calling an iterator in
 > 
-> Fix the detection checking that it's actually a kernel address starting
-> at PAGE_OFFSET.
+> Can I assume that a freq change happens if sugov_update_shared() takes 50us ?
+> which would mean that the update was useful at the end ?
+
+I couldn't reproduce his problem on Juno. But I think it is not actually doing
+any frequency update. sugov_update_shared() is rate limited by
+sugov_should_update_freq(). Joel has a 1ms rate limit for schedutil in sysfs.
+The function traces showed that it is continuously doing the full scan which
+indicates that sugov_update_next_freq() is continuously bailing out at
+
+	if else (sg_policy->next_freq == next_freq)
+		return false;
+
 > 
-> Fixes: f4693c2716b35 ("arm64: mm: extend linear region for 52-bit VA configurations")
-> Cc: <stable@vger.kernel.org> # 5.4.x
+> > return. Correct me if my numbers are wrong Joel.
+> >
+> > Running on a little core on low frequency these numbers don't look too odd.
+> > So I'm not seeing how we can speed these functions up.
+> >
+> > But since update_sg_lb_stats() will end up with multiple calls to
+> > update_blocked_averages() in one go, this latency adds up quickly.
+> >
+> > One noticeable factor in Joel's system is the presence of a lot of cgroups.
+> > Which is essentially what makes __update_blocked_fair() expensive, and it seems
+> > to always return something has decayed so we end up with a call to
+> > sugov_update_shared() in every call.
+> >
+> > I think we should limit the expensive call to update_blocked_averages() but
+> 
+> At the opposite, some will complain that block values  stay stall to
+> high value and prevent any useful adjustment.
+> 
+> Also update_blocked average is already rate limited with idle and busy
+> load_balance
+> 
+> Seems like the problem raised by Joel is the number of newly idle load balance
 
-Not sure what happened with the Fixes tag but that's definitely not what
-it fixes. The above is a 5.11 commit that preserves the semantics of an
-older commit. So it should be:
+It could be. When Joel comments out the update_blocked_averages() or rate limit
+it the big schedule delay disappears. Which is just an indication of where we
+could do better. Either by making update_blocked_averages() faster, or control
+how often we do it in a row. I thought the latter made more sense - though
+implementation wise I'm not sure how we should do that.
 
-Fixes: 68dd8ef32162 ("arm64: memory: Fix virt_addr_valid() using __is_lm_address()")
+We might actually help update_blocked_averages() being a bit faster by not
+doing cpufreq_update_util() in every call and do it once in the last call to
+update_blocked_averages(). Since it seemed the for_each_leaf_cfs_rq_safe() loop
+in __update_blocked_fair() is expensive too, not sure if reducing the calls to
+cpufreq_update_util() will be enough.
 
-The above also had a fix for another commit but no need to add two
-entries, we just fix the original fix: 14c127c957c1 ("arm64: mm: Flip
-kernel VA space").
+Thanks
 
-Anyway, no need to repost, I can update the fixes tag myself.
-
-In terms of stable backports, it may be cleaner to backport 7bc1a0f9e176
-("arm64: mm: use single quantity to represent the PA to VA translation")
-which has a Fixes tag already but never made it to -stable. On top of
-this, we can backport Ard's latest f4693c2716b35 ("arm64: mm: extend
-linear region for 52-bit VA configurations"). I just tried these locally
-and the conflicts were fairly trivial.
-
--- 
-Catalin
+--
+Qais Yousef
