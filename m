@@ -2,93 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6597D304EE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BDC304EE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728490AbhA0BWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:22:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37426 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389253AbhAZSYo (ORCPT
+        id S2391819AbhA0BTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:19:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728490AbhAZSYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:24:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611685398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mTz7Xoz/xvXYECYSVr5bsWFWwC4zp+4NtN2NN+NvbGo=;
-        b=bsIZIhHk/f0FnX5xOUPvcRsAYxF2wV4Zsks9Wsj1ea1M2TwzQaCgrBNHwxaQ7kAnhQ4YB+
-        TUGMWFlvXQoCs3fTNDViiChLuJTz0qOAHe8LuCq9KbmfkFCA0MYMcwW7pBl0/jQZ9VssEi
-        ZYjMJ4aoSytZtVJ01Uvo4PAyY/saIso=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-YKksl6WhP5-zJuJiL-_Spw-1; Tue, 26 Jan 2021 13:23:15 -0500
-X-MC-Unique: YKksl6WhP5-zJuJiL-_Spw-1
-Received: by mail-ed1-f69.google.com with SMTP id a24so9772786eda.14
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:23:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mTz7Xoz/xvXYECYSVr5bsWFWwC4zp+4NtN2NN+NvbGo=;
-        b=c2Ha5B8ieyg5iyxZlUsanVrL6RtPfkDpPrgtz541vuzvrG4J+xqXPuEmWotP0cVtbQ
-         jdrrmBtW31J1iSMOBVAzU2c0sSlilHKCMWr3yzOHPofpFs02WZV4tE3i2j3xHmq5t0Pd
-         N5V1iQzJwbBt8kDnJQeffibJjvS1t41M3F5W17+DowKWrKPwIj5WiW0ZFU2OLpL64mT0
-         4I8X7Jq4OhFhbvWLxfH3m9avALk7c84eGcNa2TUYmHgzt4ph4rCcH1l9cj//NFeZEsv5
-         0cWviu+8ZgdZvdTejZD+D6egOR8eIEZHgSLnt1KSS6fdEh5ADgcRPS7wKQBbN8YqqMBB
-         rSog==
-X-Gm-Message-State: AOAM532+AdxH+fsvIR/OqnVW+Jmu8wnWSnR2Sqork0mCrRV9Z4CMYVA+
-        Uz10V0z4GyeX4tuLgSml64Dj7egIFekG/JZXS8nCkY0vSmxPN8I0/Ezqd0hPIebJkRkXmfxlyZi
-        KomZkAujhhqWnzmKaESJIeqK4gjTTTO7kgxPA5YClZzuGAkDdU9q6f+tcSQm7veV51HN+nfr5Hg
-        8W
-X-Received: by 2002:a05:6402:304e:: with SMTP id bu14mr5340168edb.60.1611685394138;
-        Tue, 26 Jan 2021 10:23:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzr51I20o6O5R03Qzlo4pmpOKwtbS3ynzLph+LxnPczeJmRRvNM0dj1mdVqb/N74vT5qUFbNQ==
-X-Received: by 2002:a05:6402:304e:: with SMTP id bu14mr5340145edb.60.1611685393882;
-        Tue, 26 Jan 2021 10:23:13 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y2sm1522942ejd.27.2021.01.26.10.23.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 10:23:13 -0800 (PST)
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200807084841.7112-1-chenyi.qiang@intel.com>
- <20200807084841.7112-6-chenyi.qiang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RFC 5/7] KVM: MMU: Add support for PKS emulation
-Message-ID: <0689bda9-e91a-2b06-3dd6-f78572879296@redhat.com>
-Date:   Tue, 26 Jan 2021 19:23:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 26 Jan 2021 13:24:41 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09F2C0613D6;
+        Tue, 26 Jan 2021 10:24:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=YfHIjNrro/6Ndfv7PgpQ110GyRrmBfAnVLlcT8hzI1U=; b=a7rLZkeSffCmOnGTcEyuEmvq87
+        RUfbGPdv45K7uTWPrPsHWyYiSewuIaTMZPZM9cO4qy9kSU7sUKZq4TNT5xbIzJrQAAyQSA40DsP6H
+        uMS9loZxg3QNOmxJqo8I+UHcYpXN8YQkc70GzB57+85f9mOapcqFdjkW/+B7YqAMDQ3M=;
+Received: from p200300ccff1467001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff14:6700:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1l4T0N-00062m-PJ; Tue, 26 Jan 2021 19:23:56 +0100
+Date:   Tue, 26 Jan 2021 19:23:55 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Armin Preiml <apreiml@strohwolke.at>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dts: ARM: add kobo glo hd ebook reader
+Message-ID: <20210126192355.567b0140@aktux>
+In-Reply-To: <20210126173130.45427-1-apreiml@strohwolke.at>
+References: <20210126173130.45427-1-apreiml@strohwolke.at>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200807084841.7112-6-chenyi.qiang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/20 10:48, Chenyi Qiang wrote:
+Hi,
+
+On Tue, 26 Jan 2021 18:31:31 +0100
+Armin Preiml <apreiml@strohwolke.at> wrote:
+
+> This patch adds basic support for the kobo glo hd reader. It defines CPU, 
+> memory, UART and storage.Also add pin control settings for i2c and sdhc. 
 > 
->  		if (pte_access & PT_USER_MASK)
->  			pkr_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
-> +		else if (!kvm_get_msr(vcpu, MSR_IA32_PKRS, &pkrs))
-> +			pkr_bits = (pkrs >> (pte_pkey * 2)) & 3;
+> All values where extracted from the vendor kernel and u-boot sources.
+> 
+> Signed-off-by: Armin Preiml <apreiml@strohwolke.at>
+> 
+> ---
+>  arch/arm/boot/dts/Makefile               |   1 +
+>  arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts | 164 +++++++++++++++++++++++
+>  2 files changed, 165 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 3d1ea0b25..ba608414e 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -598,6 +598,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+>  	imx6qp-zii-rdu2.dtb
+>  dtb-$(CONFIG_SOC_IMX6SL) += \
+>  	imx6sl-evk.dtb \
+> +	imx6sl-kobo-glo-hd.dtb \
+>  	imx6sl-tolino-shine2hd.dtb \
+>  	imx6sl-tolino-shine3.dtb \
+>  	imx6sl-warp.dtb
+> diff --git a/arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts b/arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts
+> new file mode 100644
+> index 000000000..759699e9e
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts
+> @@ -0,0 +1,164 @@
+> +// SPDX-License-Identifier: (GPL-2.0)
+> +/*
+> + * Device tree for the Kobo Glo HD ebook reader.
+> + *
+> + * Name on mainboard is: 37NB-E60Q90+4A1
+> + * Board name in uboot sources: E60Q90  
+> + *
+> + * Copyright 2021 Armin Preiml
+> + * based on works
+> + * Copyright 2015 Freescale Semiconductor, Inc.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include "imx6sl.dtsi"
+> +
+> +/ {
+> +	model = "Kobo Glo HD";
+> +	compatible = "kobo,glohd", "fsl,imx6sl";
+> +
 
-You should be able to always use vcpu->arch.pkrs here.  So
+kobo,glohd should be added to
+Documentation/devicetree/bindings/arm/fsl.yaml
+[...]
+> +        pinctrl_uart1: uart1grp {
+> +                fsl,pins = <
+> +			MX6SL_PAD_UART1_TXD__UART1_TX_DATA 0x1b0b1
+> +			MX6SL_PAD_UART1_RXD__UART1_RX_DATA 0x1b0b1
+> +		>;
+> +	};
+> +
+hmm, pictures (we are talking about FCC ID NOIKBN437, right?) show two
+uarts, next to each other. Which one is this? 
+The other uart might be the same as in the tolino2-shinehd.
 
-pkr = pte_access & PT_USER_MASK ? vcpu->arch.pkru : vcpu->arch.pkrs;
-pkr_bits = (pkr >> pte_pkey * 2) & 3;
+> +	pinctrl_usdhc1: usdhc1grp { /* 50MHZ (>50MHZ: 0x1f0f9) */
+> +                fsl,pins = <
+> +			MX6SL_PAD_SD1_CLK__SD1_CLK 0x1f071
+> +			MX6SL_PAD_SD1_CMD__SD1_CMD 0x1f071
+> +			MX6SL_PAD_SD1_DAT0__SD1_DATA0 0x1f071
+> +			MX6SL_PAD_SD1_DAT1__SD1_DATA1 0x1f071
+> +			MX6SL_PAD_SD1_DAT2__SD1_DATA2 0x1f071
+> +			MX6SL_PAD_SD1_DAT3__SD1_DATA3 0x1f071
+> +			MX6SL_PAD_SD1_DAT4__SD1_DATA4 0x1f071
+> +			MX6SL_PAD_SD1_DAT5__SD1_DATA5 0x1f071
+> +			MX6SL_PAD_SD1_DAT6__SD1_DATA6 0x1f071
+> +			MX6SL_PAD_SD1_DAT7__SD1_DATA7 0x1f071
+> +		>;
+> +	};
+> +
+That is for emmc? And it is not populated, so probably better not
+enable that here.
 
-Paolo
+[...]
 
+> +&uart1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart1>;
+> +	status = "okay";
+> +};
+> +
+> +&usdhc1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_usdhc1>;
+> +	status = "okay";
+> +};
+> +
+and also not add this.
+
+I guess it might be a good idea to really compare it to the tolino2
+shine hd. The boards seem to look similar, but not identical. Hmm,
+different number of buttons?
+The question is how similar they are. I think the Kobo Glo HD has a
+good driver situation. 
+The main PMIC RC5T619 (the rn5t618 driver supports that) is well
+supported in mainline kernel. It should give regulators, RTC and battery
+information.
+The touchscreen (driver zforce_ts) should alse be supported. So
+you might go further forward.
+
+If you are really brave, you could add a complete devicetree on top
+of my branch
+kobo/drm-merged-5.10 of github.com/akemnade/linux. Besides of backlight,
+it should give full hardware support (including a drm driver for the
+display), so we can see what is different and whether we can use
+a .dtsi file to define common things.
+Picture of the Tolino2 internals:
+https://misc.andi.de1.cc/tolino2.jpg
+
+Regards,
+Andreas
