@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5BE303BEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F39B303BEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404945AbhAZLoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:44:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404858AbhAZLIC (ORCPT
+        id S2405231AbhAZLnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:43:55 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:61968 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404978AbhAZLG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:08:02 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C9DC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:07:21 -0800 (PST)
-Date:   Tue, 26 Jan 2021 12:07:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611659236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkPU/hX7e8KAUGBs+8Xq5YFkeqG2HTJf4MGRstA6AwQ=;
-        b=LOTtMY+pdaRCJZdqDkCezplZ9/BMaIWcDNsxGxhj94CLTHbHuUp3HyswBpFH1FN2MJPdGi
-        61MfuHrBzJf4yQOm+6nby3m8VAi3BBb1McepZQ1M1kkxRj9xxV+oFZxbsqEguT589nNF5u
-        XEvPVHmeQhCkPc6kzDoRCz1OxEwURtUepaHKDSzkbjJU32Jly8o3SgmhyYvSYqv4zrQa4/
-        HSHgOT9BAJAgIoxq24O9f+0Z6JKjyzcggoXd2+YRVoWgytVQHXApbMk2QvQ8Eq8mRhYwo0
-        n3dE3tFzcxB9O5I8+DWu2H5WMX2wqOVdGnFa1i9pqNtHplQYto2YkptDjJtv2Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611659236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkPU/hX7e8KAUGBs+8Xq5YFkeqG2HTJf4MGRstA6AwQ=;
-        b=a70BsVVvtj11dHf5ptAh7cMCsdzynscjtdvw5MMb3ErI/Q3ljLaTONjD5UE6pu2PSjcgLp
-        mKYFa1Ua4HbpadCA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, marc.zyngier@arm.com,
-        peterx@redhat.com, rppt@kernel.org, walken@google.com,
-        yj.chiang@mediatek.com, tglx@linutronix.de
-Subject: Re: [PATCH] ARM: mm: harden branch predictor before opening
- interrupts during fault
-Message-ID: <20210126110716.wv4igts76n3kg3ch@linutronix.de>
-References: <20201203092738.11866-1-lecopzer.chen@mediatek.com>
- <20210126091708.3461-1-lecopzer.chen@mediatek.com>
- <20210126105932.GG1551@shell.armlinux.org.uk>
+        Tue, 26 Jan 2021 06:06:29 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10QB1JIl001769;
+        Tue, 26 Jan 2021 06:05:33 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 368hk9hnpr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 06:05:33 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 10QB5V4F032142
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 26 Jan 2021 06:05:32 -0500
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 26 Jan 2021 03:05:30 -0800
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Tue, 26 Jan 2021 03:05:30 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
+ Tue, 26 Jan 2021 03:05:30 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 10QB5PQc007159;
+        Tue, 26 Jan 2021 06:05:26 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <lars@metafoo.de>,
+        <linux-fpga@vger.kernel.org>, <mdf@kernel.org>,
+        "Alexandru Ardelean" <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 0/3] clk: clk-axiclgen: add support for ZynqMP
+Date:   Tue, 26 Jan 2021 13:08:23 +0200
+Message-ID: <20210126110826.24221-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210126105932.GG1551@shell.armlinux.org.uk>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-26_06:2021-01-25,2021-01-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 priorityscore=1501 adultscore=0
+ mlxlogscore=717 suspectscore=0 spamscore=0 bulkscore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101260058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-26 10:59:32 [+0000], Russell King - ARM Linux admin wrote:
-> On Tue, Jan 26, 2021 at 05:17:08PM +0800, Lecopzer Chen wrote:
-> > Hi all,
-> > 
-> > I don't see any fix for this issue now(maybe I missed it..?),
-> > could we fix this if there is better solution?
-> > This issue exists almost two years.
-> 
-> I don't think anyone provided an acceptable patch.
-> 
-> The first patch moved the hardening out of the translation/section
-> fault handling. Since the kernel is mapped with sections, these
-> are above TASK_SIZE, and the whole point of the branch prediction
-> hardening is to prevent the prediction in the kernel being exploited,
-> missing the hardening effectively makes the mitigation useless.
-> 
-> The discussion in February 2019 never concluded from what I can see.
+Previous set:
+ https://lore.kernel.org/linux-clk/20201221144224.50814-1-alexandru.ardelean@analog.com/
 
-My memory is that I never got a reply which I understood.
-Let me try again this week with the information above.
+Changelog v1 -> v2:
+* split patch 'clk: axi-clkgen: add support for ZynqMP (UltraScale)'
+  into:
+   - clk: axi-clkgen: remove ARCH dependency in Kconfig
+   - clk: clk-axiclkgen: add ZynqMP PFD and VCO limits
+* essentially removed the 'adi,zynq-axi-clkgen-2.00.a' compat string
+* removed architecture dependency on build for driver; the driver should
+  be usable also on PCIe setups
 
-Sebastian
+Alexandru Ardelean (3):
+  clk: axi-clkgen: remove ARCH dependency in Kconfig
+  clk: clk-axiclkgen: add ZynqMP PFD and VCO limits
+  dt-bindings: clock: adi,axi-clkgen: add compatible string for ZynqMP
+    support
+
+ .../devicetree/bindings/clock/adi,axi-clkgen.yaml     |  1 +
+ drivers/clk/Kconfig                                   |  1 -
+ drivers/clk/clk-axi-clkgen.c                          | 11 +++++++++++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
+
