@@ -2,96 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889B4304EFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C516F304F02
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405081AbhA0BcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:32:18 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:17200 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727923AbhAZShh (ORCPT
+        id S2405207AbhA0Bdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389104AbhAZSiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:37:37 -0500
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 10QIaGw3020487;
-        Wed, 27 Jan 2021 03:36:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 10QIaGw3020487
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611686177;
-        bh=jdWLcQFJpvkL7fnNbIXEjnV5zSV4ldy1W6fJJer0SS0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vZ/bW+lTZyrd1ERgU+miNz8+GOlqwTLVOxxzyQasaF86h98Ay6qOjXhWuULGJqKM5
-         4z0X+NPL3o3SXxb8sugDW+V96GjyO8LJGIbkTltMuPaaexC7hTuXQymVd9kVXx3xIt
-         M59p3RVAhxPGJIbLGtDIMcTEHzCk3AuPUHHNzVXWI4h8HM9cXZOXZD1KbO7F0Xuq+O
-         IDejtgYMTP+WsY2imeqglLzgoFd263QtQdDQft8FNDcAwrztsHTgHzlDmNfWkXy7sZ
-         gHs/PaHuMLLlXqWAx95l8qKaJof9ym1H10wBL2jg72B+onuMC65bDq1FCmdLPAfw3K
-         ZwGcG9UUQ2o+g==
-X-Nifty-SrcIP: [209.85.216.48]
-Received: by mail-pj1-f48.google.com with SMTP id l18so2751623pji.3;
-        Tue, 26 Jan 2021 10:36:17 -0800 (PST)
-X-Gm-Message-State: AOAM532JH5rHQWuJ1wk8pqRPf/4+Y7+rlW6Ah8pXVbw1sRTqkzUqYtDd
-        F9PFlzGJkbhzJAl0UAi4uoQcDbd0rt3uOjcqz54=
-X-Google-Smtp-Source: ABdhPJzm8VWDgbWt/Qh9yT3e9UPSeoJupJWOrfVdaMJGhEFCxF7zQGgkjL8RLxx7C1vvctvqdHBbnBzSIJslbdB9RU8=
-X-Received: by 2002:a17:902:a5c5:b029:de:30b0:f1d with SMTP id
- t5-20020a170902a5c5b02900de30b00f1dmr7207458plq.1.1611686176307; Tue, 26 Jan
- 2021 10:36:16 -0800 (PST)
+        Tue, 26 Jan 2021 13:38:22 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51518C0617A9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:36:08 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id h9so7317678wrr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NmVEUkooFz5Tfz1+fj+rLfrC74ZA/wXoG61R5qDLmbU=;
+        b=DVbwGC8thxi+LMqdMJaD5FDz+72wUPoAX9YrH2g8z65x+Y/7wxfxy+7jVJZ0LnlQfl
+         6TGvJhHAZtPCuzaw9l1U4g2fTEkckLxTLtMIG5qLTq8pL3p66gRZwfPzdrsrYTP6o4bp
+         9C2ZIZVOzaoNja8akpTcC9Rt20vjoG1A512BA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NmVEUkooFz5Tfz1+fj+rLfrC74ZA/wXoG61R5qDLmbU=;
+        b=kdEObnrOmPvY1Y25Y4CZ/F1owMFC5yi4NzYb8YQC3u7me987uvzAAF0GgsILVUdiJU
+         ZrUk/ij7qEFANR8q2z5O2FI9dMzyOGl311fuTeNeNsRY1i3hB0L6PHDHbTv6fLJacYQp
+         WKNX9Wv67MLHn9IFf5BRCrXxWei0+sblhpsL/kRVklBZ2C5uGIxMkHhAUP+C58VRQlIj
+         hHHl1LbKPYCc1iX0zkqdq9rIPwQyI4oDgK+6TMFA8Xy3/wwTZs9QTKRlc/xxydKCUWD+
+         JP3zu6hzyKcLOH5zDZDAjF82VA0r6MBYCzD9xNh/xVj8rORb7ChH6a+cJYwJuB3VR8gg
+         7pEA==
+X-Gm-Message-State: AOAM5329bt0W3/OU4R7BCvn5FQzQaB2MRlV/HjeOi4bAIzserClDgYh8
+        A08eKwQ6aITNyw3KvPLm0TMcvA==
+X-Google-Smtp-Source: ABdhPJzXdwv/c9GLOmKOtZ+ecBeub/zi4Knq2tTYbBTvcCvgxl0qC5VJ3WgT2IULsq08r4A6ADxHQg==
+X-Received: by 2002:a5d:47a2:: with SMTP id 2mr7499442wrb.393.1611686167020;
+        Tue, 26 Jan 2021 10:36:07 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:deb:d0ec:3143:2380])
+        by smtp.gmail.com with ESMTPSA id d13sm28339354wrx.93.2021.01.26.10.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 10:36:06 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        Florent Revest <revest@chromium.org>,
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf-next v6 1/5] bpf: Be less specific about socket cookies guarantees
+Date:   Tue, 26 Jan 2021 19:35:55 +0100
+Message-Id: <20210126183559.1302406-1-revest@chromium.org>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-References: <20210120062351.3011786-1-masahiroy@kernel.org> <20210120213929.GA875847@robh.at.kernel.org>
-In-Reply-To: <20210120213929.GA875847@robh.at.kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 27 Jan 2021 03:35:39 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQe9Vq4KEZJwqL=3etTedGVnieKA5vyVoXFr7-a03Nwgg@mail.gmail.com>
-Message-ID: <CAK7LNAQe9Vq4KEZJwqL=3etTedGVnieKA5vyVoXFr7-a03Nwgg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: use always-y instead of extra-y
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 6:39 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Jan 20, 2021 at 03:23:51PM +0900, Masahiro Yamada wrote:
-> > As commit d0e628cd817f ("kbuild: doc: clarify the difference between
-> > extra-y and always-y") explained, extra-y should be used for listing
-> > the prerequsites of vmlinux. always-y is a better fix here.
->
-> prerequisites
+Since "92acdc58ab11 bpf, net: Rework cookie generator as per-cpu one"
+socket cookies are not guaranteed to be non-decreasing. The
+bpf_get_socket_cookie helper descriptions are currently specifying that
+cookies are non-decreasing but we don't want users to rely on that.
 
-Thanks.
+Reported-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Florent Revest <revest@chromium.org>
+Acked-by: KP Singh <kpsingh@kernel.org>
+---
+ include/uapi/linux/bpf.h       | 8 ++++----
+ tools/include/uapi/linux/bpf.h | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-I fixed it up, and applied to linux-kbuild.
-
-
-
-> Glad to see this clarified. I think just tried both and picked one.
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  Documentation/devicetree/bindings/Makefile |  8 ++++----
-> >  drivers/gpu/drm/i915/Makefile              |  2 +-
-> >  scripts/Makefile.lib                       | 10 +++++-----
-> >  scripts/gdb/linux/Makefile                 |  2 +-
-> >  4 files changed, 11 insertions(+), 11 deletions(-)
-
-
-
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index c001766adcbc..0b735c2729b2 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1656,22 +1656,22 @@ union bpf_attr {
+  * 		networking traffic statistics as it provides a global socket
+  * 		identifier that can be assumed unique.
+  * 	Return
+- * 		A 8-byte long non-decreasing number on success, or 0 if the
+- * 		socket field is missing inside *skb*.
++ * 		A 8-byte long unique number on success, or 0 if the socket
++ * 		field is missing inside *skb*.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_addr *ctx)
+  * 	Description
+  * 		Equivalent to bpf_get_socket_cookie() helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_addr** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_ops *ctx)
+  * 	Description
+  * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_ops** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u32 bpf_get_socket_uid(struct sk_buff *skb)
+  * 	Return
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index c001766adcbc..0b735c2729b2 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1656,22 +1656,22 @@ union bpf_attr {
+  * 		networking traffic statistics as it provides a global socket
+  * 		identifier that can be assumed unique.
+  * 	Return
+- * 		A 8-byte long non-decreasing number on success, or 0 if the
+- * 		socket field is missing inside *skb*.
++ * 		A 8-byte long unique number on success, or 0 if the socket
++ * 		field is missing inside *skb*.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_addr *ctx)
+  * 	Description
+  * 		Equivalent to bpf_get_socket_cookie() helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_addr** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_ops *ctx)
+  * 	Description
+  * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_ops** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u32 bpf_get_socket_uid(struct sk_buff *skb)
+  * 	Return
 -- 
-Best Regards
-Masahiro Yamada
+2.30.0.280.ga3ce27912f-goog
+
