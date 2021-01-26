@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1A73042CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB503042E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391900AbhAZPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:43:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31654 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392830AbhAZPkv (ORCPT
+        id S2403826AbhAZPl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:41:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392499AbhAZPka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:40:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611675562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NyKAGnu0Dzw8+jDrxr/Ep1aGiPjWBIFfIK64+l4ewV8=;
-        b=H2Y9nuUQCzUdTrDypNLoCriQEALObGrXd9+eYCYPFt54z67DBrb/OLWR93EMiiNaruukMC
-        6uA7RW/6HUCSuPC3oiLBALGnwO8+EQvWKK+S2N1RrMa+KSNtMGUmqXXQ1FKAmGDYm231Sb
-        t6L7Q8OgxtW95FqOgYRMOrVqN66NB1Y=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-Dx_0pBmUOVOrxjDSLI3a3A-1; Tue, 26 Jan 2021 10:39:20 -0500
-X-MC-Unique: Dx_0pBmUOVOrxjDSLI3a3A-1
-Received: by mail-oo1-f72.google.com with SMTP id z6so6950635oop.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:39:20 -0800 (PST)
+        Tue, 26 Jan 2021 10:40:30 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272B8C0698C0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:39:50 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id u15so779432plf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:39:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ry2gpr6gXFVf9iEI53wDazGx/7l4smEJsdfHqtTX24g=;
+        b=fut77XsLgqRrTecfD8hYhm9vkVQR+/2SxFdqR+yrvS81FLqhWJfD8kMELzwLPpHyKX
+         QRL5vKAFe7Wtgg/zyy0pj/Q0lDVKY+UlDgdVRYMGqa+CukUxn0gTsx4jzYO5Y0DLqP/9
+         hK6evT3ZxexhMHnV05EYzqCeyRmKDkLUt8B0WUX/OKrOgRq1SKoDoeGhb02o9yC0rDh4
+         xQh7+KnSrgVheNGhBbp+rV5pIgbOkkCs+UKaXIR6WjRoMxl8DzPr7/8NtMIFn6MSffjH
+         xr0bl331JWQ00Gpn0dYjlaNLhNNQ7L4evvwkKqCITeNkWuBBnRKJzMRHeux8aRWPjrkD
+         6uBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NyKAGnu0Dzw8+jDrxr/Ep1aGiPjWBIFfIK64+l4ewV8=;
-        b=Hn8YxPTwsWlaH1cFGqtJcSRbnXUnXdgf018xqwLbG1LjtdCBCgvzwc9DttK99cWTA8
-         FULMLMTroFEfauyGT7sJtYHmnhpZlOMmQZAN8cbEYHUeiGXXg9Aw/khGC3DbaSfkFJUl
-         L78SlQqnZyPVCwelFKUJx/ElGJGEaCHVJ8TJjjbTOEngaldlBmQ9rYtobh9+Jf7uiUGJ
-         GL1WXjl8dda3mJJZYbU3HNvFlwn97xTbxxAJj2SOBcF8eImmYtxoZ9G2BA8nX95olsv1
-         Basi34YqcQiVsYx1Heo8mGlWo5ut5QP7WatZnxo0T1j2pec/mquO8f2GmiJbUb+MDjYp
-         8VXA==
-X-Gm-Message-State: AOAM533fJleAEmlkcS+J0GbNcSDbAMcKMtkeQgpwgVgJZJCUbErt1fTo
-        OJ91Nm9hvkzWCqhxUQGr60LZsZFv6jn+8YJKkXblh3NrtdALdlapbzHLmhXSlcry5b518qYGLu9
-        POlKylUk53ncWA/OC7tts8xF2
-X-Received: by 2002:aca:4d97:: with SMTP id a145mr136408oib.147.1611675560052;
-        Tue, 26 Jan 2021 07:39:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzMbcypJ5oSFTaiecJO8qs1t+tc8ekhdrPrFMmZO8Mc/NS5EH0sSElr4VVhYtgOpU5jYyUYZA==
-X-Received: by 2002:aca:4d97:: with SMTP id a145mr136400oib.147.1611675559862;
-        Tue, 26 Jan 2021 07:39:19 -0800 (PST)
-Received: from [192.168.1.38] (cpe-70-113-46-183.austin.res.rr.com. [70.113.46.183])
-        by smtp.gmail.com with ESMTPSA id d10sm3870758ooh.32.2021.01.26.07.39.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 07:39:18 -0800 (PST)
-From:   Wei Huang <wehuang@redhat.com>
-X-Google-Original-From: Wei Huang <wei.huang2@amd.com>
-Subject: Re: [PATCH v3 3/4] KVM: SVM: Add support for SVM instruction address
- check change
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, luto@amacapital.net
-References: <20210126081831.570253-1-wei.huang2@amd.com>
- <20210126081831.570253-4-wei.huang2@amd.com>
- <f8a2fbc829a553b936b8babc5c1df2b1e88f51d7.camel@redhat.com>
-Message-ID: <aee0d84b-52b6-bf1e-557f-5990dfe4000d@amd.com>
-Date:   Tue, 26 Jan 2021 09:39:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        bh=ry2gpr6gXFVf9iEI53wDazGx/7l4smEJsdfHqtTX24g=;
+        b=BqT9jDtMFGnR9SfKe1DxFGp6Elbb1O1tlOOQbyj+7isC+ymW6a4sZCC5Br9r0cSakB
+         iMwMiXC+rDj2R7+QKUA5JYUqwBNXduM7V7Bnx0SvXIorMDqaLylx+lonJCc7iU4xOqhY
+         eHu4dmMNyqYxPFqCw7meGIePiA7KEVnSfFqsR/dr+03gXclr//DpQXFuA2DwLwvQ/vCA
+         NAx1IFUMwbtVPrC7+ydKW2uLwwxLdYKyjxIp3pVaCkd6J1YyhM3nn9zb8KXZUuWeJMKm
+         z36Kkpgd1LwPUIZxi9f0T20WhMhVqgtsmJADaOJgwYjM7DAFDvkKWxB8hAJJRSaYGB2K
+         ocFA==
+X-Gm-Message-State: AOAM533ayKj+MIqsbBWSHPwR0P/E9AgH+W/OjuOl4LRdSTbsMxAjUD26
+        qtAsxJWEEJSAKpLASBJfSFzG
+X-Google-Smtp-Source: ABdhPJyEIQlk7u5/AohAMRMIjlOMghL0I91m9bodQZa0HBw1shzSQ741fgJ6fM4ZcGleJWi+lCBn8Q==
+X-Received: by 2002:a17:90a:c68d:: with SMTP id n13mr360368pjt.71.1611675589591;
+        Tue, 26 Jan 2021 07:39:49 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:6d84:5293:c96f:fa31:6124:85e6])
+        by smtp.gmail.com with ESMTPSA id n128sm20433159pga.55.2021.01.26.07.39.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 07:39:48 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     linus.walleij@linaro.org
+Cc:     afaerber@suse.de, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cristian.ciocaltea@gmail.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2] pinctrl: actions: Add the platform dependency to drivers
+Date:   Tue, 26 Jan 2021 21:09:35 +0530
+Message-Id: <20210126153935.29623-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <f8a2fbc829a553b936b8babc5c1df2b1e88f51d7.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Actions Semi pinctrl drivers are a mix of both ARM32 and ARM64
+platforms. So let's add the correct platform dependency to avoid them
+being selected on the other.
 
+Also make sure they are available for build test by depending on
+COMPILE_TEST.
 
-On 1/26/21 5:52 AM, Maxim Levitsky wrote:
-> On Tue, 2021-01-26 at 03:18 -0500, Wei Huang wrote:
->> New AMD CPUs have a change that checks #VMEXIT intercept on special SVM
->> instructions before checking their EAX against reserved memory region.
->> This change is indicated by CPUID_0x8000000A_EDX[28]. If it is 1, #VMEXIT
->> is triggered before #GP. KVM doesn't need to intercept and emulate #GP
->> faults as #GP is supposed to be triggered.
->>
->> Co-developed-by: Bandan Das <bsd@redhat.com>
->> Signed-off-by: Bandan Das <bsd@redhat.com>
->> Signed-off-by: Wei Huang <wei.huang2@amd.com>
->> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
->> ---
->>   arch/x86/include/asm/cpufeatures.h | 1 +
->>   arch/x86/kvm/svm/svm.c             | 3 +++
->>   2 files changed, 4 insertions(+)
->>
->> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
->> index 84b887825f12..ea89d6fdd79a 100644
->> --- a/arch/x86/include/asm/cpufeatures.h
->> +++ b/arch/x86/include/asm/cpufeatures.h
->> @@ -337,6 +337,7 @@
->>   #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
->>   #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
->>   #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
->> +#define X86_FEATURE_SVME_ADDR_CHK	(15*32+28) /* "" SVME addr check */
->>   
->>   /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
->>   #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
->> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->> index e5ca01e25e89..f9233c79265b 100644
->> --- a/arch/x86/kvm/svm/svm.c
->> +++ b/arch/x86/kvm/svm/svm.c
->> @@ -1036,6 +1036,9 @@ static __init int svm_hardware_setup(void)
->>   		}
->>   	}
->>   
->> +	if (boot_cpu_has(X86_FEATURE_SVME_ADDR_CHK))
->> +		svm_gp_erratum_intercept = false;
->> +
-> Again, I would make svm_gp_erratum_intercept a tri-state module param,
-> and here if it is in 'auto' state do this.
-> 
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
 
-I will try to craft a param patch and see if it flies...
+Added depends on COMPILE_TEST
+
+ drivers/pinctrl/actions/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/pinctrl/actions/Kconfig b/drivers/pinctrl/actions/Kconfig
+index a1d16e8280e5..119f0e471efd 100644
+--- a/drivers/pinctrl/actions/Kconfig
++++ b/drivers/pinctrl/actions/Kconfig
+@@ -12,18 +12,21 @@ config PINCTRL_OWL
+ 
+ config PINCTRL_S500
+ 	bool "Actions Semi S500 pinctrl driver"
++	depends on ARM || COMPILE_TEST
+ 	depends on PINCTRL_OWL
+ 	help
+ 	  Say Y here to enable Actions Semi S500 pinctrl driver
+ 
+ config PINCTRL_S700
+ 	bool "Actions Semi S700 pinctrl driver"
++	depends on ARM64 || COMPILE_TEST
+ 	depends on PINCTRL_OWL
+ 	help
+ 	  Say Y here to enable Actions Semi S700 pinctrl driver
+ 
+ config PINCTRL_S900
+ 	bool "Actions Semi S900 pinctrl driver"
++	depends on ARM64 || COMPILE_TEST
+ 	depends on PINCTRL_OWL
+ 	help
+ 	  Say Y here to enable Actions Semi S900 pinctrl driver
+-- 
+2.25.1
 
