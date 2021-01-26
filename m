@@ -2,86 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEEB3045CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D971B3045CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393799AbhAZR4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:56:44 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:59533 "EHLO ozlabs.org"
+        id S2390435AbhAZR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:57:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42188 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390663AbhAZI7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:59:06 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQ0xs4kd3z9sCD;
-        Tue, 26 Jan 2021 19:58:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611651489;
-        bh=TBpZeftSzKSn8HpL/hx97ig1oEsAGu1xl/QL1rnKROU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=T2V2WN9UbiHShKhdc0MazIppoH9JqzBHmVv70R4K0mbz3Nej1UyAlW70Kvkeg2Uo1
-         RV5oJa0R0xwaUD/b38NPv55iHAk2Wf9/bLrEzrG31IZRMNPyJErsovaX974UXEf1Mg
-         JQKmgMkgSgwJ/II79xkg2CLVlCmwx0A2XWN8lpYxTCg4VVYqc7Cfm6pIGM9GTtZYoL
-         3U+kTDFrJMmzijmEfMj/aeyofhi54z8efokPS6sgvqJPwllIQoXlfnMMCRch5gmgJd
-         qMr1gU1bh0wmGOevCKGdkBBWeH+2Og1mgFqU72T4XAPJLBNRntvog+FA8gATy2J15T
-         9fOC11JOBQ87A==
-Date:   Tue, 26 Jan 2021 19:58:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the amdgpu tree
-Message-ID: <20210126195807.668bdcef@canb.auug.org.au>
+        id S2389252AbhAZJBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:01:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611651614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zkv2AYFPAFtxWhWHYsYeaPluSGEX7L9fbE1dulH4ZuI=;
+        b=GhOz2w0RXQwI2+PODq5b2aw0wmG2/sHAvfuOFXRfFu5hn6slnJT04Sf+X1LOm2o3qdxim/
+        JikKF5QkQLdr6WDSRfvS9d7btR4sMzkc9Aq9OiCszZ4qwYknWGfN3kTR7NPMMKuqkDIc/Q
+        bxcYYnrayTxMggILhsJvpQJW45eKvt8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 69D77AF4E;
+        Tue, 26 Jan 2021 09:00:14 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 10:00:13 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <20210126090013.GF827@dhcp22.suse.cz>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-7-rppt@kernel.org>
+ <20210125170122.GU827@dhcp22.suse.cz>
+ <20210125213618.GL6332@kernel.org>
+ <20210126071614.GX827@dhcp22.suse.cz>
+ <20210126083311.GN6332@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YcQgAf.64RqVBy72W9Tayh8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126083311.GN6332@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YcQgAf.64RqVBy72W9Tayh8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue 26-01-21 10:33:11, Mike Rapoport wrote:
+> On Tue, Jan 26, 2021 at 08:16:14AM +0100, Michal Hocko wrote:
+> > On Mon 25-01-21 23:36:18, Mike Rapoport wrote:
+> > > On Mon, Jan 25, 2021 at 06:01:22PM +0100, Michal Hocko wrote:
+> > > > On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
+> > > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > > 
+> > > > > Introduce "memfd_secret" system call with the ability to create memory
+> > > > > areas visible only in the context of the owning process and not mapped not
+> > > > > only to other processes but in the kernel page tables as well.
+> > > > > 
+> > > > > The user will create a file descriptor using the memfd_secret() system
+> > > > > call. The memory areas created by mmap() calls from this file descriptor
+> > > > > will be unmapped from the kernel direct map and they will be only mapped in
+> > > > > the page table of the owning mm.
+> > > > > 
+> > > > > The secret memory remains accessible in the process context using uaccess
+> > > > > primitives, but it is not accessible using direct/linear map addresses.
+> > > > > 
+> > > > > Functions in the follow_page()/get_user_page() family will refuse to return
+> > > > > a page that belongs to the secret memory area.
+> > > > > 
+> > > > > A page that was a part of the secret memory area is cleared when it is
+> > > > > freed.
+> > > > > 
+> > > > > The following example demonstrates creation of a secret mapping (error
+> > > > > handling is omitted):
+> > > > > 
+> > > > > 	fd = memfd_secret(0);
+> > > > > 	ftruncate(fd, MAP_SIZE);
+> > > > > 	ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> > > > 
+> > > > I do not see any access control or permission model for this feature.
+> > > > Is this feature generally safe to anybody?
+> > > 
+> > > The mappings obey memlock limit. Besides, this feature should be enabled
+> > > explicitly at boot with the kernel parameter that says what is the maximal
+> > > memory size secretmem can consume.
+> > 
+> > Why is such a model sufficient and future proof? I mean even when it has
+> > to be enabled by an admin it is still all or nothing approach. Mlock
+> > limit is not really useful because it is per mm rather than per user.
+> > 
+> > Is there any reason why this is allowed for non-privileged processes?
+> > Maybe this has been discussed in the past but is there any reason why
+> > this cannot be done by a special device which will allow to provide at
+> > least some permission policy?
+>  
+> Why this should not be allowed for non-privileged processes? This behaves
+> similarly to mlocked memory, so I don't see a reason why secretmem should
+> have different permissions model.
 
-Hi all,
+Because appart from the reclaim aspect it fragments the direct mapping
+IIUC. That might have an impact on all others, right?
 
-In commit
-
-  289970f0be61 ("drm/amd/display: Fix unused variable warning")
-
-Fixes tag
-
-  Fixes: e177af8a43da ("drm/amd/display: Fix deadlock during gpu reset v3")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 98ab5f3513f9 ("drm/amd/display: Fix deadlock during gpu reset v3")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/YcQgAf.64RqVBy72W9Tayh8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAP2Z8ACgkQAVBC80lX
-0Gw0dAf7Bbz5boTMU/5m+LKYTMhbC2lLTlKsk9BIoaHDt6HYhes4zH0MsfqUnG5H
-nTcZk8MLKkz3MB/EjvKdYdZNNmWGjTSlydk4l67CvbS9fpDr1mbrqoxxsLnReIjL
-s7+A3aclHkR23eDDe1wvIUXmkiXi91lOdbVUlo9R8dvp0f0ElKmiVTYefXV5i2Gl
-+mq/JxlsfpxGLjluyzoBBihc07xgGFegiOSx8aHao0xx73O1b2fUH7yLdAEoNsGQ
-/xEBXvmybbCppf1mU6VO9kB8zudvjWEAgoiDH9MGjuS9X4x7Gog2LXDilhphbmfR
-XgtlArBmUrBgoPgzqyCWkYnQgx9lyQ==
-=Sdka
------END PGP SIGNATURE-----
-
---Sig_/YcQgAf.64RqVBy72W9Tayh8--
+-- 
+Michal Hocko
+SUSE Labs
