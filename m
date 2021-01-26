@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0614304454
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7689630453D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390278AbhAZIf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:35:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59200 "EHLO mail.kernel.org"
+        id S2391200AbhAZR0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:26:18 -0500
+Received: from m12-12.163.com ([220.181.12.12]:46247 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726841AbhAYSnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:43:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 481D2224B8;
-        Mon, 25 Jan 2021 18:42:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600168;
-        bh=GbKiPl4FrLdmNGuDrJtuO/IkvXwmqiodDztJthqRBmY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AfasrGnxryG746IxlO1ozZbK2LOxrD8DJc3p7ziSJLQhx2Uyxuq1LQQgOEslBldgo
-         0gnijRnR/0ill/tSfBou28s/Ow5poK3GIuNp634HBRYA+FDbUiSNvK92C29N3ftPS5
-         jeGav3UJsF6mSTIFhzSbFOdm9wsweGHQ5OQ9YpVI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 56/58] net: mscc: ocelot: allow offloading of bridge on top of LAG
-Date:   Mon, 25 Jan 2021 19:39:57 +0100
-Message-Id: <20210125183159.100401355@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
-References: <20210125183156.702907356@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2389455AbhAZHMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 02:12:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=mxInm
+        W0WGyD7tNP1IlQncdf8KhYE4vvXW0RaNikDrpY=; b=VBch1yBoEU6YLN9mWCA8L
+        owEmX3Mxei73LlwWeFZKU1pqdh1d4FWr7mmioHzwsK21lRJ4XS2piCosLSEMJb1/
+        WSUJvThyMAln9lPcMSpRtNDrgRdJxOut/mllmYU6hWxBXolbUa8b3wWU8hGgcTxX
+        yYc4wE95aqoq7zCd55qU8Q=
+Received: from localhost (unknown [218.94.48.178])
+        by smtp8 (Coremail) with SMTP id DMCowABHf6uTgw9gy6c8Nw--.6162S2;
+        Tue, 26 Jan 2021 10:51:00 +0800 (CST)
+Date:   Tue, 26 Jan 2021 10:50:58 +0800
+From:   Guoqing Chi <chi962464zy@163.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhangwen@yulong.com
+Subject: Re: [PATCH] media: vidtv: remove redundant quote
+Message-ID: <20210126105058.000034a4@163.com>
+In-Reply-To: <b470e011-a21e-f333-6650-5c025906d63e@xs4all.nl>
+References: <20210119010947.709-1-chi962464zy@163.com>
+        <b470e011-a21e-f333-6650-5c025906d63e@xs4all.nl>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: DMCowABHf6uTgw9gy6c8Nw--.6162S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtw47urW8Ww4kZry5Jr43Jrb_yoWDuFb_Cw
+        s7Zr4xu34Utr18tF15JF9rZryYkayDZFs5XF98tw1YvFy3Za45J3Wavw17Aa12gF4IvFsr
+        Zry5X348ur13WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRiXdb5UUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/1tbiNxQmRFWBjYMKtAAAsl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Mon, 25 Jan 2021 12:26:54 +0100
+Hans Verkuil <hverkuil@xs4all.nl> wrote:
 
-commit 79267ae22615496655feee2db0848f6786bcf67a upstream.
+> On 19/01/2021 02:09, chiguoqing wrote:
+> > Repeated references string.h
+> > 
+> > Signed-off-by: Wen Zhang <zhangwen@yulong.com>  
+> 
+> checkpatch gives me:
+> 
+> ERROR: Missing Signed-off-by: line by nominal patch author
+> 'chiguoqing <chi962464zy@163.com>'
+> 
+> Can you fix this?
+> 
+> Regards,
+> 
+> 	Hans
 
-The blamed commit was too aggressive, and it made ocelot_netdevice_event
-react only to network interface events emitted for the ocelot switch
-ports.
+Hi Hans:
+  I will resend patch,and change author to zhangwen. Thanks.
 
-In fact, only the PRECHANGEUPPER should have had that check.
-
-When we ignore all events that are not for us, we miss the fact that the
-upper of the LAG changes, and the bonding interface gets enslaved to a
-bridge. This is an operation we could offload under certain conditions.
-
-Fixes: 7afb3e575e5a ("net: mscc: ocelot: don't handle netdev events for other netdevs")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210118135210.2666246-1-olteanv@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/net/ethernet/mscc/ocelot.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
---- a/drivers/net/ethernet/mscc/ocelot.c
-+++ b/drivers/net/ethernet/mscc/ocelot.c
-@@ -1549,10 +1549,8 @@ static int ocelot_netdevice_event(struct
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
- 	int ret = 0;
- 
--	if (!ocelot_netdevice_dev_check(dev))
--		return 0;
--
- 	if (event == NETDEV_PRECHANGEUPPER &&
-+	    ocelot_netdevice_dev_check(dev) &&
- 	    netif_is_lag_master(info->upper_dev)) {
- 		struct netdev_lag_upper_info *lag_upper_info = info->upper_info;
- 		struct netlink_ext_ack *extack;
+> 
+> > ---
+> >  drivers/media/test-drivers/vidtv/vidtv_psi.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c
+> > b/drivers/media/test-drivers/vidtv/vidtv_psi.c index
+> > 4511a2a98405..8ff27d26c343 100644 ---
+> > a/drivers/media/test-drivers/vidtv/vidtv_psi.c +++
+> > b/drivers/media/test-drivers/vidtv/vidtv_psi.c @@ -19,7 +19,6 @@
+> >  #include <linux/ratelimit.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/string.h>
+> > -#include <linux/string.h>
+> >  #include <linux/time.h>
+> >  #include <linux/types.h>
+> >  
+> >   
 
 
