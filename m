@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EB330400B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E55D30400E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392682AbhAZOTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:19:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53612 "EHLO mail.kernel.org"
+        id S2405888AbhAZOUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:20:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405821AbhAZOTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2405820AbhAZOTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Jan 2021 09:19:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35068206CA;
-        Tue, 26 Jan 2021 14:18:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611670703;
-        bh=HqfHwhbZBK5xiHvXp5C9+ogNeGqfuvAe3Vf7RYfRot8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X5cLsJBZ2/6AfrJIf8RnsX0mjtHPfEGjh9g/zcq5EMbGYon1u/Cop336pOf0l5fll
-         gUTG3sIYoaSmkqEGL6ruXkskSbEsEde8d71U4L0EVVmFHgxxP00Cx/VBbhUrcAYWwZ
-         wYGiQGIRIT+98vCPNRYL0Jqil4rMrhDq99E9qRz2JMb/mICEr3ceyyt6S+eHM0Zg0j
-         fW4sysPt6efCBz4ml2INunDaxVTD52L3cF2msMk8JOE9b7YvrRiyf0eGnsFNL6OHeV
-         S0jLb/Fot4F2tGd87XBhjf8ufo3jdklrZ8Yk2N8ibmJaLkoYFQ1DGWdf3122IHTB62
-         /WjXO0/HYTbbw==
-Date:   Tue, 26 Jan 2021 14:18:19 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     mark.rutland@arm.com, lecopzer.chen@mediatek.com,
-        linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        alexandru.elisei@arm.com, swboyd@chromium.org,
-        dianders@chromium.org, daniel.thompson@linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] arm64: Enable perf events based hard lockup detector
-Message-ID: <20210126141818.GC29956@willie-the-truck>
-References: <1610712101-14929-1-git-send-email-sumit.garg@linaro.org>
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBD0822D58;
+        Tue, 26 Jan 2021 14:18:23 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l4PAj-00A97b-WE; Tue, 26 Jan 2021 14:18:22 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610712101-14929-1-git-send-email-sumit.garg@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 26 Jan 2021 14:18:21 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [RFC PATCH v1 0/5] Enable CPU TTRem feature for stage-2
+In-Reply-To: <20210126134202.381996-1-wangyanan55@huawei.com>
+References: <20210126134202.381996-1-wangyanan55@huawei.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <cc15dabd0d7e0cb25d58101803e2c9a4@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: wangyanan55@huawei.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sumit,
+Hi Yanan,
 
-On Fri, Jan 15, 2021 at 05:31:41PM +0530, Sumit Garg wrote:
-> With the recent feature added to enable perf events to use pseudo NMIs
-> as interrupts on platforms which support GICv3 or later, its now been
-> possible to enable hard lockup detector (or NMI watchdog) on arm64
-> platforms. So enable corresponding support.
+On 2021-01-26 13:41, Yanan Wang wrote:
+> Hi all,
+> This series enable CPU TTRem feature for stage-2 page table and a RFC 
+> is sent
+> for some comments, thanks.
 > 
-> One thing to note here is that normally lockup detector is initialized
-> just after the early initcalls but PMU on arm64 comes up much later as
-> device_initcall(). So we need to re-initialize lockup detection once
-> PMU has been initialized.
+> The ARMv8.4 TTRem feature offers 3 levels of support when changing 
+> block
+> size without changing any other parameters that are listed as requiring 
+> use
+> of break-before-make. And I found that maybe we can use this feature to 
+> make
+> some improvement for stage-2 page table and the following explains what
+> TTRem exactly does for the improvement.
 > 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
+> If migration of a VM with hugepages is canceled midway, KVM will adjust 
+> the
+> stage-2 table mappings back to block mappings. We currently use BBM to 
+> replace
+> the table entry with a block entry. Take adjustment of 1G block mapping 
+> as an
+> example, with BBM procedures, we have to invalidate the old table entry 
+> first,
+> flush TLB and unmap the old table mappings, right before installing the 
+> new
+> block entry.
 
-[...]
+In all honesty, I think the amount of work that is getting added to
+support this "migration cancelled mid-way" use case is getting out
+of control.
 
-> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-> index 3605f77a..bafb7c8 100644
-> --- a/arch/arm64/kernel/perf_event.c
-> +++ b/arch/arm64/kernel/perf_event.c
-> @@ -23,6 +23,8 @@
->  #include <linux/platform_device.h>
->  #include <linux/sched_clock.h>
->  #include <linux/smp.h>
-> +#include <linux/nmi.h>
-> +#include <linux/cpufreq.h>
->  
->  /* ARMv8 Cortex-A53 specific event types. */
->  #define ARMV8_A53_PERFCTR_PREF_LINEFILL				0xC2
-> @@ -1246,12 +1248,30 @@ static struct platform_driver armv8_pmu_driver = {
->  	.probe		= armv8_pmu_device_probe,
->  };
->  
-> +static int __init lockup_detector_init_fn(void *data)
-> +{
-> +	lockup_detector_init();
-> +	return 0;
-> +}
-> +
->  static int __init armv8_pmu_driver_init(void)
->  {
-> +	int ret;
-> +
->  	if (acpi_disabled)
-> -		return platform_driver_register(&armv8_pmu_driver);
-> +		ret = platform_driver_register(&armv8_pmu_driver);
->  	else
-> -		return arm_pmu_acpi_probe(armv8_pmuv3_init);
-> +		ret = arm_pmu_acpi_probe(armv8_pmuv3_init);
-> +
-> +	/*
-> +	 * Try to re-initialize lockup detector after PMU init in
-> +	 * case PMU events are triggered via NMIs.
-> +	 */
-> +	if (ret == 0 && arm_pmu_irq_is_nmi())
-> +		smp_call_on_cpu(raw_smp_processor_id(), lockup_detector_init_fn,
-> +				NULL, false);
-> +
-> +	return ret;
+This is adding a complexity and corner cases for a use case that
+really shouldn't happen that often. And it is adding it at the worse
+possible place, where we really should keep things as straightforward
+as possible.
 
-What's wrong with the alternative approach outlined by Mark:
+I would expect userspace to have a good enough knowledge of whether
+the migration is likely to succeed, and not to attempt it if it is
+likely to fail. And yes, it will fail sometimes. But it should be
+so rare that adding this various stages of BBM support shouldn't be
+that useful.
 
-https://lore.kernel.org/r/20210113130235.GB19011@C02TD0UTHF1T.local
+Or is there something else that I am missing?
 
-?
+Thanks,
 
-Will
+         M.
+-- 
+Jazz is not dead. It just smells funny...
