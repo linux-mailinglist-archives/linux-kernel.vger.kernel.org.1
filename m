@@ -2,155 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70012304EC4
+	by mail.lfdr.de (Postfix) with ESMTP id E148C304EC5
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404711AbhA0Ayu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:54:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
+        id S2404738AbhA0AzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:55:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392481AbhAZSEA (ORCPT
+        with ESMTP id S2394533AbhAZSRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:04:00 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B6AC061573;
-        Tue, 26 Jan 2021 10:03:17 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id z22so12876624qto.7;
-        Tue, 26 Jan 2021 10:03:17 -0800 (PST)
+        Tue, 26 Jan 2021 13:17:42 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CD5C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:17:02 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id x78so17623790ybe.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:17:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HtLia3tqHgEA0fRcdYJwmH1U27RukYWW2gTi/zikuJ8=;
-        b=Vzsj/7J9KgidbhduxBCJF0BaKx0+VqkhE7gIWstP4odzRZTtBuyZidDGwwEykIKqSp
-         JR7PLPwLd25jzgJqdeZgZkR5AZ9+/BcRr1cpNaqOMIPol02NTFzPyVN8GX8N2S1l+AXw
-         8zWiPXPbGnJnIw2vqLZBPvzj7YPl1BFmPAOfxTlQ+4tFbUUr5p3yJT9eHgDnwUJMropL
-         iCmuWsvfLtclGiZP23oWA7FPSAo2WJfWdMZxBCQHGe96nNFDQ5W8vc3ezPCaOVKa8qfQ
-         7fGi9wd9P6slTOTfLKEbpAqunoyQ6VqtKU6/Gux1in45U9qhs8rAi/ceMg9cbisI+Nc8
-         cVUA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C63W8Y93BecXXNue/Bt+pWJEqyrzx0Hg2TryKJ8xF3U=;
+        b=sIcUAWDvgO5KukWwqZJd2E/uyHM7Mwiuujj/xRIJmAqOEKjNZ/LDqryjCMHouSf+d2
+         tf8WOOX6A6ROU0JzpV7ZplsXpA32diogSjKpYjY7aVNBEay/uqM1ZDZaWetg1H7sPo1b
+         v1/iaAIDy5XXh3IToXwNgfm7YTvUsmbXECeLZu19sP7C9tswdUHxrpbQyM8tPfnNMPwt
+         vslKnigoR6jEFlTl1qSzODTjHJ7qoO6763loZuCXJxPfWEWdMGXlUXM/Kqv4SJdyoflc
+         mzCDyfvN6PeMRmWfDRqKT6iqTsWnZDXFNxOICuB+3L7vVMqKA5sDjMCdg5fAM0fk5fn7
+         0zzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HtLia3tqHgEA0fRcdYJwmH1U27RukYWW2gTi/zikuJ8=;
-        b=KG+IVdcqN8SjswdKklELWIFBBV2iY5P4avmwVgVQJwFK8igu06QQhRn6EhJGqpY/b1
-         JGzuwdAQI6HmUSCmpj1Le9O5GVs0EktsycviyLZLZjrqcBl7xaQFNew+XBlz+8+oVZL3
-         R8RKHrktIJxOooE/zTfARks1JnAuIPlCMBV0lafbxPS40tYnp89+IfzHEgDCay5MnSxe
-         0rL0OxxGWEOooN9XanHYzg2urPQt0RD6yPpMBAS4Ol1dF1Jxb3WoG+hCUJJc7bNxA4Y+
-         ARwXeZqx95OwJH8jfwa9SzpLNvsoLibyc37XPMGBXoiyEKB2XnwnbxgRZlGvzZEKyTlY
-         2xPw==
-X-Gm-Message-State: AOAM530hKS6rAQ6Z4Ihvb+TenUs4VDnUYG44/1c8VjobxFcL7mSKoQpi
-        YqYT1ofu6mfVofDJVp9IuDs=
-X-Google-Smtp-Source: ABdhPJyMtMMMqrLeE5xLSnj9c88fGXDMBwgQdtWPVEpqvVgIpvL/YbNgfRhVRuw0zkTsfe3cF1Lqyg==
-X-Received: by 2002:ac8:59cb:: with SMTP id f11mr6261381qtf.70.1611684196510;
-        Tue, 26 Jan 2021 10:03:16 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id y67sm14700409qka.68.2021.01.26.10.03.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 10:03:16 -0800 (PST)
-Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>, cyril@debamax.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210125105757.661240-1-uwe@kleine-koenig.org>
- <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
- <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <5e552b57-4e8b-6774-577d-4fa7a8d440ba@gmail.com>
-Date:   Tue, 26 Jan 2021 12:03:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C63W8Y93BecXXNue/Bt+pWJEqyrzx0Hg2TryKJ8xF3U=;
+        b=PAExhdWFV2tSfbq1I6r3vB4bDzoeYg/TX8H11ku5Fl3mlvE4ExGpMmAp4WzVNRq977
+         0KIvijn5e07w+cfL75ekeV7J6F6OIAG/X0f5KHuzVSduC5bptCfVAlm3XamWt6bWmQki
+         HhDwF101yf96LfnKrU2cpr/R2rTEQ5L0TCgsB6lqHVVqaJruaGIxWdJcyN/sxjeBvZL7
+         JT12wZdo5U4wn7KGRvFviLAQfdRVdNwOJCSh8qpgkj0ebdF6F41HFNY6oY8Xs+icNOBU
+         1hFSbjN1bf6BOwTOuOzAwd7/qJezgdsmn0QwiGegL6Y70bhGavIdQtyPifZH0cLGNTjj
+         mYdQ==
+X-Gm-Message-State: AOAM531pNowL8EaG1KEJkrHY8+ZSIkm2Ez07qATQq7DYyD2BjUTyH1O4
+        AhUMZIRz3CLQtVggAOwB4wCshypJxV41DQ8Q9w35+g==
+X-Google-Smtp-Source: ABdhPJyKBxbNwKUWs/G+whnZ2vm5Q3D8MJv7kvnkBA1M/xXs+yzBq5YtqbfmfAIzYvaozMNBN7cAp0S7OJeN5pkLzLo=
+X-Received: by 2002:a25:8b8b:: with SMTP id j11mr9347224ybl.310.1611685021454;
+ Tue, 26 Jan 2021 10:17:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210122193600.1415639-1-saravanak@google.com> <CAHp75VfKiuVd7JO-0nwCuvy7tgPZScOpKX8Q4+oT+JSBR+d=ew@mail.gmail.com>
+In-Reply-To: <CAHp75VfKiuVd7JO-0nwCuvy7tgPZScOpKX8Q4+oT+JSBR+d=ew@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 26 Jan 2021 10:16:25 -0800
+Message-ID: <CAGETcx_FmOvLe4fN8ZZ_Kno-DnUy2DcPayk9Szmx2vrihr0KoQ@mail.gmail.com>
+Subject: Re: [PATCH v2] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+frank
+On Tue, Jan 26, 2021 at 1:40 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+>
+>
+> On Friday, January 22, 2021, Saravana Kannan <saravanak@google.com> wrote:
+>>
+>> There are multiple instances of GPIO device tree nodes of the form:
+>>
+>> foo {
+>>         compatible = "acme,foo";
+>>         ...
+>>
+>>         gpio0: gpio0@xxxxxxxx {
+>>                 compatible = "acme,bar";
+>>                 ...
+>>                 gpio-controller;
+>>         };
+>>
+>>         gpio1: gpio1@xxxxxxxx {
+>>                 compatible = "acme,bar";
+>>                 ...
+>>                 gpio-controller;
+>>         };
+>>
+>>         ...
+>> }
+>>
+>> bazz {
+>>         my-gpios = <&gpio0 ...>;
+>> }
+>>
+>> Case 1: The driver for "foo" populates struct device for these gpio*
+>> nodes and then probes them using a driver that binds with "acme,bar".
+>> This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
+>> This lines up with how DT nodes with the "compatible" property are
+>> typically converted to struct devices and then registered with driver
+>> core to probe them. This also allows the gpio* devices to hook into all
+>> the driver core capabilities like runtime PM, probe deferral,
+>> suspend/resume ordering, device links, etc.
+>>
+>> Case 2: The driver for "foo" doesn't populate struct devices for these
+>> gpio* nodes before registering them with gpiolib. Instead it just loops
+>> through its child nodes and directly registers the gpio* nodes with
+>> gpiolib.
+>>
+>> Drivers that follow case 2 cause problems with fw_devlink=on. This is
+>> because fw_devlink will prevent bazz from probing until there's a struct
+>> device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
+>> supplier). Once the struct device is available, fw_devlink will create a
+>> device link with gpio0 device as the supplier and bazz device as the
+>> consumer. After this point, since the gpio0 device will never bind to a
+>> driver, the device link will prevent bazz device from ever probing.
+>>
+>> Finding and refactoring all the instances of drivers that follow case 2
+>> will cause a lot of code churn and it is not something that can be done
+>> in one shot. In some instances it might not even be possible to refactor
+>> them cleanly. Examples of such instances are [1] [2].
+>>
+>> This patch works around this problem and avoids all the code churn by
+>> simply setting the fwnode of the gpio_device and creating a stub driver
+>> to bind to the gpio_device. This allows all the consumers to continue
+>> probing when the driver follows case 2.
+>>
+>
+> Do we need to unregister it at __exit initcall?
+> What side effects would be of the stub driver presence on the GPIO bus? Any traverse on it will work as before?
 
-On 1/26/21 1:20 AM, Uwe Kleine-König wrote:
-> Hello Masahiro,
-> 
-> On 1/25/21 10:53 PM, Masahiro Yamada wrote:
->> On Mon, Jan 25, 2021 at 8:07 PM Uwe Kleine-König <uwe@kleine-koenig.org> wrote:
->>>
->>> Adding the -@ switch to dtc results in the binary devicetrees containing
->>> a list of symbolic references and their paths. This is necessary to
->>> apply device tree overlays e.g. on Raspberry Pi as described on
->>> https://www.raspberrypi.org/documentation/configuration/device-tree.md.
->>>
->>> Obviously the downside of this change is an increas of the size of the
->>> generated dtbs, for an arm out-of-tree build (multi_v7_defconfig):
->>>
->>>          $ du -s arch/arm/boot/dts*
->>>          101380  arch/arm/boot/dts-pre
->>>          114308  arch/arm/boot/dts-post
->>>
->>> so this is in average an increase of 12.8% in size.
->>>
->>> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
->>
->>
->> (CCing DT ML.)
-> 
-> makes sense, thanks.
-> 
->> https://www.spinics.net/lists/linux-kbuild/msg27904.html
->>
->> See Rob's comment:
->>
->> "We've already rejected doing that. Turning on '-@' can grow the dtb
->> size by a significant amount which could be problematic for some
->> boards."
-> 
-> The patch was created after some conversation on irc which continued
-> after I sent the patch. I added the participating parties to Cc:.
-> 
-> The (relevant) followups were:
-> 
-> Geert suggested to always generate the symbols and provide a way to
-> strip the symbols for installation if and when they are not needed.
-> 
-> Rob said: "I'm less concerned with the size increases, but rather that
-> labels go from purely source syntax to an ABI. I'd rather see some
-> decision as to which labels are enabled or not."
-> 
-> And then I learned with hints from Rob and Geert that symbols are not
-> really necessary for overlays, you just cannot use named labels. But
-> using
-> 
->     target-path = "/soc/i2c@23473245";
-> 
-> or
-> 
->     target = <&{/soc/i2c@23473245}>;
-> 
-> instead of
-> 
->     target = <&i2c1>;
-> 
-> works fine. (And if you need to add a phandle the &{/path/to/node}
-> construct should work, too (but I didn't test).) Using labels is a tad nicer, but the problem I wanted to address with my patch now has a known different solution.
-> 
-> Best regards
-> Uwe
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+I checked. There is no __exit initcall.
 
+-Saravana
