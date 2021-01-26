@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EF6303A59
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4FF303A6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404061AbhAZKbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:31:32 -0500
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:58188 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732057AbhAZBfD (ORCPT
+        id S2404150AbhAZKe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730365AbhAZBmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:35:03 -0500
-Received: from dread.disaster.area (pa49-180-243-77.pa.nsw.optusnet.com.au [49.180.243.77])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id EE17B90CF;
-        Tue, 26 Jan 2021 12:34:14 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1l4DFG-002QrL-6o; Tue, 26 Jan 2021 12:34:14 +1100
-Date:   Tue, 26 Jan 2021 12:34:14 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Luis Lozano <llozano@chromium.org>, iant@google.com
-Subject: Re: [BUG] copy_file_range with sysfs file as input
-Message-ID: <20210126013414.GE4626@dread.disaster.area>
-References: <CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com>
+        Mon, 25 Jan 2021 20:42:54 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F71C061224;
+        Mon, 25 Jan 2021 17:38:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=I4QtGGdUD49OQbpnA/+iW6hZGEJcEQdxNTE3QJXFu+k=; b=th6+D7onHmuxEzk677tybiCqfY
+        hhGc9w/VT61khYhuxx2E1kXIsOZGSF8+E1JP2Cvik6UBR/5b9Nw1Gin/GJ/RDDPaHQuwd8aX3Z5R6
+        LuJpCUqsZxHBgVXAyJOFwvagUUVKqq/2tD0/zQ5NLUIocvQ3sFd+r65lKsnAv70oMOdY65n7/vmc0
+        5u4hBE/tFpodrVaPe+lRr8QseonmbE9ty/7mie8ThsqBBqlrcHJgYHdXAyo8VhXZYJeq+djp+RU1Z
+        bkG5n7D1xoNHEi6ZrSR5P+ndK11HLCtkbsp86N94CxpjEcmp6tYmalu5GJ74rGgTmoQ4gK9HCOanm
+        TCWQ7O8g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4DH9-004uVe-DU; Tue, 26 Jan 2021 01:36:32 +0000
+Date:   Tue, 26 Jan 2021 01:36:11 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 32/32] NFS: Convert readpage to readahead and use
+ netfs_readahead for fscache
+Message-ID: <20210126013611.GI308988@casper.infradead.org>
+References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
+ <161161064956.2537118.3354798147866150631.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
-        a=juxvdbeFDU67v5YkIhU0sw==:117 a=juxvdbeFDU67v5YkIhU0sw==:17
-        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
-        a=Gx1m1vkv1q0fsgJoGIkA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <161161064956.2537118.3354798147866150631.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 03:54:31PM +0800, Nicolas Boichat wrote:
-> Hi copy_file_range experts,
-> 
-> We hit this interesting issue when upgrading Go compiler from 1.13 to
-> 1.15 [1]. Basically we use Go's `io.Copy` to copy the content of
-> `/sys/kernel/debug/tracing/trace` to a temporary file.
-> 
-> Under the hood, Go now uses `copy_file_range` syscall to optimize the
-> copy operation. However, that fails to copy any content when the input
-> file is from sysfs/tracefs, with an apparent size of 0 (but there is
-> still content when you `cat` it, of course).
-> 
-> A repro case is available in comment7 (adapted from the man page),
-> also copied below [2].
-> 
-> Output looks like this (on kernels 5.4.89 (chromeos), 5.7.17 and
-> 5.10.3 (chromeos))
-> $ ./copyfrom /sys/kernel/debug/tracing/trace x
-> 0 bytes copied
 
-That's basically telling you that copy_file_range() was unable to
-copy anything. The man page says:
+For Subject: s/readpage/readpages/
 
-RETURN VALUE
-       Upon  successful  completion,  copy_file_range() will return
-       the number of bytes copied between files.  This could be less
-       than the length originally requested.  If the file offset
-       of fd_in is at or past the end of file, no bytes are copied,
-       and copy_file_range() returns zero.
+On Mon, Jan 25, 2021 at 09:37:29PM +0000, David Howells wrote:
+> +int __nfs_readahead_from_fscache(struct nfs_readdesc *desc,
+> +				 struct readahead_control *rac)
 
-THe man page explains it perfectly. Look at the trace file you are
-trying to copy:
+I thought you wanted it called ractl instead of rac?  That's what I've
+been using in new code.
 
-$ ls -l /sys/kernel/debug/tracing/trace
--rw-r--r-- 1 root root 0 Jan 19 12:17 /sys/kernel/debug/tracing/trace
-$ cat /sys/kernel/debug/tracing/trace
-tracer: nop
-#
-# entries-in-buffer/entries-written: 0/0   #P:8
-#
-#                              _-----=> irqs-off
-#                             / _----=> need-resched
-#                            | / _---=> hardirq/softirq
-#                            || / _--=> preempt-depth
-#                            ||| /     delay
-#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-#              | |       |   ||||       |         |
+> -	dfprintk(FSCACHE, "NFS: nfs_getpages_from_fscache (0x%p/%u/0x%p)\n",
+> -		 nfs_i_fscache(inode), npages, inode);
+> +	dfprintk(FSCACHE, "NFS: nfs_readahead_from_fscache (0x%p/0x%p)\n",
+> +		 nfs_i_fscache(inode), inode);
 
-Yup, the sysfs file reports it's size as zero length, so the CFR
-syscall is saying "there's nothing to copy from this empty file" and
-so correctly is returning zero without even trying to copy anything
-because the file offset is at EOF...
+We do have readahead_count() if this is useful information to be logging.
 
-IOWs, there's no copy_file_range() bug here - it's behaving as
-documented.
+> +static inline int nfs_readahead_from_fscache(struct nfs_readdesc *desc,
+> +					     struct readahead_control *rac)
+>  {
+> -	if (NFS_I(inode)->fscache)
+> -		return __nfs_readpages_from_fscache(ctx, inode, mapping, pages,
+> -						    nr_pages);
+> +	if (NFS_I(rac->mapping->host)->fscache)
+> +		return __nfs_readahead_from_fscache(desc, rac);
+>  	return -ENOBUFS;
+>  }
 
-'cat' "works" in this situation because it doesn't check the file
-size and just attempts to read unconditionally from the file. Hence
-it happily returns non-existent stale data from busted filesystem
-implementations that allow data to be read from beyond EOF...
+Not entirely sure that it's worth having the two functions separated any more.
 
-Cheers,
+>  	/* attempt to read as many of the pages as possible from the cache
+>  	 * - this returns -ENOBUFS immediately if the cookie is negative
+>  	 */
+> -	ret = nfs_readpages_from_fscache(desc.ctx, inode, mapping,
+> -					 pages, &nr_pages);
+> +	ret = nfs_readahead_from_fscache(&desc, rac);
+>  	if (ret == 0)
+>  		goto read_complete; /* all pages were read */
+>  
+>  	nfs_pageio_init_read(&desc.pgio, inode, false,
+>  			     &nfs_async_read_completion_ops);
+>  
+> -	ret = read_cache_pages(mapping, pages, readpage_async_filler, &desc);
+> +	while ((page = readahead_page(rac))) {
+> +		ret = readpage_async_filler(&desc, page);
+> +		put_page(page);
+> +	}
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+I thought with the new API we didn't need to do this kind of thing
+any more?  ie no matter whether fscache is configured in or not, it'll
+submit the I/Os.
