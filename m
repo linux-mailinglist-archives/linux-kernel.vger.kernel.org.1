@@ -2,73 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88AAB303B8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E92D303B8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392456AbhAZLY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:24:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56294 "EHLO mail.kernel.org"
+        id S2392472AbhAZLYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:24:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57472 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390952AbhAZJLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:11:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45CB323103
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:10:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611652233;
-        bh=zdTPmAwairV8shigFDysbCEYxemi0qlu/sQye+3VPYM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tKqe587tHfpvaAQFSLXLgTclXh9avJ/FnPf4SgciABCZLRIAyPYS+rQ24zuAUG1sf
-         TW31GrsV9EuW64SHttbC0/HbkMIY8/yPV3eTEILeaD2+i05kKg6XfZXc/rolPfWa/7
-         ES7qmfG3dVAKsIKh/xVYPwsAIk3V5GeH6tjIjiR9Tk3+sebG0j6tTtiIoMw1vJSvoP
-         CP3VHJvgJQk+6ThvO8jcZtSJr6lvb22OAM8T6+KufWasEtb6RDb0W5gsGJF88MDq1R
-         jdHIQLE+5ieYWrCq4gddf4LGCrMwgQA0dwMhJ765yxo9JvknH5xRJ5N5KujGe3FAes
-         ktCC4FcJ/v2bQ==
-Received: by mail-ot1-f50.google.com with SMTP id d1so15540569otl.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:10:33 -0800 (PST)
-X-Gm-Message-State: AOAM533Htwcegqapmyc7M4fDdCK5eqn4H6btvabNtJEJvlb9z+CgBg8A
-        NQoWiSAyKnZz2ZIYkSSE57QvMy75EZT2mBkuo5o=
-X-Google-Smtp-Source: ABdhPJyjhX3hTJI1kwWboGAAj6FivjPq5tnnbuHH5upXXVVWougCo+rrv37dyOwnHgZd1eYW5AdqtoDY3+5RgSlgtJU=
-X-Received: by 2002:a9d:3bb7:: with SMTP id k52mr3427905otc.251.1611652232487;
- Tue, 26 Jan 2021 01:10:32 -0800 (PST)
+        id S2389361AbhAZJTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:19:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611652532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8+K0oyxRY1+vhNkSeXzm8M4Y2R64gVVtCdOHelIF+V8=;
+        b=kShKTVasjKcQgyk49obmmqJEv3Z3d6D+KjtCoEjGXxzkEZlE9pddLwPnfiYIY421ESnwFk
+        s121ANy6h6Uf22zm4fCv1pqav6eTOcya5rAIE9EhMH1YsS7w7Ixp5ITIzE4PQfYNNMffQz
+        Deb5a3d+IUk2PpGiCwbgFZJfGrBkuvI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 36ABFB293;
+        Tue, 26 Jan 2021 09:15:32 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 10:15:27 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
+Message-ID: <20210126091527.GG827@dhcp22.suse.cz>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-9-rppt@kernel.org>
+ <20210125165451.GT827@dhcp22.suse.cz>
+ <20210125213817.GM6332@kernel.org>
+ <20210126073142.GY827@dhcp22.suse.cz>
+ <20210126085654.GO6332@kernel.org>
 MIME-Version: 1.0
-References: <20210125113758.2430680-1-arnd@kernel.org> <20210126080827.GA26654@trex>
-In-Reply-To: <20210126080827.GA26654@trex>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 26 Jan 2021 10:10:16 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a09stVcEr9xBOLbkw7ZtzdZpP_pqE4wYRzBoC70c3h1eA@mail.gmail.com>
-Message-ID: <CAK8P3a09stVcEr9xBOLbkw7ZtzdZpP_pqE4wYRzBoC70c3h1eA@mail.gmail.com>
-Subject: Re: [PATCH] optee: simplify i2c access
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        op-tee@lists.trustedfirmware.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126085654.GO6332@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 9:08 AM Jorge Ramirez-Ortiz, Foundries
-<jorge@foundries.io> wrote:
->
-> On 25/01/21, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Storing a bogus i2c_client structure on the stack adds overhead and
-> > causes a compile-time warning:
-> >
-> > drivers/tee/optee/rpc.c:493:6: error: stack frame size of 1056 bytes in function 'optee_handle_rpc' [-Werror,-Wframe-larger-than=]
-> > void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
-> >
-> > Change the implementation of handle_rpc_func_cmd_i2c_transfer() to
-> > open-code the i2c_transfer() call, which makes it easier to read
-> > and avoids the warning.
-> >
-> > Fixes: c05210ab9757 ("drivers: optee: allow op-tee to access devices on the i2c bus")
->
-> does fixing stack-frame compile warnings need a 'fixes' tag?
+On Tue 26-01-21 10:56:54, Mike Rapoport wrote:
+> On Tue, Jan 26, 2021 at 08:31:42AM +0100, Michal Hocko wrote:
+> > On Mon 25-01-21 23:38:17, Mike Rapoport wrote:
+> > > On Mon, Jan 25, 2021 at 05:54:51PM +0100, Michal Hocko wrote:
+> > > > On Thu 21-01-21 14:27:20, Mike Rapoport wrote:
+> > > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > > 
+> > > > > Account memory consumed by secretmem to memcg. The accounting is updated
+> > > > > when the memory is actually allocated and freed.
+> > > > 
+> > > > What does this mean?
+> > > 
+> > > That means that the accounting is updated when secretmem does cma_alloc()
+> > > and cma_relase().
+> > > 
+> > > > What are the lifetime rules?
+> > > 
+> > > Hmm, what do you mean by lifetime rules?
+> > 
+> > OK, so let's start by reservation time (mmap time right?) then the
+> > instantiation time (faulting in memory). What if the calling process of
+> > the former has a different memcg context than the later. E.g. when you
+> > send your fd or inherited fd over fork will move to a different memcg.
+> > 
+> > What about freeing path? E.g. when you punch a hole in the middle of
+> > a mapping?
+> > 
+> > Please make sure to document all this.
+>  
+> So, does something like this answer your question:
+> 
+> ---
+> The memory cgroup is charged when secremem allocates pages from CMA to
+> increase large pages pool during ->fault() processing.
 
-The fixes tag only describes which commit introduced the bug, it is irrelevant
-what type of bug this is.
+OK so that is when the memory is faulted in. Good that is a standard
+model we have. The memcg context of the creator of the secret memory is
+not really important. So whoever has created is not charged.
 
-      Arnd
+> The pages are uncharged from memory cgroup when they are released back to
+> CMA at the time secretme inode is evicted.
+> ---
+
+so effectivelly when they are unmapped, right? This is similar to
+anonymous memory.
+
+As I've said it would be really great to have this life cycle documented
+properly.
+
+> > Please note that this all is a user visible stuff that will become PITA
+> > (if possible) to change later on. You should really have strong
+> > arguments in your justification here.
+> 
+> I think that adding a dedicated counter for few 2M areas per container is
+> not worth the churn. 
+
+What kind of churn you have in mind? What is the downside?
+
+> When we'll get to the point that secretmem can be used to back the entire
+> guest memory we can add a new counter and it does not seem to PITA to me.
+
+What does really prevent a larger use with this implementation?
+
+-- 
+Michal Hocko
+SUSE Labs
