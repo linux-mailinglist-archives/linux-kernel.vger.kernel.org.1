@@ -2,152 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65280304004
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BFA304006
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405798AbhAZOSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
+        id S2405805AbhAZOTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405679AbhAZOSR (ORCPT
+        with ESMTP id S2405792AbhAZOSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:18:17 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABC3C0611C2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:17:37 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id e67so16827243ybc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:17:37 -0800 (PST)
+        Tue, 26 Jan 2021 09:18:22 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4B0C061D73
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:17:42 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id n7so6697742oic.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:17:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AS/PqSCLXPUX5/0cv/D32Ab1nbbd5GInwJYzei8iock=;
-        b=HGnNuROYaN8L9CsOXEklj4GmusrUZy6n73qQEoZo2Sjy2TFTiAvJmIExJ0APhd9MYX
-         yGaoOrlz0ow32/0hUv4+6PfdcmJRqVbactaa2ErQ8QOr5RGgoKJiDldaSyJeBrhCFdq2
-         SrzM1lK1c/gdOVScVkBHIqD2u2iuJmUQMGGRHuuUIglDfb0TjdG+rFDsiVcgkBAbMdyg
-         2z8edNrPGdqGmuC0SXgBfV2mAK3D7NbSg2DEYn05/MeVsd6WPRC31KfxGZC2Kps/gAik
-         i4eD8yHR7/ztWDbd68YXNld8737gL6+mhdQrAy3y7pec0b75b7IwV2BkriDFmSlCxAbV
-         lnmQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=snAymklEUhwSnE6aOil+eGqTT5ec5tFwcRj260sAvks=;
+        b=AMFZuV9yP/xMgYabEyMv/EUu/qJ/qpAPDwpK8EMDiOG6J7DiOGO2GDX2qxUne9vKEP
+         u1OnjabAO8O9DMwyNPu2gvLtW0363Hqu9SRiuOU7Kt+z2L9hYJgtau8tbQ/3WqjaW7fU
+         y1KToE8sVncgKcwdejK80E+YSzDtUGNMGSCjgrr1EY0UQm/J/Rt4v8/w0PurijO+E+YY
+         KjA2quD1t4ux6L0T1q4lt652Y1D+Nbu/1LSpwWOCqiriN+L3uLKeLIseKFsGGF/2iCh2
+         HTSwbt9lDbkJ65B4yUQan7lg6YhdawnuMk1cIRG2p0AGvuYr21M0X7dUmb0+LPpM13jo
+         ZvLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AS/PqSCLXPUX5/0cv/D32Ab1nbbd5GInwJYzei8iock=;
-        b=ITcInCmoyWOdCZWbCPTU3W4ZxpYq/uhKn6sD22T2/6ovbk6w724iiiM1AMg6lyejnr
-         2gABcVqszdxfJkVm4E5CWPmpUTokiKZpy4GGTz1pk0YYrQ3OKMAcYQ4PuBLBqTR5i1a9
-         N9WXNEI6wPbCfHp/upqLdU8+m+ihYrycoTmOrmuh0v1bLDEArRMYKlUBQj+CalgwPfAW
-         xJnh7odjNptYnDI6lV0u+Mvq64z7fqzFe0lomPuz0ZmfRdcKnzA7t3Cyhs78uY/W8YzA
-         eNobe5qDphw421Kk/2UikZbRM4dx946XEnxH3p5nhZYLl3osVEduGUrRYnfSDOfxJIRc
-         AVIA==
-X-Gm-Message-State: AOAM531zNKX/hmR1NYcB6xpIoOGsquaaqPYbUgsVd35gKoYti3ynTCiz
-        qiKY6x4YPFF8Sn4bY1+WzI38YRZvAsYY7/yWHhk=
-X-Google-Smtp-Source: ABdhPJwa4WaRWJZ2FL9jNUSCsccppk1hf32g/uV+OeB6mucj3lPd8nqW407fBdUXGu16INj7DAX/rk8+FX6WwEC4QRk=
-X-Received: by 2002:a25:2a56:: with SMTP id q83mr8430303ybq.144.1611670656827;
- Tue, 26 Jan 2021 06:17:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=snAymklEUhwSnE6aOil+eGqTT5ec5tFwcRj260sAvks=;
+        b=FegGndz1sDbFHki1gcmLJSGPwRHV96ki/d2MvkGVvGw46nQqr55RrTP7wVBtQt2u36
+         Tj+iPpGDcZ/65w1mSWj7cfL/V+vFDYnVPS5Tk5QKWjPSn6j7YYvlok/+1J2IEmpRThZ/
+         xYP5NS7MHoUXfNjxqm/XT+3Sf0s49Ed1pcdl8vHf73b6I5a3xtLbPxLtORO5xcDMvE/X
+         llSkTEi2L199RKtv1Ap1Gi/zC8dVvI+6YT6Y67hx8wrUUgyACXahv5h68JozqnmsDBqO
+         JUqK4PEjVQx2z1MB0inArqazz/5jGbv8Q7BnIA7vdsCm4Bf7qF+fo8D+nFPrwwg9z06T
+         839w==
+X-Gm-Message-State: AOAM533zH96uBUm8b+uUmpOKhRE/iRS+8rFu/wmXUZ4FRTYhyDTc9F5o
+        S3POWzAAjbcJgpEXYchdH9pGUg==
+X-Google-Smtp-Source: ABdhPJxNTGPmEEttjHeUpsyXi818x5CmAZskBGX+az9F3WmnzzxmjbDFdzfNlsG1QuNSweOXoCQn/g==
+X-Received: by 2002:a05:6808:115:: with SMTP id b21mr9995oie.16.1611670661326;
+        Tue, 26 Jan 2021 06:17:41 -0800 (PST)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id e14sm1851753oou.19.2021.01.26.06.17.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 06:17:40 -0800 (PST)
+Date:   Tue, 26 Jan 2021 08:17:38 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v4 4/5] dt-bindings: clock: Add SM8350 GCC clock bindings
+Message-ID: <20210126141738.GH1241218@yoga>
+References: <20210118044321.2571775-1-vkoul@kernel.org>
+ <20210118044321.2571775-5-vkoul@kernel.org>
+ <YA7+9xaAY0JT5csh@builder.lan>
+ <20210126080058.GN2771@vkoul-mobl>
 MIME-Version: 1.0
-References: <20210125085622.2322-1-candlesea@gmail.com> <CAKwvOd=b+ku7cd24KTYpNecYAUHxR5aBmrC1q+BL67+1YBHjzA@mail.gmail.com>
-In-Reply-To: <CAKwvOd=b+ku7cd24KTYpNecYAUHxR5aBmrC1q+BL67+1YBHjzA@mail.gmail.com>
-From:   Candle Sun <candlesea@gmail.com>
-Date:   Tue, 26 Jan 2021 22:17:25 +0800
-Message-ID: <CAPnx3XOMpHV96aF=A3978LAapV1dXU3YvFrqU=F-Oet8xpQYpA@mail.gmail.com>
-Subject: Re: [PATCH] lkdtm: fix memory copy size for WRITE_KERN
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Candle Sun <candle.sun@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126080058.GN2771@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 5:16 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Mon, Jan 25, 2021 at 12:56 AM Candle Sun <candlesea@gmail.com> wrote:
-> >
-> > From: Candle Sun <candle.sun@unisoc.com>
-> >
-> > Though do_overwritten() follows do_nothing() in source code, the final
-> > memory address order is determined by compiler. We can't always assume
-> > address of do_overwritten() is bigger than do_nothing(). At least the
-> > Clang we are using places do_overwritten() before do_nothing() in the
-> > object. This causes the copy size in lkdtm_WRITE_KERN() is *really*
-> > big and WRITE_KERN test on ARM32 arch will fail.
-> >
-> > Compare the address order before doing the subtraction.
-> >
-> > Signed-off-by: Candle Sun <candle.sun@unisoc.com>
-> > ---
-> >  drivers/misc/lkdtm/perms.c | 19 +++++++++----------
-> >  1 file changed, 9 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
-> > index 2dede2ef658f..fbfbdf89d668 100644
-> > --- a/drivers/misc/lkdtm/perms.c
-> > +++ b/drivers/misc/lkdtm/perms.c
-> > @@ -31,13 +31,13 @@ static unsigned long ro_after_init __ro_after_init = 0x55AA5500;
-> >   * This just returns to the caller. It is designed to be copied into
-> >   * non-executable memory regions.
-> >   */
-> > -static void do_nothing(void)
-> > +static noinline void do_nothing(void)
-> >  {
-> >         return;
-> >  }
-> >
-> >  /* Must immediately follow do_nothing for size calculuations to work out. */
-> > -static void do_overwritten(void)
-> > +static noinline void do_overwritten(void)
-> >  {
-> >         pr_info("do_overwritten wasn't overwritten!\n");
-> >         return;
-> > @@ -110,15 +110,14 @@ void lkdtm_WRITE_RO_AFTER_INIT(void)
-> >
-> >  void lkdtm_WRITE_KERN(void)
-> >  {
-> > -       size_t size;
-> > -       volatile unsigned char *ptr;
-> > +       unsigned long value_dow = (unsigned long)do_overwritten;
-> > +       unsigned long value_do =  (unsigned long)do_nothing;
-> > +       size_t size = (size_t)(value_dow > value_do ?
-> > +                       value_dow - value_do : value_do - value_dow);
-> >
-> > -       size = (unsigned long)do_overwritten - (unsigned long)do_nothing;
->
-> Thanks for the patch! Might it be simpler to do:
->
-> size = abs((uintptr_t)do_overwritten - (uintptr_t)do_nothing));
->
-> Then I don't think much of this function needs to be changed.
->
+On Tue 26 Jan 02:00 CST 2021, Vinod Koul wrote:
 
-Thanks Nick.
+> On 25-01-21, 11:25, Bjorn Andersson wrote:
+> > On Sun 17 Jan 22:43 CST 2021, Vinod Koul wrote:
+> > 
+> > > Add device tree bindings for global clock controller on SM8350 SoCs.
+> > > 
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > ---
+> > >  .../bindings/clock/qcom,gcc-sm8350.yaml       |  96 +++++++
+> > >  include/dt-bindings/clock/qcom,gcc-sm8350.h   | 261 ++++++++++++++++++
+> > >  2 files changed, 357 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
+> > >  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm8350.h
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
+> > > new file mode 100644
+> > > index 000000000000..78f35832aa41
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
+> > > @@ -0,0 +1,96 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/clock/qcom,gcc-sm8350.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Qualcomm Global Clock & Reset Controller Binding for SM8350
+> > > +
+> > > +maintainers:
+> > > +  - Vinod Koul <vkoul@kernel.org>
+> > > +
+> > > +description: |
+> > > +  Qualcomm global clock control module which supports the clocks, resets and
+> > > +  power domains on SM8350.
+> > > +
+> > > +  See also:
+> > > +  - dt-bindings/clock/qcom,gcc-sm8350.h
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: qcom,gcc-sm8350
+> > > +
+> > > +  clocks:
+> > > +    items:
+> > > +      - description: Board XO source
+> > > +      - description: Sleep clock source
+> > > +      - description: PLL test clock source (Optional clock)
+> > > +      - description: PCIE 0 Pipe clock source (Optional clock)
+> > > +      - description: PCIE 1 Pipe clock source (Optional clock)
+> > > +      - description: UFS card Rx symbol 0 clock source (Optional clock)
+> > > +      - description: UFS card Rx symbol 1 clock source (Optional clock)
+> > > +      - description: UFS card Tx symbol 0 clock source (Optional clock)
+> > > +      - description: UFS phy Rx symbol 0 clock source (Optional clock)
+> > > +      - description: UFS phy Rx symbol 1 clock source (Optional clock)
+> > > +      - description: UFS phy Tx symbol 0 clock source (Optional clock)
+> > > +      - description: USB3 phy wrapper pipe clock source (Optional clock)
+> > > +      - description: USB3 phy sec pipe clock source (Optional clock)
+> > > +    minItems: 2
+> > > +    maxItems: 13
+> > > +
+> > > +  clock-names:
+> > > +    items:
+> > > +      - const: bi_tcxo
+> > > +      - const: sleep_clk
+> > > +      - const: core_bi_pll_test_se # Optional clock
+> > > +      - const: pcie_0_pipe_clk # Optional clock
+> > > +      - const: pcie_1_pipe_clk # Optional clock
+> > > +      - const: ufs_card_rx_symbol_0_clk # Optional clock
+> > > +      - const: ufs_card_rx_symbol_1_clk # Optional clock
+> > > +      - const: ufs_card_tx_symbol_0_clk # Optional clock
+> > > +      - const: ufs_phy_rx_symbol_0_clk # Optional clock
+> > > +      - const: ufs_phy_rx_symbol_1_clk # Optional clock
+> > > +      - const: ufs_phy_tx_symbol_0_clk # Optional clock
+> > > +      - const: usb3_phy_wrapper_gcc_usb30_pipe_clk # Optional clock
+> > > +      - const: usb3_uni_phy_sec_gcc_usb30_pipe_clk # Optional clock
+> > > +    minItems: 2
+> > > +    maxItems: 13
+> > > +
+> > > +  '#clock-cells':
+> > > +    const: 1
+> > > +
+> > > +  '#reset-cells':
+> > > +    const: 1
+> > > +
+> > > +  '#power-domain-cells':
+> > > +    const: 1
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - clocks
+> > > +  - clock-names
+> > > +  - reg
+> > > +  - '#clock-cells'
+> > > +  - '#reset-cells'
+> > > +  - '#power-domain-cells'
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/clock/qcom,rpmh.h>
+> > > +    clock-controller@100000 {
+> > > +      compatible = "qcom,gcc-sm8350";
+> > > +      reg = <0x00100000 0x1f0000>;
+> > > +      clocks = <&rpmhcc RPMH_CXO_CLK>,
+> > > +               <&sleep_clk>;
+> > > +      clock-names = "bi_tcxo", "sleep_clk";
+> > > +      #clock-cells = <1>;
+> > > +      #reset-cells = <1>;
+> > > +      #power-domain-cells = <1>;
+> > > +    };
+> > > +
+> > > +...
+> > > diff --git a/include/dt-bindings/clock/qcom,gcc-sm8350.h b/include/dt-bindings/clock/qcom,gcc-sm8350.h
+> > > new file mode 100644
+> > > index 000000000000..2b289c5c109f
+> > > --- /dev/null
+> > > +++ b/include/dt-bindings/clock/qcom,gcc-sm8350.h
+> > > @@ -0,0 +1,261 @@
+> > > +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> > > +/*
+> > > + * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
+> > > + * Copyright (c) 2020-2021, Linaro Limited
+> > > + */
+> > > +
+> > > +#ifndef _DT_BINDINGS_CLK_QCOM_GCC_SM8350_H
+> > > +#define _DT_BINDINGS_CLK_QCOM_GCC_SM8350_H
+> > > +
+> > > +/* GCC HW clocks */
+> > > +#define CORE_BI_PLL_TEST_SE					0
+> > > +#define PCIE_0_PIPE_CLK						1
+> > > +#define PCIE_1_PIPE_CLK						2
+> > > +#define UFS_CARD_RX_SYMBOL_0_CLK				3
+> > > +#define UFS_CARD_RX_SYMBOL_1_CLK				4
+> > > +#define UFS_CARD_TX_SYMBOL_0_CLK				5
+> > > +#define UFS_PHY_RX_SYMBOL_0_CLK					6
+> > > +#define UFS_PHY_RX_SYMBOL_1_CLK					7
+> > > +#define UFS_PHY_TX_SYMBOL_0_CLK					8
+> > > +#define USB3_PHY_WRAPPER_GCC_USB30_PIPE_CLK			9
+> > > +#define USB3_UNI_PHY_SEC_GCC_USB30_PIPE_CLK			10
+> > > +
+> > > +/* GCC clocks */
+> > > +#define GCC_AGGRE_NOC_PCIE_0_AXI_CLK				11
+> > > +#define GCC_AGGRE_NOC_PCIE_1_AXI_CLK				12
+> > > +#define GCC_AGGRE_NOC_PCIE_TBU_CLK				13
+> > > +#define GCC_AGGRE_UFS_CARD_AXI_CLK				14
+> > > +#define GCC_AGGRE_UFS_CARD_AXI_HW_CTL_CLK			15
+> > > +#define GCC_AGGRE_UFS_PHY_AXI_CLK				16
+> > > +#define GCC_AGGRE_UFS_PHY_AXI_HW_CTL_CLK			17
+> > > +#define GCC_AGGRE_USB3_PRIM_AXI_CLK				18
+> > > +#define GCC_AGGRE_USB3_SEC_AXI_CLK				19
+> > > +#define GCC_BOOT_ROM_AHB_CLK					20
+> > > +#define GCC_CAMERA_AHB_CLK					21
+> > 
+> > You removed these from the driver, so no need to expose them in the
+> > dt-binding either.
+> 
+> I did think about that and thought maybe it is better to leave the
+> defines. We can always update the driver to use if we ever felt the
+> need.
+> 
+> But then I dont think we will ever do that so makes sense, will update
+> this and send with acks collected
+> 
 
-abs() is better, I will check the patch.
+Given that the actual value isn't significant (just need to be stable),
+we can easily add those as new defines at the end of the list when that
+day comes.
 
 Regards,
-Candle
-
-
-> > -       ptr = (unsigned char *)do_overwritten;
-> > -
-> > -       pr_info("attempting bad %zu byte write at %px\n", size, ptr);
-> > -       memcpy((void *)ptr, (unsigned char *)do_nothing, size);
-> > -       flush_icache_range((unsigned long)ptr, (unsigned long)(ptr + size));
-> > +       pr_info("attempting bad %zu byte write at %px\n", size, do_overwritten);
-> > +       memcpy((void *)value_dow, (void *)value_do, size);
-> > +       flush_icache_range(value_dow, value_dow + (unsigned long)size);
-> >         pr_err("FAIL: survived bad write\n");
-> >
-> >         do_overwritten();
-> > --
-> > 2.17.0
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+Bjorn
