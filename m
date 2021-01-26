@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DDD304602
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:11:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC67304603
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394109AbhAZSKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:10:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:47348 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390025AbhAZQhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:37:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 125C431B;
-        Tue, 26 Jan 2021 08:36:46 -0800 (PST)
-Received: from e107158-lin (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65A983F66E;
-        Tue, 26 Jan 2021 08:36:44 -0800 (PST)
-Date:   Tue, 26 Jan 2021 16:36:41 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] sched/fair: Rate limit calls to
- update_blocked_averages() for NOHZ
-Message-ID: <20210126163641.2cptgrksaeefitzw@e107158-lin>
-References: <20210122154600.1722680-1-joel@joelfernandes.org>
- <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
- <20210122183927.ivqyapttzd6lflwk@e107158-lin>
- <CAKfTPtA=Cv3N6EQ7UcgeUsRaAMy7U242xzH+rfJJzE73bYFZ5A@mail.gmail.com>
+        id S2394126AbhAZSKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:10:15 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47848 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727289AbhAZQjd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:39:33 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10QGVtw1003687;
+        Tue, 26 Jan 2021 11:38:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=ZA69SfO+UB85h74Gw14O6OprcnXQbu2Fy0v64u0OXTs=;
+ b=QZFJVIydknZBBLMUIzXL12iJrFc4Wq5USO9C+dvb0o408/YlkD7zlwfx7/gM7ETLr+f7
+ myFVBNW5S75Suwa9NZWmyoYNV8HZT5g5Qrutzc/l78gZdAp0KZgQuG4YXvbTBOeqS8hU
+ +JJj/5rGKDm/N9XdVmt0xha/ZjjPofxOmHcYj4a08qAblDojG3ISPALJsKJvxZE1V7rT
+ YsySaI8ilpYqA5emeqvlSX4Wejc4HWB/BqUoxmzBmqLUMeaRntBCltxHvQ2QBx3LZLJw
+ F9Cz8+gRnBAGDmzIAwDe4tNFjT8ULdZUQGs98FSKRFfRJQd9IIUsjBA1MN79DS9CQPsm Eg== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36apd7gr8b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 11:38:07 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10QGI1Mk002943;
+        Tue, 26 Jan 2021 16:38:05 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 368be81j1h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 16:38:04 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10QGc2Ld45547912
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Jan 2021 16:38:02 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 90B8EAE053;
+        Tue, 26 Jan 2021 16:38:02 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE2A0AE051;
+        Tue, 26 Jan 2021 16:38:01 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.26.126])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 26 Jan 2021 16:38:01 +0000 (GMT)
+Date:   Tue, 26 Jan 2021 18:37:59 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.11-rc5
+Message-ID: <20210126163759.GD196782@linux.ibm.com>
+References: <CAHk-=wgmJ0q1URHrOb-2iCOdZ8gYybiH6LY2Gq7cosXu6kxAnA@mail.gmail.com>
+ <161160687463.28991.354987542182281928@build.alporthouse.com>
+ <20210125210456.GA196782@linux.ibm.com>
+ <161160923954.29150.8571056944016500691@build.alporthouse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtA=Cv3N6EQ7UcgeUsRaAMy7U242xzH+rfJJzE73bYFZ5A@mail.gmail.com>
+In-Reply-To: <161160923954.29150.8571056944016500691@build.alporthouse.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-26_08:2021-01-26,2021-01-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ spamscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101260085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/25/21 14:23, Vincent Guittot wrote:
-> On Fri, 22 Jan 2021 at 19:39, Qais Yousef <qais.yousef@arm.com> wrote:
-> >
-> > On 01/22/21 17:56, Vincent Guittot wrote:
-> > > > ---
-> > > >  kernel/sched/fair.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > index 04a3ce20da67..fe2dc0024db5 100644
-> > > > --- a/kernel/sched/fair.c
-> > > > +++ b/kernel/sched/fair.c
-> > > > @@ -8381,7 +8381,7 @@ static bool update_nohz_stats(struct rq *rq, bool force)
-> > > >         if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
-> > > >                 return false;
-> > > >
-> > > > -       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick))
-> > > > +       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick + (HZ/20)))
-> > >
-> > > This condition is there to make sure to update blocked load at most
-> > > once a tick in order to filter newly idle case otherwise the rate
-> > > limit is already done by load balance interval
-> > > This hard coded (HZ/20) looks really like an ugly hack
-> >
-> > This was meant as an RFC patch to discuss the problem really.
-> >
-> > Joel is seeing update_blocked_averages() taking ~100us. Half of it seems in
-> > processing __update_blocked_fair() and the other half in sugov_update_shared().
-> > So roughly 50us each. Note that each function is calling an iterator in
+On Mon, Jan 25, 2021 at 09:13:59PM +0000, Chris Wilson wrote:
+> Quoting Mike Rapoport (2021-01-25 21:04:56)
+> > On Mon, Jan 25, 2021 at 08:34:34PM +0000, Chris Wilson wrote:
+> > > Quoting Linus Torvalds (2021-01-25 01:06:40)
+> > > > Mike Rapoport (3):
+> > > ...
+> > > >       mm: fix initialization of struct page for holes in memory layout
+> > > 
+> > > We have half a dozen or so different machines in CI that are silently
+> > > failing to boot, that we believe is bisected to this patch.
+> > > 
+> > > 17:56              tsa : ickle: dolphin: I hit the following patch in my bisection, and the hang is also dependent on kconfig
+> > > 17:56              tsa : first bad commit: [d3921cb8be29ce5668c64e23ffdaeec5f8c69399] mm: fix initialization of struct page for holes in
+> > >                          memory layout
+> > > 17:57              tsa : couldn't reproduce on older CI kconfig, current one does it
+> > >                          https://gitlab.freedesktop.org/gfx-ci/i915-infra/-/blob/master/kconfig/debug
+> > > 
+> > > Here's a boot dmesg from some affected machines from just before the merge
+> > > with rc5:
+> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/shard-skl1/boot18.txt
+> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-skl-6600u/boot.html
+> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-bsw-cyan/boot.html
+> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-bdw-samus/boot.html
+> > 
+> > Is there any way to get early console from these machines?
 > 
-> Can I assume that a freq change happens if sugov_update_shared() takes 50us ?
-> which would mean that the update was useful at the end ?
-
-I couldn't reproduce his problem on Juno. But I think it is not actually doing
-any frequency update. sugov_update_shared() is rate limited by
-sugov_should_update_freq(). Joel has a 1ms rate limit for schedutil in sysfs.
-The function traces showed that it is continuously doing the full scan which
-indicates that sugov_update_next_freq() is continuously bailing out at
-
-	if else (sg_policy->next_freq == next_freq)
-		return false;
-
+> 12:16 tsa : none of those have good hook for serial
 > 
-> > return. Correct me if my numbers are wrong Joel.
-> >
-> > Running on a little core on low frequency these numbers don't look too odd.
-> > So I'm not seeing how we can speed these functions up.
-> >
-> > But since update_sg_lb_stats() will end up with multiple calls to
-> > update_blocked_averages() in one go, this latency adds up quickly.
-> >
-> > One noticeable factor in Joel's system is the presence of a lot of cgroups.
-> > Which is essentially what makes __update_blocked_fair() expensive, and it seems
-> > to always return something has decayed so we end up with a call to
-> > sugov_update_shared() in every call.
-> >
-> > I think we should limit the expensive call to update_blocked_averages() but
+> Nothing on the console and no serial console option, and panics before
+> netconsole.
 > 
-> At the opposite, some will complain that block values  stay stall to
-> high value and prevent any useful adjustment.
-> 
-> Also update_blocked average is already rate limited with idle and busy
-> load_balance
-> 
-> Seems like the problem raised by Joel is the number of newly idle load balance
+> Maybe some early_printk and boot_delay if you think there's something to
+> see with those, but I'll have to ask Tomi nicely tomorrow.
 
-It could be. When Joel comments out the update_blocked_averages() or rate limit
-it the big schedule delay disappears. Which is just an indication of where we
-could do better. Either by making update_blocked_averages() faster, or control
-how often we do it in a row. I thought the latter made more sense - though
-implementation wise I'm not sure how we should do that.
+I think there could be an early panic at some point of mm initialization.
+So if it was possible to see early printks somehow that would have been
+helpful. 
 
-We might actually help update_blocked_averages() being a bit faster by not
-doing cpufreq_update_util() in every call and do it once in the last call to
-update_blocked_averages(). Since it seemed the for_each_leaf_cfs_rq_safe() loop
-in __update_blocked_fair() is expensive too, not sure if reducing the calls to
-cpufreq_update_util() will be enough.
+> -Chris
 
-Thanks
-
---
-Qais Yousef
+-- 
+Sincerely yours,
+Mike.
