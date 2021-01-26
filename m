@@ -2,189 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC06303C73
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 402BE303C5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392445AbhAZMFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:05:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24799 "EHLO
+        id S2405037AbhAZMAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:00:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39160 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392273AbhAZLZW (ORCPT
+        by vger.kernel.org with ESMTP id S2405166AbhAZMAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:25:22 -0500
+        Tue, 26 Jan 2021 07:00:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611660219;
+        s=mimecast20190719; t=1611662327;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JTt2fKtk93GppUvATa0pV3yHgt515EpEGR8mjlKiGYA=;
-        b=RaYl0Yo5CEbhnNyEPp1oU2nkZ5qw0K2jD/UxOl8fb10FDXLjB83O6HfO9Zd4rzR3CWrZW6
-        bLr++6QWgywWS3+KL40tyidBfW2gwtH6HpScV+AGlezHGNdWs4M9/5UnJ9snOS61QkwE5I
-        44Ur9ZjQ6YqJtyiT6gd8ny0ohh3Z4Fo=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-q2ShFp2OPSy-jas9kKo5pg-1; Tue, 26 Jan 2021 06:23:37 -0500
-X-MC-Unique: q2ShFp2OPSy-jas9kKo5pg-1
-Received: by mail-ej1-f70.google.com with SMTP id b18so4808057ejz.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:23:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JTt2fKtk93GppUvATa0pV3yHgt515EpEGR8mjlKiGYA=;
-        b=MLOesvBM0WhMR56S6ws3aeLf2l4G6ZToFSdPGa9WXaDC7DxKhtE9tu8DjMVeA43hRn
-         tuR90AvCHpgwPd5zzCEGK6eEBnl4drzgN7IDktSzW9RfOzFEu+aeN9732AiL+0f/++S5
-         JePQR6NdXbgo6/KHdz4im0dP/XhB9038UxDB5N2sIPsDJG09WulZ5UJtHgkpDp34prj+
-         aP6uCtpRd1mgjYNz4Tl4ws0IYi9nZ15FUnmk4HvUbRKMfDC/31Da/zqMUhtGPEgHmP/c
-         2IHfvDjzsz29dVe4pEnS6uQoYnPObHt+UIP2bb0VYUAaladVDSrGJWVU7m6AecYHEJAD
-         h+0g==
-X-Gm-Message-State: AOAM530mfVAqLk6stz6ot7VTa45WoevwIZHwtxNspN7sEkt26UAOWXs0
-        dXYQOob76MjMB0mUJulBG858gJmeJG8ZiAyIM2l/fB+OMWw5dgHBfqaPGF00tIvpW2V02pyC09z
-        X0TUWwPoVDOwihFTplm8WyVrD
-X-Received: by 2002:a17:906:ae42:: with SMTP id lf2mr2986696ejb.487.1611660215814;
-        Tue, 26 Jan 2021 03:23:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxaADKffvaOLAwo/NSoh7H/haFhO7LTo/Xzq1n4nH+wZ/VXL/AKBofvf7/ECClCE+fB2NwxOg==
-X-Received: by 2002:a17:906:ae42:: with SMTP id lf2mr2986681ejb.487.1611660215554;
-        Tue, 26 Jan 2021 03:23:35 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id da26sm12273587edb.36.2021.01.26.03.23.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 03:23:34 -0800 (PST)
-Date:   Tue, 26 Jan 2021 12:23:32 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CXtH9iqe5CxsuS1iT0M6Cxkc2fG+D5KUD5SMADHTIIk=;
+        b=QK4is44ZFLje5JkiscK8OlL9VGr3IIAMWEE1XUMbBdv5SpfXugc6cRb2KBced9AwMNbDHX
+        qk9raT/MZp1Y557ejm1givgMUYhqWehi/IssbzEuIhshBgJHOvSRme15kcafFYqOrhSEbQ
+        f/M3xXz9GI7HbBW1yUCe6RdyB/oIexk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-BVQC5xv5MCqMrpZFuyFWbQ-1; Tue, 26 Jan 2021 06:58:43 -0500
+X-MC-Unique: BVQC5xv5MCqMrpZFuyFWbQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EFB8E15725;
+        Tue, 26 Jan 2021 11:58:40 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-192.ams2.redhat.com [10.36.114.192])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C093B5D9C2;
+        Tue, 26 Jan 2021 11:58:30 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210126112332.bykmpexzcri7xi2j@steredhat>
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH v1] mm/memory_hotplug: MEMHP_MERGE_RESOURCE -> MHP_MERGE_RESOURCE
+Date:   Tue, 26 Jan 2021 12:58:29 +0100
+Message-Id: <20210126115829.10909-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arseny,
-thanks for this new series!
-I'm a bit busy but I hope to review it tomorrow or on Thursday.
+Let's make "MEMHP_MERGE_RESOURCE" consistent with "MHP_NONE", "mhp_t" and
+"mhp_flags". As discussed recently [1], "mhp" is our internal
+acronym for memory hotplug now.
 
-Stefano
+[1] https://lore.kernel.org/linux-mm/c37de2d0-28a1-4f7d-f944-cfd7d81c334d@redhat.com/
 
-On Mon, Jan 25, 2021 at 02:09:00PM +0300, Arseny Krasnov wrote:
->	This patchset impelements support of SOCK_SEQPACKET for virtio
->transport.
->	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->do it, new packet operation was added: it marks start of record (with
->record length in header), such packet doesn't carry any data.  To send
->record, packet with start marker is sent first, then all data is sent
->as usual 'RW' packets. On receiver's side, length of record is known
->from packet with start record marker. Now as  packets of one socket
->are not reordered neither on vsock nor on vhost transport layers, such
->marker allows to restore original record on receiver's side. If user's
->buffer is smaller that record length, when all out of size data is
->dropped.
->	Maximum length of datagram is not limited as in stream socket,
->because same credit logic is used. Difference with stream socket is
->that user is not woken up until whole record is received or error
->occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->	Tests also implemented.
->
-> Arseny Krasnov (13):
->  af_vsock: prepare for SOCK_SEQPACKET support
->  af_vsock: prepare 'vsock_connectible_recvmsg()'
->  af_vsock: implement SEQPACKET rx loop
->  af_vsock: implement send logic for SOCK_SEQPACKET
->  af_vsock: rest of SEQPACKET support
->  af_vsock: update comments for stream sockets
->  virtio/vsock: dequeue callback for SOCK_SEQPACKET
->  virtio/vsock: fetch length for SEQPACKET record
->  virtio/vsock: add SEQPACKET receive logic
->  virtio/vsock: rest of SOCK_SEQPACKET support
->  virtio/vsock: setup SEQPACKET ops for transport
->  vhost/vsock: setup SEQPACKET ops for transport
->  vsock_test: add SOCK_SEQPACKET tests
->
-> drivers/vhost/vsock.c                   |   7 +-
-> include/linux/virtio_vsock.h            |  12 +
-> include/net/af_vsock.h                  |   6 +
-> include/uapi/linux/virtio_vsock.h       |   9 +
-> net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
-> net/vmw_vsock/virtio_transport.c        |   4 +
-> net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
-> tools/testing/vsock/util.c              |  32 +-
-> tools/testing/vsock/util.h              |   3 +
-> tools/testing/vsock/vsock_test.c        | 126 +++++
-> 10 files changed, 862 insertions(+), 175 deletions(-)
->
-> TODO:
-> - Support for record integrity control. As transport could drop some
->   packets, something like "record-id" and record end marker need to
->   be implemented. Idea is that SEQ_BEGIN packet carries both record
->   length and record id, end marker(let it be SEQ_END) carries only
->   record id. To be sure that no one packet was lost, receiver checks
->   length of data between SEQ_BEGIN and SEQ_END(it must be same with
->   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
->   means that both markers were not dropped. I think that easiest way
->   to implement record id for SEQ_BEGIN is to reuse another field of
->   packet header(SEQ_BEGIN already uses 'flags' as record length).For
->   SEQ_END record id could be stored in 'flags'.
->     Another way to implement it, is to move metadata of both SEQ_END
->   and SEQ_BEGIN to payload. But this approach has problem, because
->   if we move something to payload, such payload is accounted by
->   credit logic, which fragments payload, while payload with record
->   length and id couldn't be fragmented. One way to overcome it is to
->   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
->   is to update 'stream_has_space()' function: current implementation
->   return non-zero when at least 1 byte is allowed to use,but updated
->   version will have extra argument, which is needed length. For 'RW'
->   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
->   record id) and for SEQ_END it is sizeof(record id).
->
-> - What to do, when server doesn't support SOCK_SEQPACKET. In current
->   implementation RST is replied in the same way when listening port
->   is not found. I think that current RST is enough,because case when
->   server doesn't support SEQ_PACKET is same when listener missed(e.g.
->   no listener in both cases).
->
-> v2 -> v3:
-> - patches reorganized: split for prepare and implementation patches
-> - local variables are declared in "Reverse Christmas tree" manner
-> - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
->   fields access
-> - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
->   between stream and seqpacket sockets.
-> - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
-> - af_vsock.c: 'vsock_wait_data()' refactored.
->
-> v1 -> v2:
-> - patches reordered: af_vsock.c related changes now before virtio vsock
-> - patches reorganized: more small patches, where +/- are not mixed
-> - tests for SOCK_SEQPACKET added
-> - all commit messages updated
-> - af_vsock.c: 'vsock_pre_recv_check()' inlined to
->   'vsock_connectible_recvmsg()'
-> - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
->   was not found
-> - virtio_transport_common.c: transport callback for seqpacket dequeue
-> - virtio_transport_common.c: simplified
->   'virtio_transport_recv_connected()'
-> - virtio_transport_common.c: send reset on socket and packet type
->			      mismatch.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->
->-- 
->2.25.1
->
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Stephen Hemminger <sthemmin@microsoft.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: linux-hyperv@vger.kernel.org
+Cc: virtualization@lists.linux-foundation.org
+Cc: xen-devel@lists.xenproject.org
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ drivers/hv/hv_balloon.c        | 2 +-
+ drivers/virtio/virtio_mem.c    | 2 +-
+ drivers/xen/balloon.c          | 2 +-
+ include/linux/memory_hotplug.h | 2 +-
+ mm/memory_hotplug.c            | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+index 8c471823a5af..2f776d78e3c1 100644
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -726,7 +726,7 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ 
+ 		nid = memory_add_physaddr_to_nid(PFN_PHYS(start_pfn));
+ 		ret = add_memory(nid, PFN_PHYS((start_pfn)),
+-				(HA_CHUNK << PAGE_SHIFT), MEMHP_MERGE_RESOURCE);
++				(HA_CHUNK << PAGE_SHIFT), MHP_MERGE_RESOURCE);
+ 
+ 		if (ret) {
+ 			pr_err("hot_add memory failed error is %d\n", ret);
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 85a272c9978e..148bea39b09a 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -623,7 +623,7 @@ static int virtio_mem_add_memory(struct virtio_mem *vm, uint64_t addr,
+ 	/* Memory might get onlined immediately. */
+ 	atomic64_add(size, &vm->offline_size);
+ 	rc = add_memory_driver_managed(vm->nid, addr, size, vm->resource_name,
+-				       MEMHP_MERGE_RESOURCE);
++				       MHP_MERGE_RESOURCE);
+ 	if (rc) {
+ 		atomic64_sub(size, &vm->offline_size);
+ 		dev_warn(&vm->vdev->dev, "adding memory failed: %d\n", rc);
+diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
+index b57b2067ecbf..671c71245a7b 100644
+--- a/drivers/xen/balloon.c
++++ b/drivers/xen/balloon.c
+@@ -331,7 +331,7 @@ static enum bp_state reserve_additional_memory(void)
+ 	mutex_unlock(&balloon_mutex);
+ 	/* add_memory_resource() requires the device_hotplug lock */
+ 	lock_device_hotplug();
+-	rc = add_memory_resource(nid, resource, MEMHP_MERGE_RESOURCE);
++	rc = add_memory_resource(nid, resource, MHP_MERGE_RESOURCE);
+ 	unlock_device_hotplug();
+ 	mutex_lock(&balloon_mutex);
+ 
+diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+index 3d99de0db2dd..4b834f5d032e 100644
+--- a/include/linux/memory_hotplug.h
++++ b/include/linux/memory_hotplug.h
+@@ -53,7 +53,7 @@ typedef int __bitwise mhp_t;
+  * with this flag set, the resource pointer must no longer be used as it
+  * might be stale, or the resource might have changed.
+  */
+-#define MEMHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
++#define MHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
+ 
+ /*
+  * Extended parameters for memory hotplug:
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 710e469fb3a1..ae497e3ff77c 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1153,7 +1153,7 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+ 	 * In case we're allowed to merge the resource, flag it and trigger
+ 	 * merging now that adding succeeded.
+ 	 */
+-	if (mhp_flags & MEMHP_MERGE_RESOURCE)
++	if (mhp_flags & MHP_MERGE_RESOURCE)
+ 		merge_system_ram_resource(res);
+ 
+ 	/* online pages if requested */
+-- 
+2.29.2
 
