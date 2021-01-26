@@ -2,119 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC67304603
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F053304605
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394126AbhAZSKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:10:15 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47848 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727289AbhAZQjd (ORCPT
+        id S2394151AbhAZSKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:10:39 -0500
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:33256
+        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729947AbhAZQzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:39:33 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10QGVtw1003687;
-        Tue, 26 Jan 2021 11:38:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ZA69SfO+UB85h74Gw14O6OprcnXQbu2Fy0v64u0OXTs=;
- b=QZFJVIydknZBBLMUIzXL12iJrFc4Wq5USO9C+dvb0o408/YlkD7zlwfx7/gM7ETLr+f7
- myFVBNW5S75Suwa9NZWmyoYNV8HZT5g5Qrutzc/l78gZdAp0KZgQuG4YXvbTBOeqS8hU
- +JJj/5rGKDm/N9XdVmt0xha/ZjjPofxOmHcYj4a08qAblDojG3ISPALJsKJvxZE1V7rT
- YsySaI8ilpYqA5emeqvlSX4Wejc4HWB/BqUoxmzBmqLUMeaRntBCltxHvQ2QBx3LZLJw
- F9Cz8+gRnBAGDmzIAwDe4tNFjT8ULdZUQGs98FSKRFfRJQd9IIUsjBA1MN79DS9CQPsm Eg== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36apd7gr8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 11:38:07 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10QGI1Mk002943;
-        Tue, 26 Jan 2021 16:38:05 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 368be81j1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 16:38:04 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10QGc2Ld45547912
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Jan 2021 16:38:02 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 90B8EAE053;
-        Tue, 26 Jan 2021 16:38:02 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE2A0AE051;
-        Tue, 26 Jan 2021 16:38:01 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.26.126])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 26 Jan 2021 16:38:01 +0000 (GMT)
-Date:   Tue, 26 Jan 2021 18:37:59 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.11-rc5
-Message-ID: <20210126163759.GD196782@linux.ibm.com>
-References: <CAHk-=wgmJ0q1URHrOb-2iCOdZ8gYybiH6LY2Gq7cosXu6kxAnA@mail.gmail.com>
- <161160687463.28991.354987542182281928@build.alporthouse.com>
- <20210125210456.GA196782@linux.ibm.com>
- <161160923954.29150.8571056944016500691@build.alporthouse.com>
+        Tue, 26 Jan 2021 11:55:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1611680088; bh=QhZ83QJyQqzSmvmwZ8sIhqHvRsC5fnat22jXhctKw2g=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=M0wfIXnOsY59k7hkn2aHXZ+szSBJ8h5rmwxu06Q9oxgIH5AROe/NyRqV5TyquQaKQgbdE2mTWCZlu1tTQbvM0PprqPBD/WAtgFAAqlzqGHUYrPU+LO6C8F+Hxd5LAqyVnpJXUKTm5R7MEreh5LCKVznrjnt/iLv2IH6mnToH0eRVDMK44H85/nJOGPMddmkLxBrsLLvADh8DH/sbN50FkQDKqpebjKx2q2U39xxApVdsOB/kPOG4Dt2qmgoQTtmUxOXFmvC+Kxt9Yl/TdGwbIAf352AeEwosfrUAZoZer3h1yCCADBtHqToBMbKF7fJw/HyHXk9EuusaK8FJ85tqeg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1611680088; bh=2sAWcFVm/H3AU7a9Si7xqH/yh3rOx1+AeAZNPv4Y6X6=; h=From:To:Subject:Date:From:Subject:Reply-To; b=K1slZeqyTAo4N7aVifx0SFoQVNq8bgBR+tToZMixPV1B+lhirrs5t1vIUYfah6tkMm/vGRGLBkwOe/TENS29m0papX7UppBQAGVDvqDBMsiUuzjFLV6Ww59jFuxbsXklVBbl4x084YPVEuixzieyFop7ZBgOL3DywJOEOdKfs5PpUDw4DD8FfKLGFvCWyQ5i5zNzEwrE5lgSBRRiAChtIWcbj8lntcknKhbS8IP7kA5TvJjMOWnSzc72C7g/e5ezETlYQO0sjLaV9LeY9VovFKvJEJHkI26vF7q2PwppNBgTZgqGb9Nw1xRtT+odXjs/vqxnMIB9wzCNRkqplKpdCA==
+X-YMail-OSG: NC79Fv0VM1lH9HNO2chcdPJNBBpM.6GyJ8GW_0Li_hNMjxLy19W6Y6UyOHU3_m3
+ HYHiGBx38UTfa_Dqc1hS8H7X0UfopaUJsfTMTcLRyN5W_DZjU1O8TNdgBQzoVt3kedxJg4S1zXef
+ YAUak0p0A5yyWuemHn6fS1Ek5bzOLlKW50pM2zXtAKIyxYqt28tYIztHxEA2X44OXF63T0uwPGy1
+ DYqkjDrAEfAe2toUcx_fvxv8_qCB93nyU2LxZvcXfExlfHfxTAPdph61b.ZYhGw_AApy.gKj3bw6
+ 9PqNlGskzwuUuJwB9PMLZdAny0yJwKKWU4bHDN0n4iu9yu6t_N_v9qFqFSgrVKRYDs4DZ7gHoize
+ UOGxIV0gnjBovHA5RlyZEBph.g7zbZcIyiKKQrxoWNI3uICSUz1fkpd9tG_.GuH7_m3x_P7zBw_G
+ tCdyLSdlt90pG.liiXm3f8dzTK0oqofO3opG_CznEXud_ShwNbggH5OCMvrnrn0ekr3dn_IfOxkk
+ 8arBaN.wuR604LetDn9sA1l8SUVjzD3qFvChydwf4uyP9Fr4FzGJpnuC.TH.q1Uo6XFG.OAqfu4Z
+ zOW9XTH7hijwkL29LE8LEH8Dbk2Z7jRC9dGrfeys8ROFuBKD0FVYj9DRwNpKTznH01INyzHudyGN
+ K1m2ZIKRCdoJsLAHBlXxMud5VEZrNi6WjGD31pjD65wpNS_fBGYAnwK_ACkC89jmulQ_vdzGlEcK
+ RYuCtlBowX9c.3oPVfgHnO_QMSZev16saqmtBdSPrZQF_dW1.PlsHSJvdngP5W.dzOLruhkP2DsQ
+ DCj8Ob6CvClD_EJgP3ZYaH8nPqWeKj_7lvsWF0u_E5Ft2.yAGpZ6Nz4Dptgz5B8HM.vc7a1KQOhZ
+ 4z0DnhH_rhUghyhR8SMWeBU4Y8vbEDfQN6lsKohqdDHAxOWqOJkB1OIHCfmhGXxiUmdWC1c0d7x7
+ Cg0VEaLvY997MUG4u8r2bP7voqQutrfUCmRzO8nm7l3L9gxN7JFWhwor9I53QWwzBvy_rV6qKwsd
+ BXc02uzrfFwm4nVm.GJFfuEbMsfGIGVi2idD2_S4uUA3oAVaI3FHlStXnKmiuvCQpe_UF.UGzc7Q
+ .88yQrmpXaJsd4ayY87EzdZa9q1Sj7xs8H8MUQ19A4Ab7E3kX4PCx8Tgd3BoHmSE7Mx33JbVXtrC
+ Wd26b.e5OEtcU.kXzvPUPqHHW3637stwhuq.reoUZ6xnKnRW2kgygmxLN3MHC7ffKuyWaOk8M.tz
+ X2duwed11aoVMU2BLndgm3rbkznhpkBoB7HOT0e84An0lhEOLxWg1t3emKnMOgGb0HHgn9XQxYbW
+ uBxhGSfk7XSrnhCOsjhldLTZKAsji5JOIXkRgdIyPGDkPwV2bFd9yPsRMRMvJwLXa.gSZBnkKjQO
+ ZHj37HtfU7I.DMUPHVKO.mDDTwbMIHi_jpey8JMYXQvX_NE_y.3DPxlWOFFj8gkjej4itur_N8TE
+ SSEKYHUyeYcdxLXvwQKP8aPynCl_SaJl7h4gaufmUfEz.lhVdtf.aC70ZA_7pPtSMfx2Q0EPm9..
+ d6WisVM9xQGcQ57HRwBIFzxrLAUG9nZ61WFDyEFQ8l3w7pfwoT6EwgbTD7vxcsSCgWANDliYAEnz
+ e8peTIoo6g9XXOo78y6.9ebgR.g6J1B6MCD5pjjB.r65wO_m0cdwb.BZSQjl2eYcZNBkwHjsvEDm
+ BsFBEVWEGAbX..8VjKSI74HqB9jeNvbcHY9Y46d5bWmxXQtBUt9jieaKkY0_wkQ.0e3GU7xaSdid
+ 4EA.fZpQhJNu.vRLpJtbATNrGDG7w7YskJoeyem1pr2t9FliNDA8953gvDKcGH12r.eJJ.ybK_4c
+ AWjXEIlAzkFZWJf8BNcwoFnWKM_b44cH6KouOkrfDpxmifAS2JJwyKhaPEKRR1FCilVlTm.0jD8F
+ XKbTVxE3HZyXpxU6YKOKTWHt79w4ynlZkP4I49vkwQyD.rvL.kVCjUyhurFR8girXVnYIfmS6Uj1
+ rt9lJJXNd4uGf1q9LFK1VjK2F8flLhgkI.Im9CMP3e2ymUNxcKchBqaOTR37Qo7.YRhIe57tyb6l
+ TgOGEL7Chw_1T2zsaQFA9c4oQkkG9vfW6pHcYTtoOBD.HtFgBJB_LaIEPqDayQ8cfxijZd6URzLz
+ wbZBQ7N15j47GHqroyC0QUWkayfQdYgGab_QQSgzdAXG7mCTkrFR27vbPNmW2kGT9qVL9nrOdpBS
+ fQExJCHay9OdJk8qHD8QCTaFhtrZMr1gHUQWeUS9tqADYO9h4InL6.o.zCMFfndQ3OCNixCRbVsc
+ 8moTfH65PhUDgmUqToyB1Xk.uQfYRwOb0It2uaFJezYmSUmC9sVcpUhn3iEfadyfNwrF_B22JGC1
+ Ha5Qb7S1BB7J_3Ste5zmxd7GYdPDAUcMR9Yzh.jNph9TfdU0EMpK9zD9dcfraANqlpa5hjxFhsHK
+ VcL3dJej2PAHMVg_wtps4ZGf1i7yAxoUPLCd_FSqchzqcSyrIZpks4WEj3AReNJhMARBDQHjHrg0
+ dEIaRmanFFoeoNbwJ3PoLOMjX7.8t1qEReGHBhGqbf58MW8UBHiCiNyDm078_587xWaJiV27DyJ7
+ 9t4nZxJA9Y8v3bJ0o7qCt9zf4I5XNAZjA5lb0CyfbhuPTt1MUsInxkufbL6ftFRjL4b4sd0mSW7b
+ MxNQCXo0hRh4vkO5fct_fDulMtXt7_LSZCr0_r4qaBkQhQosvky65DjTQJWtYslI3O6FGrEs0mJD
+ J4j8r2EpK4UyWfq8BtvEiTMn3ctLoHNqn3TtiDsYPtHQPItcGqGgoEINUjkcr6bF4SDVBd_.ITSJ
+ j6gWT8.0OU_NlOqN938J2NiRmpTraMkOtm7.YD77KCeO8RwUs8jvL.K3F6.OKD7iMAZIw2zOwdbH
+ 51X0VOu1xSV9LJm_lvhUDX7oy776hMARSdiRrT58wIzSMkheaBUSc2TnvskK7CwFkismwCb45rC1
+ ZRIQy11vRjv2Zv7LmoSWuvyCJ2NM6P5vy5t_0189IntzXJr_1FzZepvJ3WKshCeSXMENtu4_10r1
+ ehjNvSjWOkS5DbZzOGgWY4JFX_0yb6g--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 26 Jan 2021 16:54:48 +0000
+Received: by smtp419.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 013cd3b533e951467ad2ef403e668437;
+          Tue, 26 Jan 2021 16:44:36 +0000 (UTC)
+From:   Casey Schaufler <casey@schaufler-ca.com>
+To:     casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
+        keescook@chromium.org, john.johansen@canonical.com,
+        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
+        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org
+Subject: [PATCH v24 03/25] LSM: provide lsm name and id slot mappings
+Date:   Tue, 26 Jan 2021 08:40:46 -0800
+Message-Id: <20210126164108.1958-4-casey@schaufler-ca.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20210126164108.1958-1-casey@schaufler-ca.com>
+References: <20210126164108.1958-1-casey@schaufler-ca.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161160923954.29150.8571056944016500691@build.alporthouse.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-26_08:2021-01-26,2021-01-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0
- spamscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101260085
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 09:13:59PM +0000, Chris Wilson wrote:
-> Quoting Mike Rapoport (2021-01-25 21:04:56)
-> > On Mon, Jan 25, 2021 at 08:34:34PM +0000, Chris Wilson wrote:
-> > > Quoting Linus Torvalds (2021-01-25 01:06:40)
-> > > > Mike Rapoport (3):
-> > > ...
-> > > >       mm: fix initialization of struct page for holes in memory layout
-> > > 
-> > > We have half a dozen or so different machines in CI that are silently
-> > > failing to boot, that we believe is bisected to this patch.
-> > > 
-> > > 17:56              tsa : ickle: dolphin: I hit the following patch in my bisection, and the hang is also dependent on kconfig
-> > > 17:56              tsa : first bad commit: [d3921cb8be29ce5668c64e23ffdaeec5f8c69399] mm: fix initialization of struct page for holes in
-> > >                          memory layout
-> > > 17:57              tsa : couldn't reproduce on older CI kconfig, current one does it
-> > >                          https://gitlab.freedesktop.org/gfx-ci/i915-infra/-/blob/master/kconfig/debug
-> > > 
-> > > Here's a boot dmesg from some affected machines from just before the merge
-> > > with rc5:
-> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/shard-skl1/boot18.txt
-> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-skl-6600u/boot.html
-> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-bsw-cyan/boot.html
-> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-bdw-samus/boot.html
-> > 
-> > Is there any way to get early console from these machines?
-> 
-> 12:16 tsa : none of those have good hook for serial
-> 
-> Nothing on the console and no serial console option, and panics before
-> netconsole.
-> 
-> Maybe some early_printk and boot_delay if you think there's something to
-> see with those, but I'll have to ask Tomi nicely tomorrow.
+Provide interfaces to map LSM slot numbers and LSM names.
+Update the LSM registration code to save this information.
 
-I think there could be an early panic at some point of mm initialization.
-So if it was possible to see early printks somehow that would have been
-helpful. 
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+---
+ include/linux/security.h |  4 ++++
+ security/security.c      | 45 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
 
-> -Chris
-
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 4a109092a8d7..a99a4307176f 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -192,6 +192,10 @@ static inline bool lsmblob_equal(struct lsmblob *bloba, struct lsmblob *blobb)
+ 	return !memcmp(bloba, blobb, sizeof(*bloba));
+ }
+ 
++/* Map lsm names to blob slot numbers */
++extern int lsm_name_to_slot(char *name);
++extern const char *lsm_slot_to_name(int slot);
++
+ /* These functions are in security/commoncap.c */
+ extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
+ 		       int cap, unsigned int opts);
+diff --git a/security/security.c b/security/security.c
+index 39dce9eb3bcd..05ce02ae7c46 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -474,6 +474,50 @@ static int lsm_append(const char *new, char **result)
+  * Current index to use while initializing the lsmblob secid list.
+  */
+ static int lsm_slot __lsm_ro_after_init;
++static struct lsm_id *lsm_slotlist[LSMBLOB_ENTRIES] __lsm_ro_after_init;
++
++/**
++ * lsm_name_to_slot - Report the slot number for a security module
++ * @name: name of the security module
++ *
++ * Look up the slot number for the named security module.
++ * Returns the slot number or LSMBLOB_INVALID if @name is not
++ * a registered security module name.
++ */
++int lsm_name_to_slot(char *name)
++{
++	int i;
++
++	for (i = 0; i < lsm_slot; i++)
++		if (strcmp(lsm_slotlist[i]->lsm, name) == 0)
++			return i;
++
++	return LSMBLOB_INVALID;
++}
++
++/**
++ * lsm_slot_to_name - Get the name of the security module in a slot
++ * @slot: index into the interface LSM slot list.
++ *
++ * Provide the name of the security module associated with
++ * a interface LSM slot.
++ *
++ * If @slot is LSMBLOB_INVALID return the value
++ * for slot 0 if it has been set, otherwise NULL.
++ *
++ * Returns a pointer to the name string or NULL.
++ */
++const char *lsm_slot_to_name(int slot)
++{
++	if (slot == LSMBLOB_INVALID)
++		slot = 0;
++	else if (slot >= LSMBLOB_ENTRIES || slot < 0)
++		return NULL;
++
++	if (lsm_slotlist[slot] == NULL)
++		return NULL;
++	return lsm_slotlist[slot]->lsm;
++}
+ 
+ /**
+  * security_add_hooks - Add a modules hooks to the hook lists.
+@@ -493,6 +537,7 @@ void __init security_add_hooks(struct security_hook_list *hooks, int count,
+ 	if (lsmid->slot == LSMBLOB_NEEDED) {
+ 		if (lsm_slot >= LSMBLOB_ENTRIES)
+ 			panic("%s Too many LSMs registered.\n", __func__);
++		lsm_slotlist[lsm_slot] = lsmid;
+ 		lsmid->slot = lsm_slot++;
+ 		init_debug("%s assigned lsmblob slot %d\n", lsmid->lsm,
+ 			   lsmid->slot);
 -- 
-Sincerely yours,
-Mike.
+2.25.4
+
