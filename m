@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4413040E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF12D3040CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390154AbhAZOvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:51:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30216 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391284AbhAZJiD (ORCPT
+        id S2405970AbhAZOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:47:27 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1348 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391384AbhAZJkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:38:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611653796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNqVieVd9v1G344GzpIPbD3/DSjB6v+2rop/NW6XtKU=;
-        b=Q+lR/abdCriK0gwWQRcBlD9GxaBxdbp8dsyDQZgZY//lcSg4NvVKTqLEanzd166Sxp63gE
-        vYeqiKfQSogLHtDoBY/iQZEaI+AZJBqo5hYy/aW5YJDMR0SFBLJIr5kPmtTjOa2gIzG49H
-        i5rmDp7IxACMhmKs5MLU0jeTgnSopcs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-U-Izs0d0Oeif6_p39Ww8hw-1; Tue, 26 Jan 2021 04:36:33 -0500
-X-MC-Unique: U-Izs0d0Oeif6_p39Ww8hw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BD021005504;
-        Tue, 26 Jan 2021 09:36:29 +0000 (UTC)
-Received: from [10.36.114.192] (ovpn-114-192.ams2.redhat.com [10.36.114.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1481D60871;
-        Tue, 26 Jan 2021 09:36:21 +0000 (UTC)
-Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
- associated with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com>
- <20210126092942.GA10602@linux>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
-Date:   Tue, 26 Jan 2021 10:36:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 26 Jan 2021 04:40:10 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10Q9WVcE181071;
+        Tue, 26 Jan 2021 04:39:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=GG7/Jgtg+8SYLOTHa7G339+/UHCbE56tCf2wd7jUbhk=;
+ b=LCKBK+eXWE2qiiYl2dtU1kYpAC4IovLIk4gAoIq+J6zl+D09zmyIGwxbRWBmWCpaJmok
+ fqEmPDFprfnvPzmXK1Vud2HDT/EMPUL86uhPmb7DpZHoeh4AhwJbHCDZ8b6tLr5QDGOp
+ qKNzaJG/Dcn1dHYvG6Mzu+kiZDs01HDn4kwJ6XO3UPSjx5g5tQBFnuKhoLLYJ74QgjkY
+ BHT18F3iEBsAzlabk0N7PQ2vARPpNF5lpzn/wxVTY1mL2j3S3jXD9KI8JCxVWbFtNrht
+ l5DYKJ/obzRATjljjv0WWjGaMKph3/9Ma+f7QGT5vM1ZoiQb6EUDIrFxjEj+moSDZLVF 6Q== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36aftc15wp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 04:39:16 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10Q9Ww6G027120;
+        Tue, 26 Jan 2021 09:39:15 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 369jjsgphx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 09:39:14 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10Q9d4OT35389938
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Jan 2021 09:39:04 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BAAB152054;
+        Tue, 26 Jan 2021 09:39:11 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 6FA5B52052;
+        Tue, 26 Jan 2021 09:39:11 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] s390: allow reschedule on syscall restart
+References: <20210121143926.21440-1-svens@linux.ibm.com>
+        <20210121143926.21440-2-svens@linux.ibm.com>
+        <a522c1ac-703a-ba99-c44c-3dd09e4cc4be@de.ibm.com>
+Date:   Tue, 26 Jan 2021 10:39:11 +0100
+In-Reply-To: <a522c1ac-703a-ba99-c44c-3dd09e4cc4be@de.ibm.com> (Christian
+        Borntraeger's message of "Tue, 26 Jan 2021 07:59:51 +0100")
+Message-ID: <yt9dy2gg11hc.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210126092942.GA10602@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-26_06:2021-01-25,2021-01-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 clxscore=1015 mlxscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 mlxlogscore=881 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101260048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.01.21 10:29, Oscar Salvador wrote:
-> On Sun, Jan 17, 2021 at 11:10:46PM +0800, Muchun Song wrote:
->> When we free a HugeTLB page to the buddy allocator, we should allocate the
->> vmemmap pages associated with it. We can do that in the __free_hugepage()
->> before freeing it to buddy.
->>
->> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> 
-> This series has grown a certain grade of madurity and improvment, but it seems
-> to me that we have been stuck in this patch (and patch#4) for quite some time.
-> 
-> Would it be acceptable for a first implementation to not let hugetlb pages to
-> be freed when this feature is in use?
-> This would simplify things for now, as we could get rid of patch#4 and patch#5.
-> We can always extend functionality once this has been merged, right?
+Christian Borntraeger <borntraeger@de.ibm.com> writes:
 
-I think either keep it completely simple (only free vmemmap of hugetlb
-pages allocated early during boot - which is what's not sufficient for
-some use cases) or implement the full thing properly (meaning, solve
-most challenging issues to get the basics running).
+> On 21.01.21 15:39, Sven Schnelle wrote:
+>> Commit 845f44e8ef28 ("sched: Report local wake up on resched blind zone
+>> within idle loop") from next-20210121 causes a warning because s390
+>> doesn't call sched_resched_local_allow() when restarting a syscall.
+>> 
+>> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+>> ---
+>>  arch/s390/kernel/syscall.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/arch/s390/kernel/syscall.c b/arch/s390/kernel/syscall.c
+>> index bc8e650e377d..2b39ac40f970 100644
+>> --- a/arch/s390/kernel/syscall.c
+>> +++ b/arch/s390/kernel/syscall.c
+>> @@ -162,6 +162,7 @@ void noinstr __do_syscall(struct pt_regs *regs, int per_trap)
+>>  		do_syscall(regs);
+>>  		if (!test_pt_regs_flag(regs, PIF_SYSCALL_RESTART))
+>>  			break;
+>> +		sched_resched_local_allow();
+>>  		local_irq_enable();
+>>  	}
+>>  	exit_to_user_mode();
+>
+> Yesterdays next now fails with
+>
+>
+> arch/s390/kernel/syscall.c: In function '__do_syscall':
+> arch/s390/kernel/syscall.c:165:3: error: implicit declaration of function 'sched_resched_local_allow' [-Werror=implicit-function-declaration]
+>   165 |   sched_resched_local_allow();
+>       |   ^~~~~~~~~~~~~~~~~~~~~~~~~
+> cc1: some warnings being treated as errors
+> make[2]: *** [scripts/Makefile.build:288: arch/s390/kernel/syscall.o] Error 1
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [scripts/Makefile.build:530: arch/s390/kernel] Error 2
+> make[1]: *** Waiting for unfinished jobs....
 
-I don't want to have some easy parts of complex features merged (e.g.,
-breaking other stuff as you indicate below), and later finding out "it's
-not that easy" again and being stuck with it forever.
+Looks to me like 845f44e8ef28 ("sched: Report local wake up on resched
+blind zone") was removed from linux-next. Stephen, can you remove my
+commit as well? It is no longer needed.
 
-> 
-> Of course, this means that e.g: memory-hotplug (hot-remove) will not fully work
-> when this in place, but well.
-
-Can you elaborate? Are we're talking about having hugepages in
-ZONE_MOVABLE that are not migratable (and/or dissolvable) anymore? Than
-a clear NACK from my side.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Thanks
+Sven
