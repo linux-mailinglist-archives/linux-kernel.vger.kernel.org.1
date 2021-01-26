@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FE03045BD
+	by mail.lfdr.de (Postfix) with ESMTP id E979A3045BE
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393551AbhAZRwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390419AbhAZInt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:43:49 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97BAC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:43:08 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id f1so18694334edr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:43:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t2z1NGbSv+92Iq3y3cHfX8r3rHSgzWMGOLngnUuImF8=;
-        b=HqvMQYpbjsMs5FO0qw8p+bYpP7RjH7vBlf6l0HF5VNPGglgnOsbLVfBqJljbCsIasF
-         NaYGE3B0ARKF9zXOk8iR5t9vxzgRRMOUE7jeQ4cqURu19xi64IpFfjsjuzIBdl51A+hC
-         kmyXKCuwFkg/seQLV8IzyJL2tsx1vEJpZJMh5o2b5n2r1ko4f3p5zXbHSOPZiwd68r+Y
-         EuLylY5VI4sLkTuc+4qAJhM/6vvPKW0T8NjQmIhBfqQ8EzuNyprvsXrov4AKw2qPm1ZO
-         eWgrDM2jc3tKXYPKcV11SGdwMUuRoBXLTR/iSN8Xl6lBGJSYDPLMJUv6bQ+lcwKpb08+
-         VXEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t2z1NGbSv+92Iq3y3cHfX8r3rHSgzWMGOLngnUuImF8=;
-        b=FbsHJLb2la1zQLbsI5KCGiYpJS7+e4X703fjkIOZ0akgVWO+GaCzKNyE1rupVKs6tu
-         tRVhCO/TyUMRsFbwhKfsLPX92dJd8WUDhxEU+nwbx88aCc3In9jYrrw/f+5Mwi5wOB1e
-         hRIcYQ7dmA/Om3NWUOdPi4SsXEJAfTwqJ29Y9XidcoQbNdbgylu+Dap2ZG4kRtlHrFX/
-         vfGFzCrGtTQ6HhArcHGCVboS037jPaoDZgWSJo7d1HrnnHjkfGKi+pyYTfPGf2wdt1HK
-         iMAVtTm0D5CB3l51IdWbbb+LO0bPiNMU19hwLsnQgileYXgeO27SqzZUy4GL/BUDwe9D
-         vBcQ==
-X-Gm-Message-State: AOAM532M3vRL3qE5feHrEbp0uq58iQ3AHqMa2tfMuFpn524Ad93Sf1e2
-        SyWNcRvj5boP9b2gHeENgOCVGQ==
-X-Google-Smtp-Source: ABdhPJwXmN0+EIt8RzL3ueMP/CCxmZVMUAxRmK9RWZ7CZYPhgMXX2MhPsEKA8AQcrWMlG54ahj8c1Q==
-X-Received: by 2002:aa7:cc98:: with SMTP id p24mr3854242edt.126.1611650587275;
-        Tue, 26 Jan 2021 00:43:07 -0800 (PST)
-Received: from localhost.localdomain (hst-221-9.medicom.bg. [84.238.221.9])
-        by smtp.gmail.com with ESMTPSA id i4sm9511524eje.90.2021.01.26.00.43.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 00:43:06 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH] venus: core: Parse firmware-name DT property
-Date:   Tue, 26 Jan 2021 10:42:52 +0200
-Message-Id: <20210126084252.238078-1-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S2389819AbhAZRxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:53:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390312AbhAZIoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:44:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BA172065C;
+        Tue, 26 Jan 2021 08:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611650611;
+        bh=RGOC6SXuU+lbMn+ZX7UyoYXvwogc/UEwlnkWFIn9f4U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kSaoX74K2eXtrwg/yJ3X5QKORA14j5cvZVrspdE6ewg1AztLk/aKSJObGLezpIOZ9
+         YlVsAUHn4DWkubCNTFePyiKQDPKYpjh2qvBkkB91KoEQ8I2TEkBbLTr4CnOjfgYH1V
+         Bq2Z/q9wxKQVVJh9cz3L4i1y7HFuOcIZP90q8mE4=
+Date:   Tue, 26 Jan 2021 09:43:29 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        linux-kernel@vger.kernel.org, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org
+Subject: Re: [PATCH 5.10 000/199] 5.10.11-rc1 review
+Message-ID: <YA/WMSIMjeclLv+Y@kroah.com>
+References: <20210125183216.245315437@linuxfoundation.org>
+ <ef5b0670-83ea-e754-033c-2f3f56a8c822@linaro.org>
+ <20210125201806.GA78651@roeck-us.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210125201806.GA78651@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On production devices the firmware could be located on different
-places, this path could be provided by special firmware-name DT
-property.
+On Mon, Jan 25, 2021 at 12:18:06PM -0800, Guenter Roeck wrote:
+> On Mon, Jan 25, 2021 at 01:36:03PM -0600, Daniel Díaz wrote:
+> > Hello!
+> > 
+> > 
+> > On 1/25/21 12:37 PM, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 5.10.11 release.
+> > > There are 199 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Wed, 27 Jan 2021 18:31:44 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > > The whole patch series can be found in one patch at:
+> > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.11-rc1.gz
+> > > or in the git tree and branch at:
+> > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > > and the diffstat can be found below.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > Sanity results from Linaro’s test farm.
+> > Regressions detected.
+> > 
+> [ ... ]
+> > 
+> > Errors look like the following:
+> > 
+> >   make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+> >   /builds/1nZbYji0zW0SkEnWMrDznWWzerI/arch/x86/kernel/cpu/amd.c: In function 'bsp_init_amd':
+> >   /builds/1nZbYji0zW0SkEnWMrDznWWzerI/arch/x86/kernel/cpu/amd.c:572:3: error: '__max_die_per_package' undeclared (first use in this function); did you mean 'topology_max_die_per_package'?
+> >     572 |   __max_die_per_package = nodes_per_socket = ((ecx >> 8) & 7) + 1;
+> >         |   ^~~~~~~~~~~~~~~~~~~~~
+> >         |   topology_max_die_per_package
+> > 
+> > Will find out more soon.
+> > 
+> 
+> This may be due to commit 76e2fc63ca40 ("x86/cpu/amd: Set __max_die_per_package
+> on AMD").
+> 
+> Our patches robot tells me:
+> 
+> SHA 76e2fc63ca40 recursively fixed by: 1eb8f690bcb5
+> 
+> I don't see commit 1eb8f690bcb5 ("x86/topology: Make __max_die_per_package
+> available unconditionally") in the commit log. I have not checked,
+> but it is at least possible that applying it fixes the problem.
 
-Here we check for existence of such DT property and if it exist
-take the firmware path from there. Otherwise, if the property
-is missing we fallback to the predefined path from driver resource
-structure.
+Argh, the one time I don't run my "are there any fixes for the patches
+in the queue" script, and this pops up...
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/firmware.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Thanks for this, turns out there's another patch missing as well.  I'll
+be doing a -rc2 soon for two queues...
 
-diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
-index d03e2dd5808c..56c8fb5a019b 100644
---- a/drivers/media/platform/qcom/venus/firmware.c
-+++ b/drivers/media/platform/qcom/venus/firmware.c
-@@ -187,6 +187,7 @@ int venus_boot(struct venus_core *core)
- {
- 	struct device *dev = core->dev;
- 	const struct venus_resources *res = core->res;
-+	const char *fwpath = NULL;
- 	phys_addr_t mem_phys;
- 	size_t mem_size;
- 	int ret;
-@@ -195,7 +196,12 @@ int venus_boot(struct venus_core *core)
- 	    (core->use_tz && !qcom_scm_is_available()))
- 		return -EPROBE_DEFER;
- 
--	ret = venus_load_fw(core, core->res->fwname, &mem_phys, &mem_size);
-+	ret = of_property_read_string_index(dev->of_node, "firmware-name", 0,
-+					    &fwpath);
-+	if (ret)
-+		fwpath = core->res->fwname;
-+
-+	ret = venus_load_fw(core, fwpath, &mem_phys, &mem_size);
- 	if (ret) {
- 		dev_err(dev, "fail to load video firmware\n");
- 		return -EINVAL;
--- 
-2.25.1
+thanks,
 
+greg k-h
