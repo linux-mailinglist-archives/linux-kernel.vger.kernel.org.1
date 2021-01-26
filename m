@@ -2,142 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B566303B93
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9549B303B99
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392419AbhAZL0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:26:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60132 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390525AbhAZJVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:21:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611652825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Fkh8i4u2Ds7suNHQy8ffJkc7y8JY+c/ULxceSUkTds=;
-        b=bqWhNQD/hZoyEpF0cNuKXozUxgro+R+IfdOU/BS2HiMG0+8sw32ccg9JoavrsQIkP6dpVh
-        K1iIWCeUmEMm4VHXkiZqSBFZqfHjVghsxokwQGllYDgcYi1VKxKpTZai9iq1zdfPF7t7A3
-        /qszOeSUVbFlKJZaNJgfQ/OCqYtH1GU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C9DAAB291;
-        Tue, 26 Jan 2021 09:20:24 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 10:20:23 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210126092023.GH827@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-7-rppt@kernel.org>
- <20210125170122.GU827@dhcp22.suse.cz>
- <20210125213618.GL6332@kernel.org>
- <20210126071614.GX827@dhcp22.suse.cz>
- <20210126083311.GN6332@kernel.org>
- <20210126090013.GF827@dhcp22.suse.cz>
+        id S2392491AbhAZL2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:28:23 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:38840 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390976AbhAZJiu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:38:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611653930; x=1643189930;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=JOdG/Z1OAni9L4m9IjMWpESAQUvrPyDFCRJalxyKhRs=;
+  b=pKpa/2mBL3pGWLdf114PCeeCzPbP+HIwRl4toZzs2mUiNhTCZdlMZQ1g
+   zaWlHBorGlK1ilCK/1g5XAhHRCN7LSj9r+brrHhpKYYXo+/Zld7jFy4ev
+   ZvQkT5mbkXqNWgxOogzLmLKOWaQCcS4isXgr0b+umMh3k2lRm6ygZ+heG
+   0WM+WzR2h1/vwWYzfsM5HM6W/hCqcrxF1NP7GlqevvQ6b9PjteNnQS2CA
+   ss2y7Ei9nhdGVx2UCvkEcdZL15+vCFBtuXUq2KcXNrjhcZbrBI3dSmLyJ
+   4C9b/cU4nhUeaRBm3/rbMqoyYCB3ij4MPMKwUETGpKCiZz2DZY6LJQ8L2
+   Q==;
+IronPort-SDR: 78zvZlWiazOgh10+XluaKahQvDfrA2TlNi36d8QDOLBAyjdN3oESc2HqmQ/UuPNNdA1CfYMW2g
+ 0AnMHgjHqctKHFVlVjR/7FLLHY2RtJK/mkA/sidJlOjnQCXUdnuDaqPqvQvQTymPsrichARLLR
+ zEOo92vHnc8ZatzLQfZVGe0J5fALrBL+kjWHe7+MKHVTJRWPfrZ1j2XgRnGmBzaEqw5lIUtwnz
+ W5XquCgOvPnGW6u4GfreB9CCWQocIWbd5fDp/HzXeIuMxHn1TWk1nDIXWRgwyi1Tv0N2JmFr0q
+ 86k=
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="41780833"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jan 2021 02:36:49 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 26 Jan 2021 02:36:48 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 26 Jan 2021 02:36:45 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <sudeep.holla@arm.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 1/7] drivers: soc: atmel: add spdx license identifier
+Date:   Tue, 26 Jan 2021 11:29:30 +0200
+Message-ID: <1611653376-24168-2-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126090013.GF827@dhcp22.suse.cz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26-01-21 10:00:14, Michal Hocko wrote:
-> On Tue 26-01-21 10:33:11, Mike Rapoport wrote:
-> > On Tue, Jan 26, 2021 at 08:16:14AM +0100, Michal Hocko wrote:
-> > > On Mon 25-01-21 23:36:18, Mike Rapoport wrote:
-> > > > On Mon, Jan 25, 2021 at 06:01:22PM +0100, Michal Hocko wrote:
-> > > > > On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
-> > > > > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > > > > 
-> > > > > > Introduce "memfd_secret" system call with the ability to create memory
-> > > > > > areas visible only in the context of the owning process and not mapped not
-> > > > > > only to other processes but in the kernel page tables as well.
-> > > > > > 
-> > > > > > The user will create a file descriptor using the memfd_secret() system
-> > > > > > call. The memory areas created by mmap() calls from this file descriptor
-> > > > > > will be unmapped from the kernel direct map and they will be only mapped in
-> > > > > > the page table of the owning mm.
-> > > > > > 
-> > > > > > The secret memory remains accessible in the process context using uaccess
-> > > > > > primitives, but it is not accessible using direct/linear map addresses.
-> > > > > > 
-> > > > > > Functions in the follow_page()/get_user_page() family will refuse to return
-> > > > > > a page that belongs to the secret memory area.
-> > > > > > 
-> > > > > > A page that was a part of the secret memory area is cleared when it is
-> > > > > > freed.
-> > > > > > 
-> > > > > > The following example demonstrates creation of a secret mapping (error
-> > > > > > handling is omitted):
-> > > > > > 
-> > > > > > 	fd = memfd_secret(0);
-> > > > > > 	ftruncate(fd, MAP_SIZE);
-> > > > > > 	ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-> > > > > 
-> > > > > I do not see any access control or permission model for this feature.
-> > > > > Is this feature generally safe to anybody?
-> > > > 
-> > > > The mappings obey memlock limit. Besides, this feature should be enabled
-> > > > explicitly at boot with the kernel parameter that says what is the maximal
-> > > > memory size secretmem can consume.
-> > > 
-> > > Why is such a model sufficient and future proof? I mean even when it has
-> > > to be enabled by an admin it is still all or nothing approach. Mlock
-> > > limit is not really useful because it is per mm rather than per user.
-> > > 
-> > > Is there any reason why this is allowed for non-privileged processes?
-> > > Maybe this has been discussed in the past but is there any reason why
-> > > this cannot be done by a special device which will allow to provide at
-> > > least some permission policy?
-> >  
-> > Why this should not be allowed for non-privileged processes? This behaves
-> > similarly to mlocked memory, so I don't see a reason why secretmem should
-> > have different permissions model.
-> 
-> Because appart from the reclaim aspect it fragments the direct mapping
-> IIUC. That might have an impact on all others, right?
+Add SPDX-License-Identifier.
 
-Also forgot to mention that you rely on a contiguous allocations and
-that can become a very scarce resource so what does prevent one abuser
-from using it all and deny the access to others. And unless I am missing
-something allocation failure would lead to OOM which cannot really help
-because the oom killer cannot compensate for the CMA reservation.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/soc/atmel/soc.c | 1 +
+ drivers/soc/atmel/soc.h | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
+index 2dc86728b132..755a82502ef4 100644
+--- a/drivers/soc/atmel/soc.c
++++ b/drivers/soc/atmel/soc.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (C) 2015 Atmel
+  *
+diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
+index ee652e4841a5..77b27124362c 100644
+--- a/drivers/soc/atmel/soc.h
++++ b/drivers/soc/atmel/soc.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Copyright (C) 2015 Atmel
+  *
 -- 
-Michal Hocko
-SUSE Labs
+2.7.4
+
