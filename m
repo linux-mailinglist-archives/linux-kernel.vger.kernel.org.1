@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD94B3045C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35C83045C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393567AbhAZRxb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 12:53:31 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:36004 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390459AbhAZIoc (ORCPT
+        id S2393576AbhAZRxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:53:49 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:39889 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2390476AbhAZIot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:44:32 -0500
-Received: by mail-oi1-f169.google.com with SMTP id d18so8399842oic.3;
-        Tue, 26 Jan 2021 00:44:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EXJh9ZT/mvfwax+nixCrjPTJXYuqqPBVeOG7xO3uNAk=;
-        b=P5kjfsXF4eVwNN/x2V9svoy/RVQENJ7Gb7+MvcdHorkEVvtocxifZ3RyLCZZWWLClA
-         Fc+lBo2S/p6uwWJ39uoc28hvtfI5Q3DgMvnBPhLm/Qsrgjzo5bxUdqK0s3nINY9ld23r
-         9jLSvNSCx8DZ0EG4WVwoBKy1Of9zkI+6BLdi+gO8jPHY9RLoVSbIlPer0ZfjdbST19YG
-         h2pMjQ0/Poo/eTOX10lRXMw4u0xrQ+o03kxYMANAPriVkWjFibYQpVQA5w2DLrElmZM+
-         EN/BSiBPAJznKsMMNOR8TcabzJS8QsDczShuIxaxShSYDMhlErGGy1iBsu4h/lNP4tWC
-         eUvg==
-X-Gm-Message-State: AOAM532VItrCX/llp7lHdWE5g2aMejmGDfX55u7KOAySHF4orc7/wAJD
-        kulsk+PvetQK7auZ0NxKthVDhVV/3xSJMREMr+I=
-X-Google-Smtp-Source: ABdhPJz69UTE8gkwG80/J5ZbUiyydKm7p5q+Aw+6h4wCZBltJqGhh7YnurqET0vyfKoWa/Kgs60FxF84yB88WrQBhmk=
-X-Received: by 2002:aca:1219:: with SMTP id 25mr2591995ois.54.1611650632111;
- Tue, 26 Jan 2021 00:43:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20210125105757.661240-1-uwe@kleine-koenig.org>
- <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com> <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
-In-Reply-To: <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 26 Jan 2021 09:43:41 +0100
-Message-ID: <CAMuHMdUmtMxucQ9DWvROVPVv2uGEzpRmtv1=jrjm09xU=gHHyw@mail.gmail.com>
-Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        cyril@debamax.com, Arnd Bergmann <arnd@arndb.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        DTML <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>
+        Tue, 26 Jan 2021 03:44:49 -0500
+X-UUID: af7472dcf452493c9fa798d59ada99d3-20210126
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=04ladyiJRe/ET+NLC+Ueie0MAKsGM3sYbgSIARsb4xc=;
+        b=W9Glj4pDyj/pQML/c30JpqQsxQwUeXAHj2HymHX+klG7UxnHKJ15vGBhtZy1/Dhi95D8b+cRmLQ9wd/rzMVqzF3W7dcsCGowR2MB7FxK1znSJIj4nph1eWL+YF2mqeilo8OzWVS4vJzJYT7WIr6kyKk1xJuT0D27OBWw7psKLuU=;
+X-UUID: af7472dcf452493c9fa798d59ada99d3-20210126
+Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw01.mediatek.com
+        (envelope-from <tiffany.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2020072515; Tue, 26 Jan 2021 16:44:01 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 26 Jan 2021 16:43:59 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 16:43:59 +0800
+Message-ID: <1611650639.20687.2.camel@mtksdaap41>
+Subject: Re: [PATCH 2/3] arm64: dts: mt8173: Separating mtk-vcodec-enc
+ device node
+From:   Tiffany Lin <tiffany.lin@mediatek.com>
+To:     Irui Wang <irui.wang@mediatek.com>
+CC:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Tomasz Figa" <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>
+Date:   Tue, 26 Jan 2021 16:43:59 +0800
+In-Reply-To: <20210121061804.26423-2-irui.wang@mediatek.com>
+References: <20210121061804.26423-1-irui.wang@mediatek.com>
+         <20210121061804.26423-2-irui.wang@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+T24gVGh1LCAyMDIxLTAxLTIxIGF0IDE0OjE4ICswODAwLCBJcnVpIFdhbmcgd3JvdGU6DQo+IFRo
+ZXJlIGFyZSB0d28gc2VwYXJhdGUgaGFyZHdhcmUgZW5jb2RlciBibG9ja3MgaW5zaWRlIE1UODE3
+My4NCj4gU3BsaXQgdGhlIGN1cnJlbnQgbXRrLXZjb2RlYy1lbmMgbm9kZSB0byBtYXRjaCB0aGUg
+aGFyZHdhcmUgYXJjaGl0ZWN0dXJlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogSHNpbi1ZaSBXYW5n
+IDxoc2lueWlAY2hyb21pdW0ub3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBNYW9ndWFuZyBNZW5nIDxt
+YW9ndWFuZy5tZW5nQG1lZGlhdGVrLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogSXJ1aSBXYW5nIDxp
+cnVpLndhbmdAbWVkaWF0ZWsuY29tPg0KPiANCkFja2VkLWJ5OiBUaWZmYW55IExpbiA8dGlmZmFu
+eS5saW5AbWVkaWF0ZWsuY29tPg0KDQo+IC0tLQ0KPiAgYXJjaC9hcm02NC9ib290L2R0cy9tZWRp
+YXRlay9tdDgxNzMuZHRzaSB8IDYwICsrKysrKysrKysrKy0tLS0tLS0tLS0tLQ0KPiAgMSBmaWxl
+IGNoYW5nZWQsIDMxIGluc2VydGlvbnMoKyksIDI5IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAt
+LWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTczLmR0c2kgYi9hcmNoL2Fy
+bTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE3My5kdHNpDQo+IGluZGV4IDdmYTg3MGU0Mzg2YS4u
+ZDY2N2IyOTZjNTEyIDEwMDY0NA0KPiAtLS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVr
+L210ODE3My5kdHNpDQo+ICsrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTcz
+LmR0c2kNCj4gQEAgLTE0NTksMTMgKzE0NTksMTAgQEANCj4gIAkJfTsNCj4gIA0KPiAgCQl2Y29k
+ZWNfZW5jOiB2Y29kZWNAMTgwMDIwMDAgew0KPiAtCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxt
+dDgxNzMtdmNvZGVjLWVuYyI7DQo+IC0JCQlyZWcgPSA8MCAweDE4MDAyMDAwIDAgMHgxMDAwPiwJ
+LyogVkVOQ19TWVMgKi8NCj4gLQkJCSAgICAgIDwwIDB4MTkwMDIwMDAgMCAweDEwMDA+OwkvKiBW
+RU5DX0xUX1NZUyAqLw0KPiAtCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE5OCBJUlFfVFlQRV9M
+RVZFTF9MT1c+LA0KPiAtCQkJCSAgICAgPEdJQ19TUEkgMjAyIElSUV9UWVBFX0xFVkVMX0xPVz47
+DQo+IC0JCQltZWRpYXRlayxsYXJiID0gPCZsYXJiMz4sDQo+IC0JCQkJCTwmbGFyYjU+Ow0KPiAr
+CQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtdmNvZGVjLWF2Yy1lbmMiOw0KPiArCQkJ
+cmVnID0gPDAgMHgxODAwMjAwMCAwIDB4MTAwMD47CS8qIFZFTkNfU1lTICovDQo+ICsJCQlpbnRl
+cnJ1cHRzID0gPEdJQ19TUEkgMTk4IElSUV9UWVBFX0xFVkVMX0xPVz47DQo+ICsJCQltZWRpYXRl
+ayxsYXJiID0gPCZsYXJiMz47DQo+ICAJCQlpb21tdXMgPSA8JmlvbW11IE00VV9QT1JUX1ZFTkNf
+UkNQVT4sDQo+ICAJCQkJIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SRUM+LA0KPiAgCQkJCSA8Jmlv
+bW11IE00VV9QT1JUX1ZFTkNfQlNETUE+LA0KPiBAQCAtMTQ3NiwyOSArMTQ3MywxMiBAQA0KPiAg
+CQkJCSA8JmlvbW11IE00VV9QT1JUX1ZFTkNfUkVGX0xVTUE+LA0KPiAgCQkJCSA8JmlvbW11IE00
+VV9QT1JUX1ZFTkNfUkVGX0NIUk9NQT4sDQo+ICAJCQkJIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19O
+Qk1fUkRNQT4sDQo+IC0JCQkJIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19OQk1fV0RNQT4sDQo+IC0J
+CQkJIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SQ1BVX1NFVDI+LA0KPiAtCQkJCSA8JmlvbW11IE00
+VV9QT1JUX1ZFTkNfUkVDX0ZSTV9TRVQyPiwNCj4gLQkJCQkgPCZpb21tdSBNNFVfUE9SVF9WRU5D
+X0JTRE1BX1NFVDI+LA0KPiAtCQkJCSA8JmlvbW11IE00VV9QT1JUX1ZFTkNfU1ZfQ09NQV9TRVQy
+PiwNCj4gLQkJCQkgPCZpb21tdSBNNFVfUE9SVF9WRU5DX1JEX0NPTUFfU0VUMj4sDQo+IC0JCQkJ
+IDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19DVVJfTFVNQV9TRVQyPiwNCj4gLQkJCQkgPCZpb21tdSBN
+NFVfUE9SVF9WRU5DX0NVUl9DSFJPTUFfU0VUMj4sDQo+IC0JCQkJIDwmaW9tbXUgTTRVX1BPUlRf
+VkVOQ19SRUZfTFVNQV9TRVQyPiwNCj4gLQkJCQkgPCZpb21tdSBNNFVfUE9SVF9WRU5DX1JFQ19D
+SFJPTUFfU0VUMj47DQo+ICsJCQkJIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19OQk1fV0RNQT47DQo+
+ICAJCQltZWRpYXRlayx2cHUgPSA8JnZwdT47DQo+IC0JCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENM
+S19UT1BfVkVOQ1BMTF9EMj4sDQo+IC0JCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5DX1NFTD4s
+DQo+IC0JCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9VTklWUExMMV9EMj4sDQo+IC0JCQkJIDwmdG9w
+Y2tnZW4gQ0xLX1RPUF9WRU5DX0xUX1NFTD47DQo+IC0JCQljbG9jay1uYW1lcyA9ICJ2ZW5jX3Nl
+bF9zcmMiLA0KPiAtCQkJCSAgICAgICJ2ZW5jX3NlbCIsDQo+IC0JCQkJICAgICAgInZlbmNfbHRf
+c2VsX3NyYyIsDQo+IC0JCQkJICAgICAgInZlbmNfbHRfc2VsIjsNCj4gLQkJCWFzc2lnbmVkLWNs
+b2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5DX1NFTD4sDQo+IC0JCQkJCSAgPCZ0b3Bja2dl
+biBDTEtfVE9QX1ZFTkNfTFRfU0VMPjsNCj4gLQkJCWFzc2lnbmVkLWNsb2NrLXBhcmVudHMgPSA8
+JnRvcGNrZ2VuIENMS19UT1BfVkNPREVDUExMPiwNCj4gLQkJCQkJCSA8JnRvcGNrZ2VuIENMS19U
+T1BfVkNPREVDUExMXzM3MFA1PjsNCj4gKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9W
+RU5DX1NFTD47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJ2ZW5jX3NlbCI7DQo+ICsJCQlhc3NpZ25l
+ZC1jbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfVkVOQ19TRUw+Ow0KPiArCQkJYXNzaWduZWQt
+Y2xvY2stcGFyZW50cyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WQ09ERUNQTEw+Ow0KPiAgCQl9Ow0K
+PiAgDQo+ICAJCWpwZWdkZWM6IGpwZWdkZWNAMTgwMDQwMDAgew0KPiBAQCAtMTUzMCw1ICsxNTEw
+LDI3IEBADQo+ICAJCQkJIDwmdmVuY2x0c3lzIENMS19WRU5DTFRfQ0tFMD47DQo+ICAJCQljbG9j
+ay1uYW1lcyA9ICJhcGIiLCAic21pIjsNCj4gIAkJfTsNCj4gKw0KPiArCQl2Y29kZWNfZW5jX2x0
+OiB2Y29kZWNAMTkwMDIwMDAgew0KPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMt
+dmNvZGVjLXZwOC1lbmMiOw0KPiArCQkJcmVnID0gIDwwIDB4MTkwMDIwMDAgMCAweDEwMDA+OyAv
+KiBWRU5DX0xUX1NZUyAqLw0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDIwMiBJUlFfVFlQ
+RV9MRVZFTF9MT1c+Ow0KPiArCQkJaW9tbXVzID0gPCZpb21tdSBNNFVfUE9SVF9WRU5DX1JDUFVf
+U0VUMj4sDQo+ICsJCQkJIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SRUNfRlJNX1NFVDI+LA0KPiAr
+CQkJCSA8JmlvbW11IE00VV9QT1JUX1ZFTkNfQlNETUFfU0VUMj4sDQo+ICsJCQkJIDwmaW9tbXUg
+TTRVX1BPUlRfVkVOQ19TVl9DT01BX1NFVDI+LA0KPiArCQkJCSA8JmlvbW11IE00VV9QT1JUX1ZF
+TkNfUkRfQ09NQV9TRVQyPiwNCj4gKwkJCQkgPCZpb21tdSBNNFVfUE9SVF9WRU5DX0NVUl9MVU1B
+X1NFVDI+LA0KPiArCQkJCSA8JmlvbW11IE00VV9QT1JUX1ZFTkNfQ1VSX0NIUk9NQV9TRVQyPiwN
+Cj4gKwkJCQkgPCZpb21tdSBNNFVfUE9SVF9WRU5DX1JFRl9MVU1BX1NFVDI+LA0KPiArCQkJCSA8
+JmlvbW11IE00VV9QT1JUX1ZFTkNfUkVDX0NIUk9NQV9TRVQyPjsNCj4gKwkJCW1lZGlhdGVrLGxh
+cmIgPSA8JmxhcmI1PjsNCj4gKwkJCW1lZGlhdGVrLHZwdSA9IDwmdnB1PjsNCj4gKwkJCWNsb2Nr
+cyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5DX0xUX1NFTD47DQo+ICsJCQljbG9jay1uYW1lcyA9
+ICJ2ZW5jX2x0X3NlbCI7DQo+ICsJCQlhc3NpZ25lZC1jbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19U
+T1BfVkVOQ19MVF9TRUw+Ow0KPiArCQkJYXNzaWduZWQtY2xvY2stcGFyZW50cyA9DQo+ICsJCQkJ
+IDwmdG9wY2tnZW4gQ0xLX1RPUF9WQ09ERUNQTExfMzcwUDU+Ow0KPiArCQl9Ow0KPiAgCX07DQo+
+ICB9Ow0KDQo=
 
-On Tue, Jan 26, 2021 at 8:21 AM Uwe Kleine-König <uwe@kleine-koenig.org> wrote:
-> And then I learned with hints from Rob and Geert that symbols are not
-> really necessary for overlays, you just cannot use named labels. But
-> using
->
->         target-path = "/soc/i2c@23473245";
->
-> or
->
->         target = <&{/soc/i2c@23473245}>;
->
-> instead of
->
->         target = <&i2c1>;
->
-> works fine. (And if you need to add a phandle the &{/path/to/node}
-> construct should work, too (but I didn't test).) Using labels is a tad
-> nicer, but the problem I wanted to address with my patch now has a known
-> different solution.
-
-Please don't use "target" and "target-path".  Since the introduction of
-sugar syntax support in v4.15[1], you can just use "&label", like in a normal
-DTS file.  Paths do need the special "&{/path/to/node}" syntax instead
-of "/path/to/node", though.
-
-As usual, you can find lots of examples of DT overlays in my repo[2].
-
-[1] commit 4201d057ea91c3d6 ("scripts/dtc: Update to upstream version
-v1.4.5-3-gb1a60033c110")
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/log/?h=topic/renesas-overlays
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
