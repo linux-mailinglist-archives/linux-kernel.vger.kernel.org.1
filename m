@@ -2,342 +2,416 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D87530314F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4808A303167
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730822AbhAZBcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 20:32:50 -0500
-Received: from mga02.intel.com ([134.134.136.20]:22974 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731495AbhAZBaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:30:21 -0500
-IronPort-SDR: scPRWOXqBMoU7SF43+wpW1KwE1h/ZFzh6i8nM8d3oywKWTmtVu6NYxegB5U9n6DSQ6epTieB+k
- 1fh/BQvdjFHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="166926623"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="166926623"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:41:45 -0800
-IronPort-SDR: 2D6hzaYzNeix4aXG0vjo4bfLR6rV4dbyAABH9qErRl+o/h/m6KqoOPU+NeuJbo/vvApMGSB5n9
- oA5WoE5CxSUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="409948383"
-Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Jan 2021 16:41:45 -0800
-Subject: [RFC][PATCH 07/13] mm/migrate: make migrate_pages() return nr_succeeded
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        yang.shi@linux.alibaba.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
-        osalvador@suse.de
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Mon, 25 Jan 2021 16:34:25 -0800
-References: <20210126003411.2AC51464@viggo.jf.intel.com>
-In-Reply-To: <20210126003411.2AC51464@viggo.jf.intel.com>
-Message-Id: <20210126003425.038B4812@viggo.jf.intel.com>
+        id S1730282AbhAZBoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 20:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729698AbhAZBhB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:37:01 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1219CC06121D
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:44:39 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id q131so9391420pfq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:44:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language;
+        bh=JLsx2L2mSV0OI5IXzT5lJD4w9AzsejCJ+52IlMaTO9c=;
+        b=F0AZig+5OEwman0KskucivmzrumfaVNX01p7tBHZudvTohCZ72w1jlBvWO800V1yoc
+         xrYLRJ47+XNOFsPKMZIfxlrFQpW3PPKD3tEpjuLlXLPLoqNyprHFxirVvWfnoqjnaMIS
+         gzWl5GSXWR241Ye3jJII+7YI4wruYGY30QiHOR91r/4t6ggMEoOocxHhJdK5quXQx5qZ
+         5FkzXxhYL+KXoxFxZAbV1OnlAr/jiYVJPdJtivacznNZGEeENOMcQwLtFqMKOKnhiYcx
+         WkzGpM+bdCNLjTbf37LV0Gsf8ZPPBvfkHUdAznzEBvRb+/FDxw0OLH4kwXecmn+uO3UQ
+         LHiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=JLsx2L2mSV0OI5IXzT5lJD4w9AzsejCJ+52IlMaTO9c=;
+        b=FLtrRZd7Dk+WOp95OyKo07iHxRJchga2oY/JBILAMk6sUFWpsoJ/8RonW38MVfCYbD
+         fLNxtefRjUaWXCezj6E8SsVcgKLWIbkqaZhPp0n4OPcnT21+fngNJpsKVRPYZ3YH64+0
+         QpwTaTABO9KNtL0fIZUOG7hcr+jofbzK2hsv1eFEEzfnSjZCnM0Xb0wUurwLqWTxadlz
+         F1Vbxn2xbHJGSEh7m809Y8t7l33dohmjmkVrZWDox9smvtXO9lpeRedh4adErEUly2ww
+         1obKM8HUeomr+TOGJ3H3l7u6AB6FbWYPX62CqnlOrHyQ0dmYMeeLd6Qs5RdcW/KoM25p
+         iD6Q==
+X-Gm-Message-State: AOAM531ddGFXYcD5wBxULOpcSLlhogo+KrCjmFBbUrQMjzUbLJJ2oyyq
+        h/IZcdFrzQN4d5SLwyw2i4AaPMU+insJDA==
+X-Google-Smtp-Source: ABdhPJxC99fxevHjI5o3jfLontJWngdCbkSzNODg5p7VQKnfc+rvrgE6aW/BY888cknIcTSBOIyyWA==
+X-Received: by 2002:a63:fe13:: with SMTP id p19mr3108179pgh.119.1611621876742;
+        Mon, 25 Jan 2021 16:44:36 -0800 (PST)
+Received: from [10.8.1.5] ([185.125.207.232])
+        by smtp.gmail.com with ESMTPSA id 11sm17631611pgz.22.2021.01.25.16.44.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 16:44:35 -0800 (PST)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+raid@molgen.mpg.de
+References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+ <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
+ <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
+ <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
+ <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
+ <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
+ <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
+ <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
+ <d95aa962-9750-c27c-639a-2362bdb32f41@cloud.ionos.com>
+ <30576384-682c-c021-ff16-bebed8251365@molgen.mpg.de>
+ <cdc0b03c-db53-35bc-2f75-93bbca0363b5@molgen.mpg.de>
+ <bc342de0-98d2-1733-39cd-cc1999777ff3@molgen.mpg.de>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <c3390ab0-d038-f1c3-5544-67ae9c8408b1@cloud.ionos.com>
+Date:   Tue, 26 Jan 2021 01:44:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <bc342de0-98d2-1733-39cd-cc1999777ff3@molgen.mpg.de>
+Content-Type: multipart/mixed;
+ boundary="------------93515907419EC43A70E50E97"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------93515907419EC43A70E50E97
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Yang Shi <yang.shi@linux.alibaba.com>
+Hi Donald,
 
-The migrate_pages() returns the number of pages that were not migrated,
-or an error code.  When returning an error code, there is no way to know
-how many pages were migrated or not migrated.
+On 1/25/21 22:32, Donald Buczek wrote:
+> 
+> 
+> On 25.01.21 09:54, Donald Buczek wrote:
+>> Dear Guoqing,
+>>
+>> a colleague of mine was able to produce the issue inside a vm and were 
+>> able to find a procedure to run the vm into the issue within minutes 
+>> (not unreliably after hours on a physical system as before). This of 
+>> course helped to pinpoint the problem.
+>>
+>> My current theory of what is happening is:
+>>
+>> - MD_SB_CHANGE_CLEAN + MD_SB_CHANGE_PENDING are set by 
+>> md_write_start() when file-system I/O wants to do a write and the 
+>> array transitions from "clean" to "active". 
+>> (https://elixir.bootlin.com/linux/v5.4.57/source/drivers/md/md.c#L8308)
+>>
+>> - Before raid5d gets to write the superblock (its busy processing 
+>> active stripes because of the sync activity) , userspace wants to 
+>> pause the check by `echo idle > /sys/block/mdX/md/sync_action`
+>>
+>> - action_store() takes the reconfig_mutex before trying to stop the 
+>> sync thread. 
+>> (https://elixir.bootlin.com/linux/v5.4.57/source/drivers/md/md.c#L4689) Dump 
+>> of struct mddev of email 1/19/21 confirms reconf_mutex non-zero.
+>>
+>> - raid5d is running in its main loop. 
+>> raid5d()->handle_active_stripes() returns a positive batch size ( 
+>> https://elixir.bootlin.com/linux/v5.4.57/source/drivers/md/raid5.c#L6329 
+>> ) although raid5d()->handle_active_stripes()->handle_stripe() doesn't 
+>> process any stripe because of MD_SB_CHANGE_PENDING. 
+>> (https://elixir.bootlin.com/linux/v5.4.57/source/drivers/md/raid5.c#L4729 
+>> ). This is the reason, raid5d is busy looping.
+>>
+>> - raid5d()->md_check_recovery() is called by the raid5d main loop. One 
+>> of its duties is to write the superblock, if a change is pending. 
+>> However to do so, it needs either MD_ALLOW_SB_UPDATE or must be able 
+>> to take the reconfig_mutex. 
+>> (https://elixir.bootlin.com/linux/v5.4.57/source/drivers/md/md.c#L8967 
+>> , 
+>> https://elixir.bootlin.com/linux/v5.4.57/source/drivers/md/md.c#L9006) 
+>> Both is not true, so the superblock is not written and 
+>> MD_SB_CHANGE_PENDING is not cleared.
+>>
+>> - (as discussed previously) the sync thread is waiting for the number 
+>> of active stripes to go down and doesn't terminate. The userspace 
+>> thread is waiting for the sync thread to terminate.
+>>
+>> Does this make sense?
 
-In the following patch, migrate_pages() is used to demote pages to PMEM
-node, we need account how many pages are reclaimed (demoted) since page
-reclaim behavior depends on this.  Add *nr_succeeded parameter to make
-migrate_pages() return how many pages are demoted successfully for all
-cases.
+Yes, exactly! That was my thought too, the scenario is twisted.
 
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: osalvador <osalvador@suse.de>
----
+Then resync thread is blocked due to there are too many active stripes, 
+because raid5d is in busy loop since SB_CHANGE_PENDING is set which 
+means tactive stripes can't be decreased, and echo idle cmd can't make 
+progress given resync thread is blocked while the cmd still hold 
+reconfig_mutex which make raid5d in busy loop and can't clear 
+SB_CHANGE_PENDING flag.
 
- b/include/linux/migrate.h |    5 +++--
- b/mm/compaction.c         |    3 ++-
- b/mm/gup.c                |    4 +++-
- b/mm/memory-failure.c     |    4 +++-
- b/mm/memory_hotplug.c     |    4 +++-
- b/mm/mempolicy.c          |    8 ++++++--
- b/mm/migrate.c            |   17 ++++++++++-------
- b/mm/page_alloc.c         |    9 ++++++---
- 8 files changed, 36 insertions(+), 18 deletions(-)
+And raid5 could suffer from the same issue I think.
 
-diff -puN include/linux/migrate.h~migrate_pages-add-success-return include/linux/migrate.h
---- a/include/linux/migrate.h~migrate_pages-add-success-return	2021-01-25 16:23:12.931866701 -0800
-+++ b/include/linux/migrate.h	2021-01-25 16:23:12.954866701 -0800
-@@ -40,7 +40,8 @@ extern int migrate_page(struct address_s
- 			struct page *newpage, struct page *page,
- 			enum migrate_mode mode);
- extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
--		unsigned long private, enum migrate_mode mode, int reason);
-+		unsigned long private, enum migrate_mode mode, int reason,
-+		unsigned int *nr_succeeded);
- extern struct page *alloc_migration_target(struct page *page, unsigned long private);
- extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
- extern void putback_movable_page(struct page *page);
-@@ -58,7 +59,7 @@ extern int migrate_page_move_mapping(str
- static inline void putback_movable_pages(struct list_head *l) {}
- static inline int migrate_pages(struct list_head *l, new_page_t new,
- 		free_page_t free, unsigned long private, enum migrate_mode mode,
--		int reason)
-+		int reason, unsigned int *nr_succeeded)
- 	{ return -ENOSYS; }
- static inline struct page *alloc_migration_target(struct page *page,
- 		unsigned long private)
-diff -puN mm/compaction.c~migrate_pages-add-success-return mm/compaction.c
---- a/mm/compaction.c~migrate_pages-add-success-return	2021-01-25 16:23:12.933866701 -0800
-+++ b/mm/compaction.c	2021-01-25 16:23:12.956866701 -0800
-@@ -2199,6 +2199,7 @@ compact_zone(struct compact_control *cc,
- 	unsigned long last_migrated_pfn;
- 	const bool sync = cc->mode != MIGRATE_ASYNC;
- 	bool update_cached;
-+	unsigned int nr_succeeded = 0;
- 
- 	/*
- 	 * These counters track activities during zone compaction.  Initialize
-@@ -2317,7 +2318,7 @@ compact_zone(struct compact_control *cc,
- 
- 		err = migrate_pages(&cc->migratepages, compaction_alloc,
- 				compaction_free, (unsigned long)cc, cc->mode,
--				MR_COMPACTION);
-+				MR_COMPACTION, &nr_succeeded);
- 
- 		trace_mm_compaction_migratepages(cc->nr_migratepages, err,
- 							&cc->migratepages);
-diff -puN mm/gup.c~migrate_pages-add-success-return mm/gup.c
---- a/mm/gup.c~migrate_pages-add-success-return	2021-01-25 16:23:12.935866701 -0800
-+++ b/mm/gup.c	2021-01-25 16:23:12.957866701 -0800
-@@ -1599,6 +1599,7 @@ static long check_and_migrate_cma_pages(
- 	unsigned long step;
- 	bool drain_allow = true;
- 	bool migrate_allow = true;
-+	unsigned int nr_succeeded = 0;
- 	LIST_HEAD(cma_page_list);
- 	long ret = nr_pages;
- 	struct migration_target_control mtc = {
-@@ -1654,7 +1655,8 @@ check_again:
- 				put_page(pages[i]);
- 
- 		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE,
-+				  &nr_succeeded)) {
- 			/*
- 			 * some of the pages failed migration. Do get_user_pages
- 			 * without migration.
-diff -puN mm/memory-failure.c~migrate_pages-add-success-return mm/memory-failure.c
---- a/mm/memory-failure.c~migrate_pages-add-success-return	2021-01-25 16:23:12.939866701 -0800
-+++ b/mm/memory-failure.c	2021-01-25 16:23:12.959866701 -0800
-@@ -1783,6 +1783,7 @@ static int __soft_offline_page(struct pa
- 	unsigned long pfn = page_to_pfn(page);
- 	struct page *hpage = compound_head(page);
- 	char const *msg_page[] = {"page", "hugepage"};
-+	unsigned int nr_succeeded = 0;
- 	bool huge = PageHuge(page);
- 	LIST_HEAD(pagelist);
- 	struct migration_target_control mtc = {
-@@ -1826,7 +1827,8 @@ static int __soft_offline_page(struct pa
- 
- 	if (isolate_page(hpage, &pagelist)) {
- 		ret = migrate_pages(&pagelist, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE);
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE,
-+			&nr_succeeded);
- 		if (!ret) {
- 			bool release = !huge;
- 
-diff -puN mm/memory_hotplug.c~migrate_pages-add-success-return mm/memory_hotplug.c
---- a/mm/memory_hotplug.c~migrate_pages-add-success-return	2021-01-25 16:23:12.941866701 -0800
-+++ b/mm/memory_hotplug.c	2021-01-25 16:23:12.959866701 -0800
-@@ -1278,6 +1278,7 @@ do_migrate_range(unsigned long start_pfn
- 	unsigned long pfn;
- 	struct page *page, *head;
- 	int ret = 0;
-+	unsigned int nr_succeeded = 0;
- 	LIST_HEAD(source);
- 
- 	for (pfn = start_pfn; pfn < end_pfn; pfn++) {
-@@ -1352,7 +1353,8 @@ do_migrate_range(unsigned long start_pfn
- 		if (nodes_empty(nmask))
- 			node_set(mtc.nid, nmask);
- 		ret = migrate_pages(&source, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG,
-+			&nr_succeeded);
- 		if (ret) {
- 			list_for_each_entry(page, &source, lru) {
- 				pr_warn("migrating pfn %lx failed ret:%d ",
-diff -puN mm/mempolicy.c~migrate_pages-add-success-return mm/mempolicy.c
---- a/mm/mempolicy.c~migrate_pages-add-success-return	2021-01-25 16:23:12.944866701 -0800
-+++ b/mm/mempolicy.c	2021-01-25 16:23:12.960866701 -0800
-@@ -1071,6 +1071,7 @@ static int migrate_page_add(struct page
- static int migrate_to_node(struct mm_struct *mm, int source, int dest,
- 			   int flags)
- {
-+	unsigned int nr_succeeded = 0;
- 	nodemask_t nmask;
- 	LIST_HEAD(pagelist);
- 	int err = 0;
-@@ -1093,7 +1094,8 @@ static int migrate_to_node(struct mm_str
- 
- 	if (!list_empty(&pagelist)) {
- 		err = migrate_pages(&pagelist, alloc_migration_target, NULL,
--				(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
-+				(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL,
-+				&nr_succeeded);
- 		if (err)
- 			putback_movable_pages(&pagelist);
- 	}
-@@ -1270,6 +1272,7 @@ static long do_mbind(unsigned long start
- 		     nodemask_t *nmask, unsigned long flags)
- {
- 	struct mm_struct *mm = current->mm;
-+	unsigned int nr_succeeded = 0;
- 	struct mempolicy *new;
- 	unsigned long end;
- 	int err;
-@@ -1349,7 +1352,8 @@ static long do_mbind(unsigned long start
- 		if (!list_empty(&pagelist)) {
- 			WARN_ON_ONCE(flags & MPOL_MF_LAZY);
- 			nr_failed = migrate_pages(&pagelist, new_page, NULL,
--				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND);
-+				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND,
-+				&nr_succeeded);
- 			if (nr_failed)
- 				putback_movable_pages(&pagelist);
- 		}
-diff -puN mm/migrate.c~migrate_pages-add-success-return mm/migrate.c
---- a/mm/migrate.c~migrate_pages-add-success-return	2021-01-25 16:23:12.947866701 -0800
-+++ b/mm/migrate.c	2021-01-25 16:23:12.964866701 -0800
-@@ -1432,6 +1432,7 @@ out:
-  * @mode:		The migration mode that specifies the constraints for
-  *			page migration, if any.
-  * @reason:		The reason for page migration.
-+ * @nr_succeeded:	The number of pages migrated successfully.
-  *
-  * The function returns after 10 attempts or if no pages are movable any more
-  * because the list has become empty or no retryable pages exist any more.
-@@ -1442,12 +1443,11 @@ out:
-  */
- int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 		free_page_t put_new_page, unsigned long private,
--		enum migrate_mode mode, int reason)
-+		enum migrate_mode mode, int reason, unsigned int *nr_succeeded)
- {
- 	int retry = 1;
- 	int thp_retry = 1;
- 	int nr_failed = 0;
--	int nr_succeeded = 0;
- 	int nr_thp_succeeded = 0;
- 	int nr_thp_failed = 0;
- 	int nr_thp_split = 0;
-@@ -1527,7 +1527,7 @@ retry:
- 					nr_succeeded += nr_subpages;
- 					break;
- 				}
--				nr_succeeded++;
-+				(*nr_succeeded)++;
- 				break;
- 			default:
- 				/*
-@@ -1550,12 +1550,12 @@ retry:
- 	nr_thp_failed += thp_retry;
- 	rc = nr_failed;
- out:
--	count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
-+	count_vm_events(PGMIGRATE_SUCCESS, *nr_succeeded);
- 	count_vm_events(PGMIGRATE_FAIL, nr_failed);
- 	count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
- 	count_vm_events(THP_MIGRATION_FAIL, nr_thp_failed);
- 	count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
--	trace_mm_migrate_pages(nr_succeeded, nr_failed, nr_thp_succeeded,
-+	trace_mm_migrate_pages(*nr_succeeded, nr_failed, nr_thp_succeeded,
- 			       nr_thp_failed, nr_thp_split, mode, reason);
- 
- 	if (!swapwrite)
-@@ -1623,6 +1623,7 @@ static int store_status(int __user *stat
- static int do_move_pages_to_node(struct mm_struct *mm,
- 		struct list_head *pagelist, int node)
- {
-+	unsigned int nr_succeeded = 0;
- 	int err;
- 	struct migration_target_control mtc = {
- 		.nid = node,
-@@ -1630,7 +1631,8 @@ static int do_move_pages_to_node(struct
- 	};
- 
- 	err = migrate_pages(pagelist, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL,
-+			&nr_succeeded);
- 	if (err)
- 		putback_movable_pages(pagelist);
- 	return err;
-@@ -2103,6 +2105,7 @@ int migrate_misplaced_page(struct page *
- 	pg_data_t *pgdat = NODE_DATA(node);
- 	int isolated;
- 	int nr_remaining;
-+	unsigned int nr_succeeded = 0;
- 	LIST_HEAD(migratepages);
- 
- 	/*
-@@ -2127,7 +2130,7 @@ int migrate_misplaced_page(struct page *
- 	list_add(&page->lru, &migratepages);
- 	nr_remaining = migrate_pages(&migratepages, alloc_misplaced_dst_page,
- 				     NULL, node, MIGRATE_ASYNC,
--				     MR_NUMA_MISPLACED);
-+				     MR_NUMA_MISPLACED, &nr_succeeded);
- 	if (nr_remaining) {
- 		if (!list_empty(&migratepages)) {
- 			list_del(&page->lru);
-diff -puN mm/page_alloc.c~migrate_pages-add-success-return mm/page_alloc.c
---- a/mm/page_alloc.c~migrate_pages-add-success-return	2021-01-25 16:23:12.950866701 -0800
-+++ b/mm/page_alloc.c	2021-01-25 16:23:12.968866701 -0800
-@@ -8401,7 +8401,8 @@ static unsigned long pfn_max_align_up(un
- 
- /* [start, end) must belong to a single zone. */
- static int __alloc_contig_migrate_range(struct compact_control *cc,
--					unsigned long start, unsigned long end)
-+					unsigned long start, unsigned long end,
-+					unsigned int *nr_succeeded)
- {
- 	/* This function is based on compact_zone() from compaction.c. */
- 	unsigned int nr_reclaimed;
-@@ -8439,7 +8440,8 @@ static int __alloc_contig_migrate_range(
- 		cc->nr_migratepages -= nr_reclaimed;
- 
- 		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
--				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
-+				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE,
-+				nr_succeeded);
- 	}
- 	if (ret < 0) {
- 		putback_movable_pages(&cc->migratepages);
-@@ -8475,6 +8477,7 @@ int alloc_contig_range(unsigned long sta
- 	unsigned long outer_start, outer_end;
- 	unsigned int order;
- 	int ret = 0;
-+	unsigned int nr_succeeded = 0;
- 
- 	struct compact_control cc = {
- 		.nr_migratepages = 0,
-@@ -8527,7 +8530,7 @@ int alloc_contig_range(unsigned long sta
- 	 * allocated.  So, if we fall through be sure to clear ret so that
- 	 * -EBUSY is not accidentally used or returned to caller.
- 	 */
--	ret = __alloc_contig_migrate_range(&cc, start, end);
-+	ret = __alloc_contig_migrate_range(&cc, start, end, &nr_succeeded);
- 	if (ret && ret != -EBUSY)
- 		goto done;
- 	ret =0;
-_
+>>
+>> Just for reference, I add the procedure which triggers the issue on 
+>> the vm (with /dev/md3 mounted on /mnt/raid_md3) and some debug output:
+>>
+>> ```
+>> #! /bin/bash
+>>
+>> (
+>>          while true; do
+>>                  echo "start check"
+>>                  echo check > /sys/block/md3/md/sync_action
+>>                  sleep 10
+>>                  echo "stop check"
+>>                  echo idle > /sys/block/md3/md/sync_action
+>>                  sleep 2
+>>          done
+>> ) &
+>>
+>> (
+>>          while true; do
+>>                  dd bs=1k count=$((5*1024*1024)) if=/dev/zero 
+>> of=/mnt/raid_md3/bigfile status=none
+>>                  sync /mnt/raid_md3/bigfile
+>>                  rm /mnt/raid_md3/bigfile
+>>                  sleep .1
+>>          done
+>> ) &
+>>
+>> start="$(date +%s)"
+>> cd /sys/block/md3/md
+>> wp_count=0
+>> while true; do
+>>          array_state=$(cat array_state)
+>>          if [ "$array_state" = write-pending ]; then
+>>                  wp_count=$(($wp_count+1))
+>>          else
+>>                  wp_count=0
+>>          fi
+>>          echo $(($(date +%s)-$start)) $(cat sync_action) $(cat 
+>> sync_completed) $array_state $(cat stripe_cache_active)
+>>          if [ $wp_count -ge 3 ]; then
+>>                  kill -- -$$
+>>                  exit
+>>          fi
+>>          sleep 1
+>> done
+>> ```
+>>
+>> The time, this needs to trigger the issue, varies from under a minute 
+>> to one hour with 5 minute being typical. The output ends like this:
+>>
+>>      309 check 6283872 / 8378368 active-idle 4144
+>>      310 check 6283872 / 8378368 active 1702
+>>      311 check 6807528 / 8378368 active 4152
+>>      312 check 7331184 / 8378368 clean 3021
+>>      stop check
+>>      313 check 7331184 / 8378368 write-pending 3905
+>>      314 check 7331184 / 8378368 write-pending 3905
+>>      315 check 7331184 / 8378368 write-pending 3905
+>>      Terminated
+>>
+>> If I add
+>>
+>>      pr_debug("XXX batch_size %d release %d mdddev->sb_flags %lx\n", 
+>> batch_size, released, mddev->sb_flags);
+>>
+>> in raid5d after the call to handle_active_stripes and enable the debug 
+>> location after the deadlock occurred, I get
+>>
+>>      [ 3123.939143] [1223] raid5d:6332: XXX batch_size 8 release 0 
+>> mdddev->sb_flags 6
+>>      [ 3123.939156] [1223] raid5d:6332: XXX batch_size 8 release 0 
+>> mdddev->sb_flags 6
+>>      [ 3123.939170] [1223] raid5d:6332: XXX batch_size 8 release 0 
+>> mdddev->sb_flags 6
+>>      [ 3123.939184] [1223] raid5d:6332: XXX batch_size 8 release 0 
+>> mdddev->sb_flags 6
+>>
+>> If I add
+>>
+>>      pr_debug("XXX 1 %s:%d mddev->flags %08lx mddev->sb_flags 
+>> %08lx\n", __FILE__, __LINE__, mddev->flags, mddev->sb_flags);
+>>
+>> at the head of md_check_recovery, I get:
+>>
+>>      [  789.555462] [1191] md_check_recovery:8970: XXX 1 
+>> drivers/md/md.c:8970 mddev->flags 00000000 mddev->sb_flags 00000006
+>>      [  789.555477] [1191] md_check_recovery:8970: XXX 1 
+>> drivers/md/md.c:8970 mddev->flags 00000000 mddev->sb_flags 00000006
+>>      [  789.555491] [1191] md_check_recovery:8970: XXX 1 
+>> drivers/md/md.c:8970 mddev->flags 00000000 mddev->sb_flags 00000006
+>>      [  789.555505] [1191] md_check_recovery:8970: XXX 1 
+>> drivers/md/md.c:8970 mddev->flags 00000000 mddev->sb_flags 00000006
+>>      [  789.555520] [1191] md_check_recovery:8970: XXX 1 
+>> drivers/md/md.c:8970 mddev->flags 00000000 mddev->sb_flags 00000006
+>>
+>> More debug lines in md_check_recovery confirm the control flow ( `if 
+>> (mddev_trylock(mddev))` block not taken )
+>>
+
+That is great that you have a reproducer now!
+
+>> What approach would you suggest to fix this?
+> 
+> I naively tried the following patch and it seems to fix the problem. The 
+> test procedure didn't trigger the deadlock in 10 hours.
+> 
+> D.
+> 
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 2d21c298ffa7..f40429843906 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -4687,11 +4687,13 @@ action_store(struct mddev *mddev, const char 
+> *page, size_t len)
+>               clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>           if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
+>               mddev_lock(mddev) == 0) {
+> +            set_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
+>               flush_workqueue(md_misc_wq);
+>               if (mddev->sync_thread) {
+>                   set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+>                   md_reap_sync_thread(mddev);
+>               }
+> +            clear_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
+>               mddev_unlock(mddev);
+>           }
+>       } else if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
+
+Yes, it could break the deadlock issue, but I am not sure if it is the 
+right way given we only set ALLOW_SB_UPDATE in suspend which makes sense 
+since the io will be quiesced, but write idle action can't guarantee the 
+  similar thing. I prefer to make resync thread not wait forever here.
+
+wait_event_lock_irq(
+	conf->wait_for_stripe,
+	!list_empty(conf->inactive_list + hash) && 
+
+	(atomic_read(&conf->active_stripes)
+	< (conf->max_nr_stripes * 3 / 4)
+	|| !test_bit(R5_INACTIVE_BLOCKED,
+		     &conf->cache_state)
+	*(conf->hash_locks + hash));
+
+So, could you please try the attached?
+
+Thanks,
+Guoqing
+
+--------------93515907419EC43A70E50E97
+Content-Type: text/plain; charset=UTF-8;
+ name="raid5-proposal"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="raid5-proposal"
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWQvcmFpZDUtY2FjaGUuYyBiL2RyaXZlcnMvbWQvcmFp
+ZDUtY2FjaGUuYwppbmRleCA0MzM3YWUwLi4zNzhjZTVjIDEwMDY0NAotLS0gYS9kcml2ZXJz
+L21kL3JhaWQ1LWNhY2hlLmMKKysrIGIvZHJpdmVycy9tZC9yYWlkNS1jYWNoZS5jCkBAIC0x
+OTMxLDcgKzE5MzEsNyBAQCByNWNfcmVjb3ZlcnlfYWxsb2Nfc3RyaXBlKAogewogCXN0cnVj
+dCBzdHJpcGVfaGVhZCAqc2g7CiAKLQlzaCA9IHJhaWQ1X2dldF9hY3RpdmVfc3RyaXBlKGNv
+bmYsIHN0cmlwZV9zZWN0LCAwLCBub2Jsb2NrLCAwKTsKKwlzaCA9IHJhaWQ1X2dldF9hY3Rp
+dmVfc3RyaXBlKGNvbmYsIHN0cmlwZV9zZWN0LCAwLCAwLCBub2Jsb2NrLCAwKTsKIAlpZiAo
+IXNoKQogCQlyZXR1cm4gTlVMTDsgIC8qIG5vIG1vcmUgc3RyaXBlIGF2YWlsYWJsZSAqLwog
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL21kL3JhaWQ1LmMgYi9kcml2ZXJzL21kL3JhaWQ1LmMK
+aW5kZXggODg4ODk3My4uMzNhMmEyMiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tZC9yYWlkNS5j
+CisrKyBiL2RyaXZlcnMvbWQvcmFpZDUuYwpAQCAtNzAwLDEwICs3MDAsMTEgQEAgc3RhdGlj
+IGludCBoYXNfZmFpbGVkKHN0cnVjdCByNWNvbmYgKmNvbmYpCiB9CiAKIHN0cnVjdCBzdHJp
+cGVfaGVhZCAqCi1yYWlkNV9nZXRfYWN0aXZlX3N0cmlwZShzdHJ1Y3QgcjVjb25mICpjb25m
+LCBzZWN0b3JfdCBzZWN0b3IsCityYWlkNV9nZXRfYWN0aXZlX3N0cmlwZShzdHJ1Y3QgcjVj
+b25mICpjb25mLCBzZWN0b3JfdCBzZWN0b3IsIGludCBzeW5jX3JlcSwKIAkJCWludCBwcmV2
+aW91cywgaW50IG5vYmxvY2ssIGludCBub3F1aWVzY2UpCiB7CiAJc3RydWN0IHN0cmlwZV9o
+ZWFkICpzaDsKKwlzdHJ1Y3QgbWRkZXYgKm1kZGV2ID0gY29uZi0+bWRkZXY7CiAJaW50IGhh
+c2ggPSBzdHJpcGVfaGFzaF9sb2Nrc19oYXNoKGNvbmYsIHNlY3Rvcik7CiAJaW50IGluY19l
+bXB0eV9pbmFjdGl2ZV9saXN0X2ZsYWc7CiAKQEAgLTczOCw4ICs3MzksMTQgQEAgcmFpZDVf
+Z2V0X2FjdGl2ZV9zdHJpcGUoc3RydWN0IHI1Y29uZiAqY29uZiwgc2VjdG9yX3Qgc2VjdG9y
+LAogCQkJCQkoYXRvbWljX3JlYWQoJmNvbmYtPmFjdGl2ZV9zdHJpcGVzKQogCQkJCQkgPCAo
+Y29uZi0+bWF4X25yX3N0cmlwZXMgKiAzIC8gNCkKIAkJCQkJIHx8ICF0ZXN0X2JpdChSNV9J
+TkFDVElWRV9CTE9DS0VELAotCQkJCQkJICAgICAgJmNvbmYtPmNhY2hlX3N0YXRlKSksCisJ
+CQkJCQkgICAgICAmY29uZi0+Y2FjaGVfc3RhdGUpCisJCQkJCSB8fCAodGVzdF9iaXQoTURf
+UkVDT1ZFUllfSU5UUiwKKwkJCQkJCSAgICAgICZtZGRldi0+cmVjb3ZlcnkpCisJCQkJCSAg
+ICAgJiYgc3luY19yZXEpKSwKIAkJCQkJKihjb25mLT5oYXNoX2xvY2tzICsgaGFzaCkpOwor
+CQkJCWlmICh0ZXN0X2JpdChNRF9SRUNPVkVSWV9JTlRSLCAmbWRkZXYtPnJlY292ZXJ5KQor
+CQkJCSAgICAmJiBzeW5jX3JlcSkKKwkJCQkJYnJlYWs7CiAJCQkJY2xlYXJfYml0KFI1X0lO
+QUNUSVZFX0JMT0NLRUQsCiAJCQkJCSAgJmNvbmYtPmNhY2hlX3N0YXRlKTsKIAkJCX0gZWxz
+ZSB7CkBAIC00NTI3LDcgKzQ1MzQsNyBAQCBzdGF0aWMgdm9pZCBoYW5kbGVfc3RyaXBlX2V4
+cGFuc2lvbihzdHJ1Y3QgcjVjb25mICpjb25mLCBzdHJ1Y3Qgc3RyaXBlX2hlYWQgKnNoKQog
+CQkJc2VjdG9yX3QgYm4gPSByYWlkNV9jb21wdXRlX2Jsb2NrbnIoc2gsIGksIDEpOwogCQkJ
+c2VjdG9yX3QgcyA9IHJhaWQ1X2NvbXB1dGVfc2VjdG9yKGNvbmYsIGJuLCAwLAogCQkJCQkJ
+CSAgJmRkX2lkeCwgTlVMTCk7Ci0JCQlzaDIgPSByYWlkNV9nZXRfYWN0aXZlX3N0cmlwZShj
+b25mLCBzLCAwLCAxLCAxKTsKKwkJCXNoMiA9IHJhaWQ1X2dldF9hY3RpdmVfc3RyaXBlKGNv
+bmYsIHMsIDAsIDAsIDEsIDEpOwogCQkJaWYgKHNoMiA9PSBOVUxMKQogCQkJCS8qIHNvIGZh
+ciBvbmx5IHRoZSBlYXJseSBibG9ja3Mgb2YgdGhpcyBzdHJpcGUKIAkJCQkgKiBoYXZlIGJl
+ZW4gcmVxdWVzdGVkLiAgV2hlbiBsYXRlciBibG9ja3MKQEAgLTUxNjQsNyArNTE3MSw3IEBA
+IHN0YXRpYyB2b2lkIGhhbmRsZV9zdHJpcGUoc3RydWN0IHN0cmlwZV9oZWFkICpzaCkKIAkv
+KiBGaW5pc2ggcmVjb25zdHJ1Y3Qgb3BlcmF0aW9ucyBpbml0aWF0ZWQgYnkgdGhlIGV4cGFu
+c2lvbiBwcm9jZXNzICovCiAJaWYgKHNoLT5yZWNvbnN0cnVjdF9zdGF0ZSA9PSByZWNvbnN0
+cnVjdF9zdGF0ZV9yZXN1bHQpIHsKIAkJc3RydWN0IHN0cmlwZV9oZWFkICpzaF9zcmMKLQkJ
+CT0gcmFpZDVfZ2V0X2FjdGl2ZV9zdHJpcGUoY29uZiwgc2gtPnNlY3RvciwgMSwgMSwgMSk7
+CisJCQk9IHJhaWQ1X2dldF9hY3RpdmVfc3RyaXBlKGNvbmYsIHNoLT5zZWN0b3IsIDAsIDEs
+IDEsIDEpOwogCQlpZiAoc2hfc3JjICYmIHRlc3RfYml0KFNUUklQRV9FWFBBTkRfU09VUkNF
+LCAmc2hfc3JjLT5zdGF0ZSkpIHsKIAkJCS8qIHNoIGNhbm5vdCBiZSB3cml0dGVuIHVudGls
+IHNoX3NyYyBoYXMgYmVlbiByZWFkLgogCQkJICogc28gYXJyYW5nZSBmb3Igc2ggdG8gYmUg
+ZGVsYXllZCBhIGxpdHRsZQpAQCAtNTcwNSw3ICs1NzEyLDcgQEAgc3RhdGljIHZvaWQgbWFr
+ZV9kaXNjYXJkX3JlcXVlc3Qoc3RydWN0IG1kZGV2ICptZGRldiwgc3RydWN0IGJpbyAqYmkp
+CiAJCURFRklORV9XQUlUKHcpOwogCQlpbnQgZDsKIAlhZ2FpbjoKLQkJc2ggPSByYWlkNV9n
+ZXRfYWN0aXZlX3N0cmlwZShjb25mLCBsb2dpY2FsX3NlY3RvciwgMCwgMCwgMCk7CisJCXNo
+ID0gcmFpZDVfZ2V0X2FjdGl2ZV9zdHJpcGUoY29uZiwgbG9naWNhbF9zZWN0b3IsIDAsIDAs
+IDAsIDApOwogCQlwcmVwYXJlX3RvX3dhaXQoJmNvbmYtPndhaXRfZm9yX292ZXJsYXAsICZ3
+LAogCQkJCVRBU0tfVU5JTlRFUlJVUFRJQkxFKTsKIAkJc2V0X2JpdChSNV9PdmVybGFwLCAm
+c2gtPmRldltzaC0+cGRfaWR4XS5mbGFncyk7CkBAIC01ODYxLDcgKzU4NjgsNyBAQCBzdGF0
+aWMgYm9vbCByYWlkNV9tYWtlX3JlcXVlc3Qoc3RydWN0IG1kZGV2ICptZGRldiwgc3RydWN0
+IGJpbyAqIGJpKQogCQkJKHVuc2lnbmVkIGxvbmcgbG9uZyluZXdfc2VjdG9yLAogCQkJKHVu
+c2lnbmVkIGxvbmcgbG9uZylsb2dpY2FsX3NlY3Rvcik7CiAKLQkJc2ggPSByYWlkNV9nZXRf
+YWN0aXZlX3N0cmlwZShjb25mLCBuZXdfc2VjdG9yLCBwcmV2aW91cywKKwkJc2ggPSByYWlk
+NV9nZXRfYWN0aXZlX3N0cmlwZShjb25mLCBuZXdfc2VjdG9yLCBwcmV2aW91cywgMCwKIAkJ
+CQkgICAgICAgKGJpLT5iaV9vcGYgJiBSRVFfUkFIRUFEKSwgMCk7CiAJCWlmIChzaCkgewog
+CQkJaWYgKHVubGlrZWx5KHByZXZpb3VzKSkgewpAQCAtNjEwMCw3ICs2MTA3LDcgQEAgc3Rh
+dGljIHNlY3Rvcl90IHJlc2hhcGVfcmVxdWVzdChzdHJ1Y3QgbWRkZXYgKm1kZGV2LCBzZWN0
+b3JfdCBzZWN0b3JfbnIsIGludCAqc2sKIAlmb3IgKGkgPSAwOyBpIDwgcmVzaGFwZV9zZWN0
+b3JzOyBpICs9IFJBSUQ1X1NUUklQRV9TRUNUT1JTKGNvbmYpKSB7CiAJCWludCBqOwogCQlp
+bnQgc2tpcHBlZF9kaXNrID0gMDsKLQkJc2ggPSByYWlkNV9nZXRfYWN0aXZlX3N0cmlwZShj
+b25mLCBzdHJpcGVfYWRkcitpLCAwLCAwLCAxKTsKKwkJc2ggPSByYWlkNV9nZXRfYWN0aXZl
+X3N0cmlwZShjb25mLCBzdHJpcGVfYWRkcitpLCAwLCAwLCAwLCAxKTsKIAkJc2V0X2JpdChT
+VFJJUEVfRVhQQU5ESU5HLCAmc2gtPnN0YXRlKTsKIAkJYXRvbWljX2luYygmY29uZi0+cmVz
+aGFwZV9zdHJpcGVzKTsKIAkJLyogSWYgYW55IG9mIHRoaXMgc3RyaXBlIGlzIGJleW9uZCB0
+aGUgZW5kIG9mIHRoZSBvbGQKQEAgLTYxNDksNyArNjE1Niw3IEBAIHN0YXRpYyBzZWN0b3Jf
+dCByZXNoYXBlX3JlcXVlc3Qoc3RydWN0IG1kZGV2ICptZGRldiwgc2VjdG9yX3Qgc2VjdG9y
+X25yLCBpbnQgKnNrCiAJaWYgKGxhc3Rfc2VjdG9yID49IG1kZGV2LT5kZXZfc2VjdG9ycykK
+IAkJbGFzdF9zZWN0b3IgPSBtZGRldi0+ZGV2X3NlY3RvcnMgLSAxOwogCXdoaWxlIChmaXJz
+dF9zZWN0b3IgPD0gbGFzdF9zZWN0b3IpIHsKLQkJc2ggPSByYWlkNV9nZXRfYWN0aXZlX3N0
+cmlwZShjb25mLCBmaXJzdF9zZWN0b3IsIDEsIDAsIDEpOworCQlzaCA9IHJhaWQ1X2dldF9h
+Y3RpdmVfc3RyaXBlKGNvbmYsIGZpcnN0X3NlY3RvciwgMCwgMSwgMCwgMSk7CiAJCXNldF9i
+aXQoU1RSSVBFX0VYUEFORF9TT1VSQ0UsICZzaC0+c3RhdGUpOwogCQlzZXRfYml0KFNUUklQ
+RV9IQU5ETEUsICZzaC0+c3RhdGUpOwogCQlyYWlkNV9yZWxlYXNlX3N0cmlwZShzaCk7CkBA
+IC02MjY5LDkgKzYyNzYsMTQgQEAgc3RhdGljIGlubGluZSBzZWN0b3JfdCByYWlkNV9zeW5j
+X3JlcXVlc3Qoc3RydWN0IG1kZGV2ICptZGRldiwgc2VjdG9yX3Qgc2VjdG9yX24KIAogCW1k
+X2JpdG1hcF9jb25kX2VuZF9zeW5jKG1kZGV2LT5iaXRtYXAsIHNlY3Rvcl9uciwgZmFsc2Up
+OwogCi0Jc2ggPSByYWlkNV9nZXRfYWN0aXZlX3N0cmlwZShjb25mLCBzZWN0b3JfbnIsIDAs
+IDEsIDApOworCXNoID0gcmFpZDVfZ2V0X2FjdGl2ZV9zdHJpcGUoY29uZiwgc2VjdG9yX25y
+LCAxLCAwLCAxLCAwKTsKIAlpZiAoc2ggPT0gTlVMTCkgewotCQlzaCA9IHJhaWQ1X2dldF9h
+Y3RpdmVfc3RyaXBlKGNvbmYsIHNlY3Rvcl9uciwgMCwgMCwgMCk7CisJCXNoID0gcmFpZDVf
+Z2V0X2FjdGl2ZV9zdHJpcGUoY29uZiwgc2VjdG9yX25yLCAxLCAwLCAwLCAwKTsKKwkJaWYg
+KCFzaCAmJiB0ZXN0X2JpdChNRF9SRUNPVkVSWV9JTlRSLCAmbWRkZXYtPnJlY292ZXJ5KSkg
+eworCQkJKnNraXBwZWQgPSAxOworCQkJcmV0dXJuIDA7CisJCX0KKwogCQkvKiBtYWtlIHN1
+cmUgd2UgZG9uJ3Qgc3dhbXAgdGhlIHN0cmlwZSBjYWNoZSBpZiBzb21lb25lIGVsc2UKIAkJ
+ICogaXMgdHJ5aW5nIHRvIGdldCBhY2Nlc3MKIAkJICovCkBAIC02MzM0LDcgKzYzNDYsNyBA
+QCBzdGF0aWMgaW50ICByZXRyeV9hbGlnbmVkX3JlYWQoc3RydWN0IHI1Y29uZiAqY29uZiwg
+c3RydWN0IGJpbyAqcmFpZF9iaW8sCiAJCQkvKiBhbHJlYWR5IGRvbmUgdGhpcyBzdHJpcGUg
+Ki8KIAkJCWNvbnRpbnVlOwogCi0JCXNoID0gcmFpZDVfZ2V0X2FjdGl2ZV9zdHJpcGUoY29u
+Ziwgc2VjdG9yLCAwLCAxLCAxKTsKKwkJc2ggPSByYWlkNV9nZXRfYWN0aXZlX3N0cmlwZShj
+b25mLCBzZWN0b3IsIDAsIDAsIDEsIDEpOwogCiAJCWlmICghc2gpIHsKIAkJCS8qIGZhaWxl
+ZCB0byBnZXQgYSBzdHJpcGUgLSBtdXN0IHdhaXQgKi8KZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bWQvcmFpZDUuaCBiL2RyaXZlcnMvbWQvcmFpZDUuaAppbmRleCA1YzA1YWNmLi5kOWVhYjQ2
+IDEwMDY0NAotLS0gYS9kcml2ZXJzL21kL3JhaWQ1LmgKKysrIGIvZHJpdmVycy9tZC9yYWlk
+NS5oCkBAIC04MDYsNyArODA2LDcgQEAgZXh0ZXJuIHNlY3Rvcl90IHJhaWQ1X2NvbXB1dGVf
+c2VjdG9yKHN0cnVjdCByNWNvbmYgKmNvbmYsIHNlY3Rvcl90IHJfc2VjdG9yLAogCQkJCSAg
+ICAgaW50IHByZXZpb3VzLCBpbnQgKmRkX2lkeCwKIAkJCQkgICAgIHN0cnVjdCBzdHJpcGVf
+aGVhZCAqc2gpOwogZXh0ZXJuIHN0cnVjdCBzdHJpcGVfaGVhZCAqCi1yYWlkNV9nZXRfYWN0
+aXZlX3N0cmlwZShzdHJ1Y3QgcjVjb25mICpjb25mLCBzZWN0b3JfdCBzZWN0b3IsCityYWlk
+NV9nZXRfYWN0aXZlX3N0cmlwZShzdHJ1Y3QgcjVjb25mICpjb25mLCBzZWN0b3JfdCBzZWN0
+b3IsIGludCBzeW5jX3JlcSwKIAkJCWludCBwcmV2aW91cywgaW50IG5vYmxvY2ssIGludCBu
+b3F1aWVzY2UpOwogZXh0ZXJuIGludCByYWlkNV9jYWxjX2RlZ3JhZGVkKHN0cnVjdCByNWNv
+bmYgKmNvbmYpOwogZXh0ZXJuIGludCByNWNfam91cm5hbF9tb2RlX3NldChzdHJ1Y3QgbWRk
+ZXYgKm1kZGV2LCBpbnQgam91cm5hbF9tb2RlKTsK
+--------------93515907419EC43A70E50E97--
