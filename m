@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E979A3045BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD94B3045C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389819AbhAZRxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:53:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390312AbhAZIoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:44:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BA172065C;
-        Tue, 26 Jan 2021 08:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611650611;
-        bh=RGOC6SXuU+lbMn+ZX7UyoYXvwogc/UEwlnkWFIn9f4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kSaoX74K2eXtrwg/yJ3X5QKORA14j5cvZVrspdE6ewg1AztLk/aKSJObGLezpIOZ9
-         YlVsAUHn4DWkubCNTFePyiKQDPKYpjh2qvBkkB91KoEQ8I2TEkBbLTr4CnOjfgYH1V
-         Bq2Z/q9wxKQVVJh9cz3L4i1y7HFuOcIZP90q8mE4=
-Date:   Tue, 26 Jan 2021 09:43:29 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-        linux-kernel@vger.kernel.org, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH 5.10 000/199] 5.10.11-rc1 review
-Message-ID: <YA/WMSIMjeclLv+Y@kroah.com>
-References: <20210125183216.245315437@linuxfoundation.org>
- <ef5b0670-83ea-e754-033c-2f3f56a8c822@linaro.org>
- <20210125201806.GA78651@roeck-us.net>
+        id S2393567AbhAZRxb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 12:53:31 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:36004 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390459AbhAZIoc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:44:32 -0500
+Received: by mail-oi1-f169.google.com with SMTP id d18so8399842oic.3;
+        Tue, 26 Jan 2021 00:44:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EXJh9ZT/mvfwax+nixCrjPTJXYuqqPBVeOG7xO3uNAk=;
+        b=P5kjfsXF4eVwNN/x2V9svoy/RVQENJ7Gb7+MvcdHorkEVvtocxifZ3RyLCZZWWLClA
+         Fc+lBo2S/p6uwWJ39uoc28hvtfI5Q3DgMvnBPhLm/Qsrgjzo5bxUdqK0s3nINY9ld23r
+         9jLSvNSCx8DZ0EG4WVwoBKy1Of9zkI+6BLdi+gO8jPHY9RLoVSbIlPer0ZfjdbST19YG
+         h2pMjQ0/Poo/eTOX10lRXMw4u0xrQ+o03kxYMANAPriVkWjFibYQpVQA5w2DLrElmZM+
+         EN/BSiBPAJznKsMMNOR8TcabzJS8QsDczShuIxaxShSYDMhlErGGy1iBsu4h/lNP4tWC
+         eUvg==
+X-Gm-Message-State: AOAM532VItrCX/llp7lHdWE5g2aMejmGDfX55u7KOAySHF4orc7/wAJD
+        kulsk+PvetQK7auZ0NxKthVDhVV/3xSJMREMr+I=
+X-Google-Smtp-Source: ABdhPJz69UTE8gkwG80/J5ZbUiyydKm7p5q+Aw+6h4wCZBltJqGhh7YnurqET0vyfKoWa/Kgs60FxF84yB88WrQBhmk=
+X-Received: by 2002:aca:1219:: with SMTP id 25mr2591995ois.54.1611650632111;
+ Tue, 26 Jan 2021 00:43:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210125201806.GA78651@roeck-us.net>
+References: <20210125105757.661240-1-uwe@kleine-koenig.org>
+ <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com> <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
+In-Reply-To: <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 Jan 2021 09:43:41 +0100
+Message-ID: <CAMuHMdUmtMxucQ9DWvROVPVv2uGEzpRmtv1=jrjm09xU=gHHyw@mail.gmail.com>
+Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        cyril@debamax.com, Arnd Bergmann <arnd@arndb.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        DTML <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 12:18:06PM -0800, Guenter Roeck wrote:
-> On Mon, Jan 25, 2021 at 01:36:03PM -0600, Daniel Díaz wrote:
-> > Hello!
-> > 
-> > 
-> > On 1/25/21 12:37 PM, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 5.10.11 release.
-> > > There are 199 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > > 
-> > > Responses should be made by Wed, 27 Jan 2021 18:31:44 +0000.
-> > > Anything received after that time might be too late.
-> > > 
-> > > The whole patch series can be found in one patch at:
-> > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.11-rc1.gz
-> > > or in the git tree and branch at:
-> > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > > and the diffstat can be found below.
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > Sanity results from Linaro’s test farm.
-> > Regressions detected.
-> > 
-> [ ... ]
-> > 
-> > Errors look like the following:
-> > 
-> >   make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
-> >   /builds/1nZbYji0zW0SkEnWMrDznWWzerI/arch/x86/kernel/cpu/amd.c: In function 'bsp_init_amd':
-> >   /builds/1nZbYji0zW0SkEnWMrDznWWzerI/arch/x86/kernel/cpu/amd.c:572:3: error: '__max_die_per_package' undeclared (first use in this function); did you mean 'topology_max_die_per_package'?
-> >     572 |   __max_die_per_package = nodes_per_socket = ((ecx >> 8) & 7) + 1;
-> >         |   ^~~~~~~~~~~~~~~~~~~~~
-> >         |   topology_max_die_per_package
-> > 
-> > Will find out more soon.
-> > 
-> 
-> This may be due to commit 76e2fc63ca40 ("x86/cpu/amd: Set __max_die_per_package
-> on AMD").
-> 
-> Our patches robot tells me:
-> 
-> SHA 76e2fc63ca40 recursively fixed by: 1eb8f690bcb5
-> 
-> I don't see commit 1eb8f690bcb5 ("x86/topology: Make __max_die_per_package
-> available unconditionally") in the commit log. I have not checked,
-> but it is at least possible that applying it fixes the problem.
+Hi Uwe,
 
-Argh, the one time I don't run my "are there any fixes for the patches
-in the queue" script, and this pops up...
+On Tue, Jan 26, 2021 at 8:21 AM Uwe Kleine-König <uwe@kleine-koenig.org> wrote:
+> And then I learned with hints from Rob and Geert that symbols are not
+> really necessary for overlays, you just cannot use named labels. But
+> using
+>
+>         target-path = "/soc/i2c@23473245";
+>
+> or
+>
+>         target = <&{/soc/i2c@23473245}>;
+>
+> instead of
+>
+>         target = <&i2c1>;
+>
+> works fine. (And if you need to add a phandle the &{/path/to/node}
+> construct should work, too (but I didn't test).) Using labels is a tad
+> nicer, but the problem I wanted to address with my patch now has a known
+> different solution.
 
-Thanks for this, turns out there's another patch missing as well.  I'll
-be doing a -rc2 soon for two queues...
+Please don't use "target" and "target-path".  Since the introduction of
+sugar syntax support in v4.15[1], you can just use "&label", like in a normal
+DTS file.  Paths do need the special "&{/path/to/node}" syntax instead
+of "/path/to/node", though.
 
-thanks,
+As usual, you can find lots of examples of DT overlays in my repo[2].
 
-greg k-h
+[1] commit 4201d057ea91c3d6 ("scripts/dtc: Update to upstream version
+v1.4.5-3-gb1a60033c110")
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/log/?h=topic/renesas-overlays
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
