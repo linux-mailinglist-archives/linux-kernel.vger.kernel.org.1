@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6440B304DB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53741304DB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387809AbhAZXN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:13:58 -0500
-Received: from mail-pj1-f44.google.com ([209.85.216.44]:50187 "EHLO
-        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726049AbhAZFGE (ORCPT
+        id S2387852AbhAZXOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:14:09 -0500
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:39454 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727894AbhAZFGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 00:06:04 -0500
-Received: by mail-pj1-f44.google.com with SMTP id md11so1347903pjb.0;
-        Mon, 25 Jan 2021 21:05:49 -0800 (PST)
+        Tue, 26 Jan 2021 00:06:43 -0500
+Received: by mail-pg1-f178.google.com with SMTP id 30so10789834pgr.6;
+        Mon, 25 Jan 2021 21:06:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IcrHLqPjMXBnF6rfs3M/DpvPUrrPqGUGDQ5xD1fyZU4=;
-        b=Y1YrR4kw9a2VAijwdLdfqSwAet6QmBU6TAa3wIuwHG76Dhrxe4TajX1Aav7LtI352F
-         HGih/7qBunzvwcUWRi1nUwH1BrRLjpr64B2GqDWBvcYSxYf48ZQhY+XAlQ5OyOAheqys
-         4Rwnq34fca4lk8f5PmP+hj7Cm878qpzeoNOcDiC1cHAz4T3OtgJwacxJgZoS9vk2v8pX
-         XLfAIRopqR6wkgAp6h/rWpnmvF0nvCUdbwVI5wjf1TOSOhGCpw7zEZJRKqO69piv5FWx
-         ZHI5oCtzZYHRIi1j0LbZabFWJ2AQBUriCJsXtUhKE4QXbAxgGviB+Jj0BKirak7AEO90
-         Yb6A==
-X-Gm-Message-State: AOAM5317MALhibbWi2tQZ2MowGmWwhcE0giuuIxnRrnsu2nepJEGkBxl
-        3mTGD4fo/dJ2sgwqGta2g7Y=
-X-Google-Smtp-Source: ABdhPJzLgwil+6sXtWQLhCstqXygI1Y9j2EA/2WKHTOeHKabmV/MYdbcH+dreOD9oCv/D7SdU9Cu1g==
-X-Received: by 2002:a17:90b:4b86:: with SMTP id lr6mr4041168pjb.107.1611637524170;
-        Mon, 25 Jan 2021 21:05:24 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id gk2sm931207pjb.6.2021.01.25.21.05.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 21:05:23 -0800 (PST)
-Date:   Mon, 25 Jan 2021 21:05:21 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     richard.gong@linux.intel.com
-Cc:     mdf@kernel.org, trix@redhat.com, gregkh@linuxfoundation.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCHv3 5/6] dt-bindings: fpga: add authenticate-fpga-config
- property
-Message-ID: <YA+jESIpV/cRTECe@epycbox.lan>
-References: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
- <1611608188-25621-6-git-send-email-richard.gong@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bgzzPIxi+KA87nRql5hoz0FJKMHnwNhrjowfvx/anRo=;
+        b=Mrd+fO1+wdD6azplzyH1pO4aYQd8zfhSbWBFZYfQBh+l0DtmrtMP9fl4DYhZQg5iij
+         S6Pt1+sZ3zuHhXxtxbZFXpZzRuopmtZCSg0fhf9aX93HI+3AQDbLiqKxWa4p/Mq/jSBw
+         kvFrTqtWFiEw6ZIzeHwO4H5Lk5BE7yKSOWaSe0nDlFiQp008mX2nrwt2/a43e5FFtbnB
+         CaxH2GfMlFHmlHpLK1Ukpj0s8zu+G+dQgQENy1XQ++BO7tm4tH0QYjsTnBGzFY5+wrgM
+         FSWwRal6l2l4KgY9yTmj4TvslMUNyfR0H/YzrnZPrcWvG5bz9xDv8x789aD/aaUkVYIc
+         sF5Q==
+X-Gm-Message-State: AOAM531rAkVypSetvcSM69h8Q3C5GvdsU0Ea7rh13JOW4FbjEywyR5Vp
+        3NPr5yEGDKFuyeRhnOVgsSTPKFEs3Tc=
+X-Google-Smtp-Source: ABdhPJzBlxZpwBE04PRvEGVLh2DHIk1KCmjkcdXTsHNFHKTOhYUbVWc8rvzRSgzvjIFpXhDkgaoATQ==
+X-Received: by 2002:a05:6a00:2286:b029:1ae:6c7f:31ce with SMTP id f6-20020a056a002286b02901ae6c7f31cemr3598169pfe.6.1611637562900;
+        Mon, 25 Jan 2021 21:06:02 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:f18a:1f6a:44e7:7404? ([2601:647:4000:d7:f18a:1f6a:44e7:7404])
+        by smtp.gmail.com with ESMTPSA id t2sm19751143pga.45.2021.01.25.21.06.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 21:06:01 -0800 (PST)
+Subject: Re: [PATCH v2] scsi: ufs: Fix some problems in task management
+ request implementation
+To:     Can Guo <cang@codeaurora.org>, jaegeuk@kernel.org,
+        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1611199388-24668-1-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <7570d6b0-631b-a043-92da-21384b55219b@acm.org>
+Date:   Mon, 25 Jan 2021 21:05:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611608188-25621-6-git-send-email-richard.gong@linux.intel.com>
+In-Reply-To: <1611199388-24668-1-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:56:27PM -0600, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
+On 1/20/21 7:23 PM, Can Guo wrote:
+> Current task management request send/compl implementation is broken, the
+> problems and fixes are listed as below:
 > 
-> Add authenticate-fpga-config property for FPGA bitstream authentication,
-> which makes sure a signed bitstream has valid signatures.
+> Problem: TMR completion timeout. ufshcd_tmc_handler() calls
+>          blk_mq_tagset_busy_iter(fn == ufshcd_compl_tm()), but since
+>          blk_mq_tagset_busy_iter() only iterates over all reserved tags and
+>          started requests, so ufshcd_compl_tm() never gets a chance to run.
+> Fix:     Call blk_mq_start_request() in __ufshcd_issue_tm_cmd().
 > 
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> ---
-> v3: no change
-> v2: put authenticate-fpga-config above partial-fpga-config
->     update commit messages
-> ---
->  Documentation/devicetree/bindings/fpga/fpga-region.txt | 1 +
->  1 file changed, 1 insertion(+)
+> Problem: Race condition in send/compl paths. ufshcd_compl_tm() looks for
+>          all 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL and call complete()
+>          for each req who has the req->end_io_data set. There can be a race
+>          condition btw tmc send/compl, because req->end_io_data is set, in
+>          __ufshcd_issue_tm_cmd(), without host lock protection, so it is
+>          possible that when ufshcd_compl_tm() checks the req->end_io_data,
+>          req->end_io_data is set but the corresponding tag has not been set
+>          in the REG_UTP_TASK_REQ_DOOR_BELL. Thus, ufshcd_tmc_handler() may
+>          wrongly complete TMRs which have not been sent.
+> Fix:     Protect req->end_io_data with host lock. And let ufshcd_compl_tm()
+>          only handle those tm cmds which have been completed instead of
+>          looking for 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL.
 > 
-> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> index e811cf8..d0d3234 100644
-> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> @@ -182,6 +182,7 @@ Optional properties:
->  	This property is optional if the FPGA Manager handles the bridges.
->          If the fpga-region is  the child of a fpga-bridge, the list should not
->          contain the parent bridge.
-> +- authenticate-fpga-config : boolean, set if do bitstream authentication only.
-I don't understand. Can I do authenticate-fpga-config AND
-partial-fpga-config?
->  - partial-fpga-config : boolean, set if partial reconfiguration is to be done,
->  	otherwise full reconfiguration is done.
->  - external-fpga-config : boolean, set if the FPGA has already been configured
-> -- 
-> 2.7.4
-> 
-Please clarify,
+> Problem: In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs +
+>          req->tag as the Task Tag in one TMR UPIU.
+> Fix:     Directly use req->tag as Task Tag.
 
-Moritz
+Please split this patch into three separate patches - one patch per
+problem that has been described above.
+
+Thanks,
+
+Bart.
