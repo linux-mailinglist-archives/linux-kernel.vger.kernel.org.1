@@ -2,157 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D78304700
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3B03046EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390241AbhAZRQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:16:41 -0500
-Received: from mail-vi1eur05on2084.outbound.protection.outlook.com ([40.107.21.84]:15489
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730239AbhAZG3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:29:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nDGVJoP8b5vnVbx0mxkKeHQemzXwDbXRkiywIUvuioFdT+Ls0MSjY0jHWASySRGkUCSXhIVXXTFFHvfMhz80PC8Z+nrEIdCikMdor7AnyV67Uii98V8TNKABxeLbfpgw1FWzx0+c5muyGHoh/yx+6l07440qMjBU+v5AtdR9Xs/y49dvIaCj/SMlWAeMh2sY9TxttH0SBpCguhJ0HY4h0QYBc04nkXUCubPB22k9asaY3+hKG8hUjdnApxxz+W6xLDjULMJ7cQi52wqpPs9NH0nxODecTogSe4GiIvcyblwBDZe7eqRLW9iCGBRnKBt9c9sCDB6zLDJVhGsf/Fbe2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bsyqfRbp7aqYQ3tQWxH+X688LPdbc6mqJPtdGcKVuR4=;
- b=A1v0hxjOVkFHAzPi/h23aXGA9PjvlZsEmKhVdjs+bjPqqeufIYCkIKQEgXcrN4aYJPeXa0t3b+ZQlMoElG0WdwvD8mtunJ7R1aE0LZ3CplY//yXurd0KFubhOnqw49Ya2nTsz7eErb1PZ+UEzT1XCGknLHY/deJSa//PNYsVeo7wylXYI05g9Cp70HREqiLWEEDmd1v8uN+S00oCosBMml4Tk3wjFGE+D3FHC8xyrwbjS/TcxaK4zUOqOslmwURdvEqpO8IgbMxfQGsF2EeYpoROMIALHH9V9Hf38giafA2Txj9hxAsiTRf05bVDaPdD6I5SGv24wLlKhgtBgs5PdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bsyqfRbp7aqYQ3tQWxH+X688LPdbc6mqJPtdGcKVuR4=;
- b=ip8gySohy7r5y2IcvAmuglAIw9RtWjRUzZU1Z8baD5flo3heKZlxi+/73n0FNAovBo9hd0FB5hbSaa8YwJ5LgGi5npV2IVO43HFyInREg4247Ay/Y+pXNFXipoRZdtxjXNnC1RthXOwY8nV1zS8ojP/L93OZ7O5HP8n25FzFkmI=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB2973.eurprd04.prod.outlook.com (2603:10a6:802:10::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Tue, 26 Jan
- 2021 06:26:08 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3784.017; Tue, 26 Jan 2021
- 06:26:08 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, laurentiu.palcu@oss.nxp.com,
-        guido.gunther@puri.sm
-Subject: [PATCH v7 6/6] MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
-Date:   Tue, 26 Jan 2021 14:14:51 +0800
-Message-Id: <1611641691-17554-7-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611641691-17554-1-git-send-email-victor.liu@nxp.com>
-References: <1611641691-17554-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR03CA0108.apcprd03.prod.outlook.com
- (2603:1096:4:7c::36) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S2390390AbhAZRSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:18:35 -0500
+Received: from out28-74.mail.aliyun.com ([115.124.28.74]:53738 "EHLO
+        out28-74.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731585AbhAZGdN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 01:33:13 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09914935|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.044853-0.0191849-0.935962;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=liu.xiang@zlingsmart.com;NM=1;PH=DW;RN=8;RT=8;SR=0;TI=W4_6085603_DEFAULT_0AC2669D_1611642513078_o7001c447c;
+Received: from WS-web (liu.xiang@zlingsmart.com[W4_6085603_DEFAULT_0AC2669D_1611642513078_o7001c447c]) by ay29a011140100061.et135 at Tue, 26 Jan 2021 14:31:55 +0800
+Date:   Tue, 26 Jan 2021 14:31:55 +0800
+From:   "liu xiang" <liu.xiang@zlingsmart.com>
+To:     "Maxime Ripard" <maxime@cerno.tech>,
+        "Linus Walleij" <linus.walleij@linaro.org>
+Cc:     "=?UTF-8?B?b3BlbiBsaXN0OkdQSU8gU1VCU1lTVEVN?=" 
+        <linux-gpio@vger.kernel.org>, "Chen-Yu Tsai" <wens@csie.org>,
+        "Jernej Skrabec" <jernej.skrabec@siol.net>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "liuxiang_1999" <liuxiang_1999@126.com>
+Reply-To: "liu xiang" <liu.xiang@zlingsmart.com>
+Message-ID: <5c4b7a8c-c549-43ae-8ec6-5ae3ed26d321.liu.xiang@zlingsmart.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gcGluY3RybDogc3VueGk6IGZpeCB1c2UtYWZ0ZXItZnJlZSBpbiBzdW54?=
+  =?UTF-8?B?aV9wbXhfZnJlZSgp?=
+X-Mailer: [Alimail-Mailagent revision 794][W4_6085603][DEFAULT][Chrome]
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0108.apcprd03.prod.outlook.com (2603:1096:4:7c::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3805.6 via Frontend Transport; Tue, 26 Jan 2021 06:26:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2ef89146-69fc-4e68-2a29-08d8c1c34423
-X-MS-TrafficTypeDiagnostic: VI1PR04MB2973:
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB2973DE5B43FFC208717C861198BC0@VI1PR04MB2973.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:901;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WJ+rCvFF6gRWbP/6cB4lOMONv39o9KUZpGcRzXyGnFvPG/bxODarJlj3C+0C/tXQMfd676hM5QjyQKajHi9lT3eBNpMkTQK2Sh0kEoHn3IrDWMPRURtTLwrclt02CtcFu9n9frmOOxFB9GqL5/MjoXtCxqpTjc/AhfjbwG1NOw/QsntxTJgPPUDE7ubW4y3pVJRn5OlmIKRV4VFYNCbRCWhnYdwNSv/98nURFa1JGF7QxWhxCKuc4rxnXtr0HDVEImoFQQXwGtONBDe0ZXnekVArwatAypzXrtr+2V/A7dQvmBxqXxKxHmGLZCb4ICSLFPlMLq72zsiRTKLHlc26wgL9nqENaN8qbZSONRRWhLRry+FKSmNYN1g8Abq9H6sSPtHj2A6H/70nz5ujqq9HWPPQLXBv0JAs7JIAJIrC8STmZ/h8ywSLQ1LLkklCqhBwD7rdV09QMVwIe5GnKKQp6w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(39860400002)(136003)(376002)(36756003)(8676002)(69590400011)(5660300002)(316002)(7416002)(6486002)(66556008)(8936002)(6666004)(66476007)(66946007)(478600001)(52116002)(4326008)(6512007)(6506007)(86362001)(2906002)(26005)(16526019)(186003)(956004)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?1c9sGCKy8I90h/52yP/85FhJqYBy1+sTjl54ufP3guoOl4V3jQj8+fNN32Jh?=
- =?us-ascii?Q?4fqde7nZ2PtOp/1F8PQS4W7wTAp15F56VwU75SnJ5+2oUXExybBYTx45PvQr?=
- =?us-ascii?Q?27PbKgn616ZodukaS09vIGauesR3iLl67uKZxDEwWSohGS2gr+Dlbxkqg/TB?=
- =?us-ascii?Q?GlvVrFU8w+zknPQq/yJG9NNTKqRt5P5389KoS9E2Zs3NeazwwDDmIkZycS9g?=
- =?us-ascii?Q?BVVJ3yyeYqJSFXmPDifAwzFkWtEN07vm3mVwR2SdzYFkIOzdEwkGic8SAOPk?=
- =?us-ascii?Q?zaXbbl2n/hO2lXdldnrMkGHFV6zPJG7jxFqmeAmxJjoxQ9dQOa33L7YHJYU/?=
- =?us-ascii?Q?yEZLd0ZhHiixkLq58+S9gYLQXk0ktxXT+so6l3pRCRMuUKdwd8RbTJrgR/jP?=
- =?us-ascii?Q?lUAXJhRprULaFrj3QIQa6XKJudnoE/33RiQkjYC472mE5jgxzBIB+PpeujMr?=
- =?us-ascii?Q?96u6t8UJIDNfKPLIaOKU+TRI+ZaQ7f1m/ji8/AbmCuCI12XbDd7WuuncjiHp?=
- =?us-ascii?Q?WABUK/NK4SP3VpsX6HQ6CRttiBnA4MydGt3qf7Ic/zPrRNOt7SnVrNjHRtRI?=
- =?us-ascii?Q?j6atUV/6oXM1Ngeyd3FNdjsk3Z+8Wvvwku4eyTYHT1iDYVw23p/J/wPqvxnV?=
- =?us-ascii?Q?lVgTXD0P/bKxx9hqEKY1AGAbPNYAH2H3uUbtRz+8+NczUJ8qtYv3tGbDeCdd?=
- =?us-ascii?Q?3Xru6oDMeaRqGw9jdJmFAUNcIEcqovEk5gjadF6/Z1l8RWcqDi+zBoSilFoE?=
- =?us-ascii?Q?NNffDE2NKHineSF6WP/ZugGlkyDP3GD7Si73vCizqSxJrViqkxNudrdQstOM?=
- =?us-ascii?Q?O8/cBaNAVASo9KrW/k3v8Zu12zvEKu1KehGxskyAQi8AKDqvG4+VuszNjTEY?=
- =?us-ascii?Q?7b++5MM20FwyrMxrDfRc3tsW5rVXFl2fvURas+QKGjdy0lFOLjToG5RyYEJi?=
- =?us-ascii?Q?VoOcVVRJaNnxP8uZh/rQQJMWUilp2+cCLT77JZLzSyVyba1R5tViAvjDT4i0?=
- =?us-ascii?Q?uWmg/ONIoraDThKmEaCiEqKB+CTjxM4zFAvtOKwlvXtjI0uj1M5mZtKmH+CP?=
- =?us-ascii?Q?i1MT28Ba?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ef89146-69fc-4e68-2a29-08d8c1c34423
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 06:26:08.2201
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kLtLYnnZQhBJ9JYm1vy8NN2XQyvkc4KSzo+vGDzJgWKqw7300e7zFxqqUPukdstmaCFre25hiLf4M/ild8uE4Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB2973
+References: <20210119062908.20169-1-liu.xiang@zlingsmart.com> <20210121164013.cqfxvach4ugkohm7@gilmour>,<CACRpkdb1gn2e9=ip6ipAwW27vmf1FCs_y1Z=w-K8y8Z9MXVBMw@mail.gmail.com>
+x-aliyun-mail-creator: W4_6085603_DEFAULT_AoSTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV09XNjQpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS83NS4wLjM3NzAuMTAwIFNhZmFyaS81MzcuMzY=zN
+In-Reply-To: <CACRpkdb1gn2e9=ip6ipAwW27vmf1FCs_y1Z=w-K8y8Z9MXVBMw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as the maintainer of the i.MX8qxp DPU DRM driver.
-
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
-v6->v7:
-* No change.
-
-v5->v6:
-* No change.
-
-v4->v5:
-* No change.
-
-v3->v4:
-* No change.
-
-v2->v3:
-* No change.
-
-v1->v2:
-* No change.
-
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9d241b8..0fe4f0cc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5892,6 +5892,15 @@ F:	Documentation/devicetree/bindings/display/imx/
- F:	drivers/gpu/drm/imx/
- F:	drivers/gpu/ipu-v3/
- 
-+DRM DRIVERS FOR FREESCALE i.MX8QXP
-+M:	Liu Ying <victor.liu@nxp.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
-+F:	drivers/gpu/drm/imx/dpu/
-+
- DRM DRIVERS FOR GMA500 (Poulsbo, Moorestown and derivative chipsets)
- M:	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
- L:	dri-devel@lists.freedesktop.org
--- 
-2.7.4
-
+PiBPbiBUaHUsIEphbiAyMSwgMjAyMSBhdCA1OjQwIFBNIE1heGltZSBSaXBhcmQgPG1heGltZUBj
+ZXJuby50ZWNoPiB3cm90ZToKPiBPbiBUdWUsIEphbiAxOSwgMjAyMSBhdCAwMjoyOTowOFBNICsw
+ODAwLCBMaXUgWGlhbmcgd3JvdGU6Cj4gPiBXaGVuIENPTkZJR19SRUdVTEFUT1IgaXMgbm90IHNl
+dCwgc3VueGlfcG14X3JlcXVlc3QoKSBhbHdheXMgcmV0dXJuCj4gPiBzdWNjZXNzLiBFdmVuIGEg
+Z3JvdXAgb2YgcGlucyBjYWxsIHN1bnhpX3BteF9yZXF1ZXN0KCksIHRoZSByZWZjb3VudAo+ID4g
+aXMgb25seSAxLiBUaGlzIGNhbiBjYXVzZSBhIHVzZS1hZnRlci1mcmVlIHdhcm5pbmcgaW4gc3Vu
+eGlfcG14X2ZyZWUoKS4KPiA+IFRvIHNvbHZlIHRoaXMgcHJvYmxlbSwgZ28gdG8gZXJyIHBhdGgg
+aWYgcmVndWxhdG9yX2dldCgpIHJldHVybiBOVUxMCj4gPiBvciBlcnJvci4KPiA+Cj4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBMaXUgWGlhbmcgPGxpdS54aWFuZ0B6bGluZ3NtYXJ0LmNvbT4KPgo+IElzIHRo
+ZXJlIGFueSBkcmF3YmFjayB0byBkZXBlbmRpbmcgb24gQ09ORklHX1JFR1VMQVRPUj8KPgo+IEdp
+dmVuIHRoYXQgd2UgbmVlZCB0aG9zZSByZWd1bGF0b3JzIGVuYWJsZWQgYW55d2F5LCBJIGd1ZXNz
+IHdlIGNvdWxkCj4ganVzdCBzZWxlY3Qgb3IgZGVwZW5kcyBvbiBpdAo+IAo+IEkgYWdyZWUuCj4g
+Cj4gTGl1IGNhbiB5b3UgbWFrZSBhIHBhdGNoIHRvIEtjb25maWcgdG8ganVzdCBzZWxlY3QgUkVH
+VUxBVE9SPwo+IFBvc3NpYmx5IGV2ZW4gdGhlIHNwZWNpZmljIHJlZ3VsYXRvciBkcml2ZXIgdGhp
+cyBTb0MgaXMgdXNpbmcKPiBpZiBpdCBpcyB2ZXJ5IHNwZWNpZmljIGZvciB0aGlzIHB1cnBvc2Uu
+Cj4gCj4gWW91cnMsCj4gTGludXMgV2FsbGVpagoKSSBmb3VuZCB0aGF0IHRoZSByZWd1bGF0b3Ig
+ZHJpdmVyIGlzIHJlbGF0ZWQgdG8gdGhlIHNwZWNpZmljIGJvYXJkLCBub3QgdGhlIFNvQy4KVGhl
+cmUgaXMgbm8gYm9hcmQgY29uZmlnIGZvciBBUk02NCBTb0MgbGlrZSBBUk0uCklzIGEgZ29vZCBp
+ZGVhIHRvIHNlbGVjdCB0aGUgcmVndWxhdG9yIGRyaXZlciBpbiB0aGUgcGluY3RybCBLb25maWc/
+IE9yIGp1c3QgCnNlbGVjdCBDT05GSUdfUkVHVUxBVE9SX0ZJWEVEX1ZPTFRBR0UgdG8gYXZvaWQg
+dGhlIHVzZS1hZnRlci1mcmVlIHdhcm5pbmc/
