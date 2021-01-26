@@ -2,127 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0689303C90
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9148B303C9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392338AbhAZMJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:09:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56120 "EHLO mail.kernel.org"
+        id S2392450AbhAZMKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:10:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34440 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391564AbhAZMIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:08:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D34212311D;
-        Tue, 26 Jan 2021 12:07:56 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 12:07:54 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH v4 1/3] arm64: Improve kernel address detection of
- __is_lm_address()
-Message-ID: <20210126120754.GB20158@gaia>
-References: <20210122155642.23187-1-vincenzo.frascino@arm.com>
- <20210122155642.23187-2-vincenzo.frascino@arm.com>
- <20210125130204.GA4565@C02TD0UTHF1T.local>
- <ddc0f9e2-f63e-9c34-f0a4-067d1c5d63b8@arm.com>
- <20210125145911.GG25360@gaia>
- <4bd1c01b-613c-787f-4363-c55a071f14ae@arm.com>
- <20210125175630.GK25360@gaia>
- <62348cb4-0b2e-e17a-d930-8d41dc4200d3@arm.com>
+        id S2392429AbhAZMJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 07:09:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611662905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rMlCz0R0+4hx1OA36aSmAlu8tlv8RUdQ0e7IJLpT36s=;
+        b=SMhufNb2gWzhhrAZNHftCxKV09Z4ON1Nna331EeVwq6g5uadItVhhfYPwqZMwl7NrZHGoe
+        sfrAnbEuROoHMCjd6kgLJlKlWNL6a2+tLn/JlOmK2zxwqEpUN438kLFMPBZjX2B+uErhsc
+        6f7ZU3sY9xTAQHU0CIqtjHt0JXNni38=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B5805AD26;
+        Tue, 26 Jan 2021 12:08:24 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 13:08:23 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20210126120823.GM827@dhcp22.suse.cz>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-8-rppt@kernel.org>
+ <20210126114657.GL827@dhcp22.suse.cz>
+ <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <62348cb4-0b2e-e17a-d930-8d41dc4200d3@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:58:13AM +0000, Vincenzo Frascino wrote:
-> On 1/25/21 5:56 PM, Catalin Marinas wrote:
-> > On Mon, Jan 25, 2021 at 04:09:57PM +0000, Vincenzo Frascino wrote:
-> >> On 1/25/21 2:59 PM, Catalin Marinas wrote:
-> >>> On Mon, Jan 25, 2021 at 02:36:34PM +0000, Vincenzo Frascino wrote:
-> >>>> On 1/25/21 1:02 PM, Mark Rutland wrote:
-> >>>>> On Fri, Jan 22, 2021 at 03:56:40PM +0000, Vincenzo Frascino wrote:
-> >>>>>> Currently, the __is_lm_address() check just masks out the top 12 bits
-> >>>>>> of the address, but if they are 0, it still yields a true result.
-> >>>>>> This has as a side effect that virt_addr_valid() returns true even for
-> >>>>>> invalid virtual addresses (e.g. 0x0).
-> >>>>>>
-> >>>>>> Improve the detection checking that it's actually a kernel address
-> >>>>>> starting at PAGE_OFFSET.
-> >>>>>>
-> >>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >>>>>> Cc: Will Deacon <will@kernel.org>
-> >>>>>> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> >>>>>> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> >>>>>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> >>>>>
-> >>>>> Looking around, it seems that there are some existing uses of
-> >>>>> virt_addr_valid() that expect it to reject addresses outside of the
-> >>>>> TTBR1 range. For example, check_mem_type() in drivers/tee/optee/call.c.
-> >>>>>
-> >>>>> Given that, I think we need something that's easy to backport to stable.
-> >>>>>
-> >>>>
-> >>>> I agree, I started looking at it this morning and I found cases even in the main
-> >>>> allocators (slub and page_alloc) either then the one you mentioned.
-> >>>>
-> >>>>> This patch itself looks fine, but it's not going to backport very far,
-> >>>>> so I suspect we might need to write a preparatory patch that adds an
-> >>>>> explicit range check to virt_addr_valid() which can be trivially
-> >>>>> backported.
-> >>>>>
-> >>>>
-> >>>> I checked the old releases and I agree this is not back-portable as it stands.
-> >>>> I propose therefore to add a preparatory patch with the check below:
-> >>>>
-> >>>> #define __is_ttrb1_address(addr)	((u64)(addr) >= PAGE_OFFSET && \
-> >>>> 					(u64)(addr) < PAGE_END)
-> >>>>
-> >>>> If it works for you I am happy to take care of it and post a new version of my
-> >>>> patches.
-> >>>
-> >>> I'm not entirely sure we need a preparatory patch. IIUC (it needs
-> >>> checking), virt_addr_valid() was fine until 5.4, broken by commit
-> >>> 14c127c957c1 ("arm64: mm: Flip kernel VA space"). Will addressed the
-> >>> flip case in 68dd8ef32162 ("arm64: memory: Fix virt_addr_valid() using
-> >>> __is_lm_address()") but this broke the <PAGE_OFFSET case. So in 5.4 a
-> >>> NULL address is considered valid.
-> >>>
-> >>> Ard's commit f4693c2716b3 ("arm64: mm: extend linear region for 52-bit
-> >>> VA configurations") changed the test to no longer rely on va_bits but
-> >>> did not change the broken semantics.
-> >>>
-> >>> If Ard's change plus the fix proposed in this test works on 5.4, I'd say
-> >>> we just merge this patch with the corresponding Cc stable and Fixes tags
-> >>> and tweak it slightly when doing the backports as it wouldn't apply
-> >>> cleanly. IOW, I wouldn't add another check to virt_addr_valid() as we
-> >>> did not need one prior to 5.4.
-> >>
-> >> Thank you for the detailed analysis. I checked on 5.4 and it seems that Ard
-> >> patch (not a clean backport) plus my proposed fix works correctly and solves the
-> >> issue.
+On Tue 26-01-21 12:56:48, David Hildenbrand wrote:
+> On 26.01.21 12:46, Michal Hocko wrote:
+> > On Thu 21-01-21 14:27:19, Mike Rapoport wrote:
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > 
+> > > Removing a PAGE_SIZE page from the direct map every time such page is
+> > > allocated for a secret memory mapping will cause severe fragmentation of
+> > > the direct map. This fragmentation can be reduced by using PMD-size pages
+> > > as a pool for small pages for secret memory mappings.
+> > > 
+> > > Add a gen_pool per secretmem inode and lazily populate this pool with
+> > > PMD-size pages.
+> > > 
+> > > As pages allocated by secretmem become unmovable, use CMA to back large
+> > > page caches so that page allocator won't be surprised by failing attempt to
+> > > migrate these pages.
+> > > 
+> > > The CMA area used by secretmem is controlled by the "secretmem=" kernel
+> > > parameter. This allows explicit control over the memory available for
+> > > secretmem and provides upper hard limit for secretmem consumption.
 > > 
-> > I didn't mean the backport of the whole commit f4693c2716b3 as it
-> > probably has other dependencies, just the __is_lm_address() change in
-> > that patch.
+> > OK, so I have finally had a look at this closer and this is really not
+> > acceptable. I have already mentioned that in a response to other patch
+> > but any task is able to deprive access to secret memory to other tasks
+> > and cause OOM killer which wouldn't really recover ever and potentially
+> > panic the system. Now you could be less drastic and only make SIGBUS on
+> > fault but that would be still quite terrible. There is a very good
+> > reason why hugetlb implements is non-trivial reservation system to avoid
+> > exactly these problems.
+> > 
+> > So unless I am really misreading the code
+> > Nacked-by: Michal Hocko <mhocko@suse.com>
+> > 
+> > That doesn't mean I reject the whole idea. There are some details to
+> > sort out as mentioned elsewhere but you cannot really depend on
+> > pre-allocated pool which can fail at a fault time like that.
 > 
-> Then call it preparatory patch ;)
+> So, to do it similar to hugetlbfs (e.g., with CMA), there would have to be a
+> mechanism to actually try pre-reserving (e.g., from the CMA area), at which
+> point in time the pages would get moved to the secretmem pool, and a
+> mechanism for mmap() etc. to "reserve" from these secretmem pool, such that
+> there are guarantees at fault time?
 
-It's preparatory only for the stable backports, not for current
-mainline. But I'd rather change the upstream patch when backporting to
-apply cleanly, no need for a preparatory stable patch.
-
+yes, reserve at mmap time and use during the fault. But this all sounds
+like a self inflicted problem to me. Sure you can have a pre-allocated
+or more dynamic pool to reduce the direct mapping fragmentation but you
+can always fall back to regular allocatios. In other ways have the pool
+as an optimization rather than a hard requirement. With a careful access
+control this sounds like a manageable solution to me.
 -- 
-Catalin
+Michal Hocko
+SUSE Labs
