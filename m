@@ -2,76 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A515A304541
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71384304549
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391564AbhAZR0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:26:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50306 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389293AbhAZHRv (ORCPT
+        id S1729683AbhAZR0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389555AbhAZHV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:17:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611645381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yIlOP1z9vmdG98LkyGhO2vFGnoyUBAuXU0XkS/MGEis=;
-        b=QDp52P5a+t1uN7HuXkj/VYkIKd20ruNmtukvGGQxlHPvym2g2DrUJ0+GQDU/gEsEKQl937
-        3nY6UhJNxqkNmiqCAGLPmW1auySdJBt1o9UpicMsTmL1+ShnJo58XsLUV333bE+KdvjoCA
-        oKRKqm2D2G6zRSFNkdeUYGqOVdq1UTQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-89-aLjSun_bOb2qfWCJd3owGA-1; Tue, 26 Jan 2021 02:16:17 -0500
-X-MC-Unique: aLjSun_bOb2qfWCJd3owGA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C17F190B2A1;
-        Tue, 26 Jan 2021 07:16:16 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-12-115.pek2.redhat.com [10.72.12.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B044E5D74E;
-        Tue, 26 Jan 2021 07:16:10 +0000 (UTC)
-From:   Cindy Lu <lulu@redhat.com>
-To:     lulu@redhat.com, jasowang@redhat.com, mst@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH v3] vhost_vdpa: fix the problem in vhost_vdpa_set_config_call
-Date:   Tue, 26 Jan 2021 15:16:07 +0800
-Message-Id: <20210126071607.31487-1-lulu@redhat.com>
+        Tue, 26 Jan 2021 02:21:58 -0500
+X-Greylist: delayed 73382 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 Jan 2021 23:21:12 PST
+Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F52C061573;
+        Mon, 25 Jan 2021 23:21:12 -0800 (PST)
+Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
+        by antares.kleine-koenig.org (Postfix) with ESMTP id 46AFDADE69D;
+        Tue, 26 Jan 2021 08:21:09 +0100 (CET)
+Received: from antares.kleine-koenig.org ([94.130.110.236])
+        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
+        with ESMTP id V7DnAz6ZVq0I; Tue, 26 Jan 2021 08:21:07 +0100 (CET)
+Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5ad:20fc:e287:a8e4:9290:29e6])
+        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
+        Tue, 26 Jan 2021 08:21:07 +0100 (CET)
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        cyril@debamax.com, Arnd Bergmann <arnd@arndb.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Herring <robh@kernel.org>
+References: <20210125105757.661240-1-uwe@kleine-koenig.org>
+ <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
+From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
+Message-ID: <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
+Date:   Tue, 26 Jan 2021 08:20:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Md9uBspQZ8si26wbTEXGrXNDQsO6WS1FX"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In vhost_vdpa_set_config_call, the cb.private should be vhost_vdpa.
-this cb.private will finally use in vhost_vdpa_config_cb as
-vhost_vdpa. Fix this issue.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Md9uBspQZ8si26wbTEXGrXNDQsO6WS1FX
+Content-Type: multipart/mixed; boundary="bIO7wac1lK89xpNlKc4oBcYpFRZsCPvJE";
+ protected-headers="v1"
+From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Michal Marek <michal.lkml@markovi.net>,
+ Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, cyril@debamax.com,
+ Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <mripard@kernel.org>,
+ DTML <devicetree@vger.kernel.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Rob Herring <robh@kernel.org>
+Message-ID: <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
+Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
+References: <20210125105757.661240-1-uwe@kleine-koenig.org>
+ <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
+In-Reply-To: <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
 
-Cc: stable@vger.kernel.org
-Fixes: 776f395004d82 ("vhost_vdpa: Support config interrupt in vdpa")
-Signed-off-by: Cindy Lu <lulu@redhat.com>
----
- drivers/vhost/vdpa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--bIO7wac1lK89xpNlKc4oBcYpFRZsCPvJE
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index ef688c8c0e0e..3fbb9c1f49da 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -319,7 +319,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
- 	struct eventfd_ctx *ctx;
- 
- 	cb.callback = vhost_vdpa_config_cb;
--	cb.private = v->vdpa;
-+	cb.private = v;
- 	if (copy_from_user(&fd, argp, sizeof(fd)))
- 		return  -EFAULT;
- 
--- 
-2.21.3
+Hello Masahiro,
 
+On 1/25/21 10:53 PM, Masahiro Yamada wrote:
+> On Mon, Jan 25, 2021 at 8:07 PM Uwe Kleine-K=C3=B6nig <uwe@kleine-koeni=
+g.org> wrote:
+>>
+>> Adding the -@ switch to dtc results in the binary devicetrees containi=
+ng
+>> a list of symbolic references and their paths. This is necessary to
+>> apply device tree overlays e.g. on Raspberry Pi as described on
+>> https://www.raspberrypi.org/documentation/configuration/device-tree.md=
+=2E
+>>
+>> Obviously the downside of this change is an increas of the size of the=
+
+>> generated dtbs, for an arm out-of-tree build (multi_v7_defconfig):
+>>
+>>          $ du -s arch/arm/boot/dts*
+>>          101380  arch/arm/boot/dts-pre
+>>          114308  arch/arm/boot/dts-post
+>>
+>> so this is in average an increase of 12.8% in size.
+>>
+>> Signed-off-by: Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.org>
+>=20
+>=20
+> (CCing DT ML.)
+
+makes sense, thanks.
+
+> https://www.spinics.net/lists/linux-kbuild/msg27904.html
+>=20
+> See Rob's comment:
+>=20
+> "We've already rejected doing that. Turning on '-@' can grow the dtb
+> size by a significant amount which could be problematic for some
+> boards."
+
+The patch was created after some conversation on irc which continued
+after I sent the patch. I added the participating parties to Cc:.
+
+The (relevant) followups were:
+
+Geert suggested to always generate the symbols and provide a way to
+strip the symbols for installation if and when they are not needed.
+
+Rob said: "I'm less concerned with the size increases, but rather that
+labels go from purely source syntax to an ABI. I'd rather see some
+decision as to which labels are enabled or not."
+
+And then I learned with hints from Rob and Geert that symbols are not
+really necessary for overlays, you just cannot use named labels. But
+using
+
+	target-path =3D "/soc/i2c@23473245";
+
+or
+
+	target =3D <&{/soc/i2c@23473245}>;
+
+instead of
+
+	target =3D <&i2c1>;
+
+works fine. (And if you need to add a phandle the &{/path/to/node}
+construct should work, too (but I didn't test).) Using labels is a tad=20
+nicer, but the problem I wanted to address with my patch now has a known =
+
+different solution.
+
+Best regards
+Uwe
+
+
+--bIO7wac1lK89xpNlKc4oBcYpFRZsCPvJE--
+
+--Md9uBspQZ8si26wbTEXGrXNDQsO6WS1FX
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAPwtwACgkQwfwUeK3K
+7AlKXwgAm+kcs8YKGPW7BkNgCAJ44hDVJaUMseUumkbzSu+J7mJb/cEZ0bG87K+J
+SzhQcJQ2LoASq0ZMg6dTn2PyqBDv63nnKmHiFVa+3z9J9EWPK+ZvZSyvoX0PLjiO
+/IoBG+Vaei0hav2poeDjBdSWybhP567KYiYPkrmlbUyt9Aq6fgaEqgOGnnaZbxII
+YOJ51Aec1JjAzlb8uD9dOYPmNKAFqlfONfBcr9abIACfc6FEKQytp/yvn6UvkHrL
+tdP1lubPpzJXFJp8Md4yCPRRUbTpB8b7qvLXIge0YVUeU641roNdDnX9TY818ffA
+qXrWfwyBKeMboKt30RTEfkHmEmIDew==
+=nA4F
+-----END PGP SIGNATURE-----
+
+--Md9uBspQZ8si26wbTEXGrXNDQsO6WS1FX--
