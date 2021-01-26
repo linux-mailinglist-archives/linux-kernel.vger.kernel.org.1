@@ -2,150 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3C0303F4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAC6303F59
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405545AbhAZNv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:51:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44639 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405512AbhAZNut (ORCPT
+        id S2405543AbhAZNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:53:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405322AbhAZNuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:50:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611668959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MYu5BQ2EF91Z99K/GYTOY1vC6Pp9/D8PfbMST9otyFw=;
-        b=DfpreiwZmIBn0o4wJcZP5+HrlZoWMzjUVHucFYfDvtFvOZepcMva1iA7CCyu29m6vEWGuG
-        tBkmUZJQuOnTETVEQlhgI922kS/9OzFknuNesPSDxsBANd55iYpslOSFxROyJDNIRF/Oni
-        G2YkucaB0PR8OuEOEa0Wi/PousVY7og=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-LeoNUzoQNFK94Tj2kWD9Tg-1; Tue, 26 Jan 2021 08:49:17 -0500
-X-MC-Unique: LeoNUzoQNFK94Tj2kWD9Tg-1
-Received: by mail-qk1-f198.google.com with SMTP id d194so4515513qke.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:49:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=MYu5BQ2EF91Z99K/GYTOY1vC6Pp9/D8PfbMST9otyFw=;
-        b=NnTwTWmNkv81sI1gtD2c1pGAW6CMI61soLVTFO64cYiRn9KOck2KmEJqb+RjILpMqF
-         3IujpLPF0bd7Fo6IPOmOmhVgUrEA+6qKhPDELZaM/x66pKW1OB6oulnDtj2xujd0MxvO
-         IAmRItPgg3lDJkjt/HQdFZHM009Y8zqp4p0wtRrisHzkdfUjJk1mvMEByNl66uo8ljPR
-         ZMD/vyUBmx06GeDYeK4VnYSB+QlUZu5gijdpE6WH1BtcjfvQX2qQTRrde/2a07NYtQPP
-         0Dx6hJwl3gPizegSHW299Hsx6otb9m1nsGT/hVJDJTfe8L69mlGuvJs0vb0ZdU4i4swc
-         Sr+Q==
-X-Gm-Message-State: AOAM5337VTKZwA5Nb26Xj+AtYh++woVZKMTSTBQOke85Fct36YfETB7q
-        DXtSjgzCmw7PY9WecPp2DsNGYSA3s0Ld6AWkQiezwr6G0j5W3evuvPMIo2Hjj/9F5jTAPR35IOG
-        s8DoNTD2e/GjrfpF62aMS3mdY
-X-Received: by 2002:a37:8344:: with SMTP id f65mr5590665qkd.398.1611668957158;
-        Tue, 26 Jan 2021 05:49:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzZDLsBwpdlQ4agI0cNfcNke8pZgQ77JzfLYMIDWdFaOKEFCetH7NP1xUkn9txwyk3OaxJ2ww==
-X-Received: by 2002:a37:8344:: with SMTP id f65mr5590638qkd.398.1611668956833;
-        Tue, 26 Jan 2021 05:49:16 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id u5sm14547658qkb.120.2021.01.26.05.49.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 05:49:16 -0800 (PST)
-Subject: Re: [PATCH v9 1/2] uio: uio_dfl: add userspace i/o driver for DFL bus
-To:     Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lgoncalv@redhat.com, hao.wu@intel.com
-References: <1611564563-9665-1-git-send-email-yilun.xu@intel.com>
- <1611564563-9665-2-git-send-email-yilun.xu@intel.com>
- <e9bb1ff8-f630-f1a3-985c-7e51369a733f@redhat.com>
- <YA98/8r+yOCurHAJ@epycbox.lan> <20210126024005.GB3907@yilunxu-OptiPlex-7050>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <2453fe70-9459-f260-305c-3ca5d6fa8aff@redhat.com>
-Date:   Tue, 26 Jan 2021 05:49:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 26 Jan 2021 08:50:22 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2121DC0611C2;
+        Tue, 26 Jan 2021 05:49:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=J5ZqF3ROoAZvc79uZMB4KxJkDo/pwToOQ5rY1t//3ZM=; b=KZChSPk+5hypw/XJh9A75gVhv
+        JDD6HhjfEwWfJ+zoV2ECb2EymAIkJ9h4MarIq8lf/u5o8Bj6n7pJ6LKaX/jQMYmC7WzRyf65ZwxTv
+        wzs3KBDTDsE54WsaJ14tbbJ65G2Leh0i4DGXXY0MFGlpWyAhgH32owmUzfbxEfiYg0awvCPhbv1cN
+        uVCEGtVHmJbb9Qi5kDbtzTJCNLbQLg8TLwejyJbTscSQ61H5nXLy95K6qMPzoE+tnNioCmB3oo9/K
+        whzN7Fkio789ZBSbVnVmg/cZd06vt+AwujSxEGBxpzy3mN0evJNDlxIw++8JaYfjW9YhcIWwI+kws
+        XNsOU3yvQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52974)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l4Oix-0004Ud-Ly; Tue, 26 Jan 2021 13:49:39 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l4Oiw-0003qo-3H; Tue, 26 Jan 2021 13:49:38 +0000
+Date:   Tue, 26 Jan 2021 13:49:38 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Mike Looijmans <mike.looijmans@topic.nl>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: mdiobus: Prevent spike on MDIO bus reset signal
+Message-ID: <20210126134937.GI1551@shell.armlinux.org.uk>
+References: <20210126073337.20393-1-mike.looijmans@topic.nl>
+ <YBAVwFlLsfVEHd+E@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20210126024005.GB3907@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBAVwFlLsfVEHd+E@lunn.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 26, 2021 at 02:14:40PM +0100, Andrew Lunn wrote:
+> On Tue, Jan 26, 2021 at 08:33:37AM +0100, Mike Looijmans wrote:
+> > The mdio_bus reset code first de-asserted the reset by allocating with
+> > GPIOD_OUT_LOW, then asserted and de-asserted again. In other words, if
+> > the reset signal defaulted to asserted, there'd be a short "spike"
+> > before the reset.
+> > 
+> > Instead, directly assert the reset signal using GPIOD_OUT_HIGH, this
+> > removes the spike and also removes a line of code since the signal
+> > is already high.
+> 
+> Hi Mike
+> 
+> This however appears to remove the reset pulse, if the reset line was
+> already low to start with. Notice you left
+> 
+> fsleep(bus->reset_delay_us);
+> 
+> without any action before it? What are we now waiting for?  Most data
+> sheets talk of a reset pulse. Take the reset line high, wait for some
+> time, take the reset low, wait for some time, and then start talking
+> to the PHY. I think with this patch, we have lost the guarantee of a
+> low to high transition.
+> 
+> Is this spike, followed by a pulse actually causing you problems? If
+> so, i would actually suggest adding another delay, to stretch the
+> spike. We have no control over the initial state of the reset line, it
+> is how the bootloader left it, we have to handle both states.
 
-On 1/25/21 6:40 PM, Xu Yilun wrote:
-> On Mon, Jan 25, 2021 at 06:22:55PM -0800, Moritz Fischer wrote:
->> On Mon, Jan 25, 2021 at 11:00:38AM -0800, Tom Rix wrote:
->>> On 1/25/21 12:49 AM, Xu Yilun wrote:
->>>> This patch supports the DFL drivers be written in userspace. This is
->>>> realized by exposing the userspace I/O device interfaces.
->>>>
->>>> The driver now only binds the ether group feature, which has no irq. So
->>>> the irq support is not implemented yet.
->>>>
->>>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
->>>> ---
->>>> v9: switch to add a uio driver in drivers/uio
->>>> ---
->>>>  drivers/uio/Kconfig   | 13 ++++++++++
->>>>  drivers/uio/Makefile  |  1 +
->>>>  drivers/uio/uio_dfl.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++
->>> You should add this to the MAINTAINERS file.
->> This is covered by MAINTAINERS under drivers/uio.
-> Yes. But is it OK I also add the file in "FPGA DFL DRIVERS"? So DFL
-> developers would also be aware if there is change. It is a little
-> different from other feature driver, it is like a generic driver for
-> DFL bus.
+Andrew, I don't get what you're saying.
 
-I think the issue is which maintainer branch this gets merged into.
+Here is what happens depending on the pre-existing state of the
+reset signal:
 
-It would not be linux-fpga.
+Reset (previously asserted):   ~~~|_|~~~~|_______
+Reset (previously deasserted): _____|~~~~|_______
+                                  ^ ^    ^
+                                  A B    C
 
-It is this sort of driver I want to add to FPGA SUBDEVICES list described here
+At point A, the low going transition is because the reset line is
+requested using GPIOD_OUT_LOW. If the line is successfully requested,
+the first thing we do is set it high _without_ any delay. This is
+point B. So, a glitch occurs between A and B.
 
-https://lore.kernel.org/linux-fpga/96a9d3d9-6091-47c9-21f9-0cfdd9464732@redhat.com/
+We then fsleep() and finally set the GPIO low at point C.
 
-Where the driver is maintained in the subsystem but reviewed in linux-fpga.
+Requesting the line using GPIOD_OUT_HIGH eliminates the A and B
+transitions. Instead we get:
 
-Tom
+Reset (previously asserted)  : ~~~~~~~~~~|______
+Reset (previously deasserted): ____|~~~~~|______
+                                   ^     ^
+                                   A     C
 
->>>>  3 files changed, 80 insertions(+)
->>>>  create mode 100644 drivers/uio/uio_dfl.c
->>>>
->>>> diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
->>>> index 202ee81..44778f8 100644
->>>> --- a/drivers/uio/Kconfig
->>>> +++ b/drivers/uio/Kconfig
->>>> @@ -165,4 +165,17 @@ config UIO_HV_GENERIC
->>>>  	  to network and storage devices from userspace.
->>>>  
->>>>  	  If you compile this as a module, it will be called uio_hv_generic.
->>>> +
->>>> +config UIO_DFL
->>>> +	tristate "Generic driver for DFL bus"
->>> The term 'DFL' will be unknown to folks in drivers/uio
->>>
->>> I think it would be better if DFL was always prefixed 'FPGA DFL'
->>>
->>>> +	depends on FPGA_DFL
->>>> +	help
->>>> +	  Generic DFL (Device Feature List) driver for Userspace I/O devices.
->>>> +	  It is useful to provide direct access to DFL devices from userspace.
->>>> +	  A sample userspace application using this driver is available for
->>>> +	  download in a git repository:
->>>> +
->>>> +	    git clone https://github.com/OPAE/opae-sdk.git
->>>> +
->>>> +	  If you compile this as a module, it will be called uio_dfl.
->> I'm not sure KConfig is the right place for this.
-> Do you mean the OPAE link? I see several uio drivers provide their
-> userspace application link in Kconfig. I guess the uio drivers are
-> selected for these applications so it may be better pointing out where
-> they are.
->
-> Thanks,
-> Yilun
->
+Where A and C are the points described above in the code. Point B
+has been eliminated.
 
+Therefore, to me the patch looks entirely reasonable and correct.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
