@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0401304F3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E3A304F3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405287AbhA0Bow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
+        id S2405330AbhA0BpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:45:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731807AbhAZS5u (ORCPT
+        with ESMTP id S1732048AbhAZS5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:57:50 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235FBC0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:57:10 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id u8so22659873ior.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:57:10 -0800 (PST)
+        Tue, 26 Jan 2021 13:57:51 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA3AC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:57:11 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id n2so35793942iom.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:57:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JpZv+T7F3bf/GFAbswYSEjxp4C4JU0WA8H2GZ/JQhn0=;
-        b=S8gh6JjwnkIt4hEKTVwbdAvFLYkQsLiG2G7Hx9nAz8Cg+/0FottfVYSu6F2mju2eTK
-         FNWeI/hjac9R+wFPa/K14hUxl2HJXtnRtUNsKUPFCiwoj8Z7sRDABYSxdvdxduacFbQ4
-         Ae54zsGSgORxvaNu/ijyC+qvVLSCEmzqEEjhIHuNByC0fThw5vJedyfXLG+Z5LhRK56K
-         nM9JxhbmT4eAp4qWAjTj0GJ7McCTF23nPg3Vj9TksyUtPP4IUb5L3JZ5w765Ssx3prlY
-         1I/FnmkBfDySplKgZHkurGy0C+4JDPqWV8Kg5Yd7DExeTaJCbsNb0/hlYP82+i+FHJFj
-         ST4w==
+        bh=s57J/xOFhvFT/dyDrXRhATPPv+j4to5KF2lppSb4o8g=;
+        b=ZXj3KnRJ+AZ2oQv2hFwmxefm0sC68as2h+Om3u7UOUUgj0xSGu2PBFrOC9ybY9B9mR
+         PBPaXPHGoiLFeBvex0wWol7uYTm7gIylX0nMvNuT/KD2B9ASwddajdQdXGnogeQn7H0o
+         LJhXxNVaxqlf/Oa7jbQeh+v7XbJQKhkHFKFNsYmfyfdMoxyOXfygun3EcLiJ8bN0Omk4
+         eEQQDAGwn+EiYR2WcQpTjk6kyCY1LFVcBJOkK/HQCZ+bXNwxXl7ZRpaQs/oVZrHL7AfD
+         ln5AIFhgWcqUHcvUlmHIp1iWBG5h21bpCHNsXQq8T5eh8byKtqbS32V0gY+0O/phDR8M
+         yzQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JpZv+T7F3bf/GFAbswYSEjxp4C4JU0WA8H2GZ/JQhn0=;
-        b=eslZTeUR9trn2a92Z5q2Un7R304G7wVmKdXIJSj5+32WrwjVvHZK7GbXKTBW1KB0zD
-         jTyIAGkeyRGefeVA7la8+p7XfMJpFrjN1WqVIISe+6AcEzrykVM0W6ZKyJSAfYg1+QmI
-         BDHkRfK/NJ+2uPzSG68ryzXf0LpiDwKqTGfwaWqmhjMTX4nmU5RdoNiswwXpF4ISRur9
-         0aZuiV5T6loUqzXT6zOqThgvPSaqbZ6kDuwA8ISQibLwVRxuI1JVHbA5S8JEmMjNbaxS
-         y9+CMLybju+u/m99GokO2BsUHs6HC073tkGUSkbJ3+rPgdze4NwiFHL/m8fltUIAA4if
-         hj9g==
-X-Gm-Message-State: AOAM533HdSG6zBSDOY0Mi5hjsbBd5eLGtCtH433flFpdimB/s4wITJyG
-        AmoCcRn1qKKxiaRua2RnI9fdVw==
-X-Google-Smtp-Source: ABdhPJx2nBMjyTm+bwLmTpsse4QdZCtIjNHL/IA797uyM79TNQu+ZX1Zgwg29dM3A1IPguXf3iHOtA==
-X-Received: by 2002:a05:6e02:1c2a:: with SMTP id m10mr5953238ilh.17.1611687429447;
-        Tue, 26 Jan 2021 10:57:09 -0800 (PST)
+        bh=s57J/xOFhvFT/dyDrXRhATPPv+j4to5KF2lppSb4o8g=;
+        b=bHibBUzvB9V4Zc0tteWwNGj4WJdi7P71oW1FrFCpArfrskmMy71tPwXAhH2DJ7IkL3
+         eoaXmVv6EabmqXeRFq6IVrJveOYO/8kgMQpG7vGUmanCfVfiZvQehi+8ERtG4OfVMRF/
+         wQ/mggOa/tvpPDUnw7Ga4Cp+xarCdBeEhfdTw40+uXPWbbPQvlYBmzIlDYJlNYdxWTHr
+         mDFIJsnp0++wJu73i4DXL9ZmVxfk4TiujbDcWwnpe0IQprde7IIpBSeo9xh67PSJamd3
+         50Bb90i6fVX1duMtjGgIlMUqQWDW3eQSqz0xzULjuxEaTJMEZAovmRYiU0bVNWTDpB0P
+         q8fg==
+X-Gm-Message-State: AOAM5323H0wOCqgAf+A0VxfhhjU1rr1WgGvTd388ZS9nyW55Uf2J2Hmk
+        1debjE9lTQnf2OGBaAG9dMdLsw==
+X-Google-Smtp-Source: ABdhPJwzjzL6SPuRvYcTaKjp4ZgB3S6hJkrZC+DodSVJlvG+qQYk39E1wSYOtAtJwWTx2NQbVKU39g==
+X-Received: by 2002:a05:6638:3006:: with SMTP id r6mr6228829jak.72.1611687430604;
+        Tue, 26 Jan 2021 10:57:10 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id l14sm13060681ilh.58.2021.01.26.10.57.08
+        by smtp.gmail.com with ESMTPSA id l14sm13060681ilh.58.2021.01.26.10.57.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 10:57:08 -0800 (PST)
+        Tue, 26 Jan 2021 10:57:10 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 2/6] net: ipa: minor update to handling of packet with status
-Date:   Tue, 26 Jan 2021 12:56:59 -0600
-Message-Id: <20210126185703.29087-3-elder@linaro.org>
+Subject: [PATCH net-next v2 3/6] net: ipa: drop packet if status has valid tag
+Date:   Tue, 26 Jan 2021 12:57:00 -0600
+Message-Id: <20210126185703.29087-4-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210126185703.29087-1-elder@linaro.org>
 References: <20210126185703.29087-1-elder@linaro.org>
@@ -65,67 +65,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rearrange some comments and assignments made when handling a packet
-that is received with status, aiming to improve understandability.
+Introduce ipa_endpoint_status_tag(), which returns true if received
+status indicates its tag field is valid.  The endpoint parameter is
+not yet used.
 
-Use DIV_ROUND_CLOSEST() to get a better per-packet true size estimate.
+Call this from ipa_status_drop_packet(), and drop the packet if the
+status indicates the tag was valid.  Pass the endpoint pointer to
+ipa_status_drop_packet(), and rename it ipa_endpoint_status_drop().
+The endpoint will be used in the next patch.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_endpoint.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+v2: Use le16_get_bits() to access the status mask tag field properly.
+
+ drivers/net/ipa/ipa_endpoint.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 39ae0dd4e0471..c5524215054c8 100644
+index c5524215054c8..68970a3baa47a 100644
 --- a/drivers/net/ipa/ipa_endpoint.c
 +++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -1213,12 +1213,11 @@ static void ipa_endpoint_status_parse(struct ipa_endpoint *endpoint,
- 			continue;
- 		}
+@@ -69,8 +69,11 @@ struct ipa_status {
+ };
  
--		/* Compute the amount of buffer space consumed by the
--		 * packet, including the status element.  If the hardware
--		 * is configured to pad packet data to an aligned boundary,
--		 * account for that.  And if checksum offload is is enabled
--		 * a trailer containing computed checksum information will
--		 * be appended.
-+		/* Compute the amount of buffer space consumed by the packet,
-+		 * including the status element.  If the hardware is configured
-+		 * to pad packet data to an aligned boundary, account for that.
-+		 * And if checksum offload is enabled a trailer containing
-+		 * computed checksum information will be appended.
- 		 */
- 		align = endpoint->data->rx.pad_align ? : 1;
- 		len = le16_to_cpu(status->pkt_len);
-@@ -1226,16 +1225,21 @@ static void ipa_endpoint_status_parse(struct ipa_endpoint *endpoint,
+ /* Field masks for struct ipa_status structure fields */
++#define IPA_STATUS_MASK_TAG_VALID_FMASK		GENMASK(4, 4)
++#define IPA_STATUS_SRC_IDX_FMASK		GENMASK(4, 0)
+ #define IPA_STATUS_DST_IDX_FMASK		GENMASK(4, 0)
+ #define IPA_STATUS_FLAGS1_RT_RULE_ID_FMASK	GENMASK(31, 22)
++#define IPA_STATUS_FLAGS2_TAG_FMASK		GENMASK_ULL(63, 16)
+ 
+ #ifdef IPA_VALIDATE
+ 
+@@ -1172,11 +1175,22 @@ static bool ipa_endpoint_status_skip(struct ipa_endpoint *endpoint,
+ 	return false;	/* Don't skip this packet, process it */
+ }
+ 
++static bool ipa_endpoint_status_tag(struct ipa_endpoint *endpoint,
++				    const struct ipa_status *status)
++{
++	return !!le16_get_bits(status->mask, IPA_STATUS_MASK_TAG_VALID_FMASK);
++}
++
+ /* Return whether the status indicates the packet should be dropped */
+-static bool ipa_status_drop_packet(const struct ipa_status *status)
++static bool ipa_endpoint_status_drop(struct ipa_endpoint *endpoint,
++				     const struct ipa_status *status)
+ {
+ 	u32 val;
+ 
++	/* If the status indicates a tagged transfer, we'll drop the packet */
++	if (ipa_endpoint_status_tag(endpoint, status))
++		return true;
++
+ 	/* Deaggregation exceptions we drop; all other types we consume */
+ 	if (status->exception)
+ 		return status->exception == IPA_STATUS_EXCEPTION_DEAGGR;
+@@ -1225,7 +1239,7 @@ static void ipa_endpoint_status_parse(struct ipa_endpoint *endpoint,
  		if (endpoint->data->checksum)
  			len += sizeof(struct rmnet_map_dl_csum_trailer);
  
--		/* Charge the new packet with a proportional fraction of
--		 * the unused space in the original receive buffer.
--		 * XXX Charge a proportion of the *whole* receive buffer?
--		 */
- 		if (!ipa_status_drop_packet(status)) {
--			u32 extra = unused * len / total_len;
--			void *data2 = data + sizeof(*status);
--			u32 len2 = le16_to_cpu(status->pkt_len);
-+			void *data2;
-+			u32 extra;
-+			u32 len2;
- 
- 			/* Client receives only packet data (no status) */
-+			data2 = data + sizeof(*status);
-+			len2 = le16_to_cpu(status->pkt_len);
-+
-+			/* Have the true size reflect the extra unused space in
-+			 * the original receive buffer.  Distribute the "cost"
-+			 * proportionately across all aggregated packets in the
-+			 * buffer.
-+			 */
-+			extra = DIV_ROUND_CLOSEST(unused * len, total_len);
- 			ipa_endpoint_skb_copy(endpoint, data2, len2, extra);
- 		}
- 
+-		if (!ipa_status_drop_packet(status)) {
++		if (!ipa_endpoint_status_drop(endpoint, status)) {
+ 			void *data2;
+ 			u32 extra;
+ 			u32 len2;
 -- 
 2.20.1
 
