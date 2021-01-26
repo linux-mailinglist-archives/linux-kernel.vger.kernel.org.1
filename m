@@ -2,110 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A163040F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE233040EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391185AbhAZOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
+        id S2405107AbhAZOwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391472AbhAZOw7 (ORCPT
+        with ESMTP id S2391286AbhAZOvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:52:59 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72491C061A29
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:52:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Wr4Jb/2j9Hh/srQm4PSUOUpfBh73vdFGEsVL3upDmec=; b=UlT8zE06CfiawZhEqwBE+p3Jkv
-        23Ngvp4ipjjorGyR2T1RtMzt+IKEDDWbh0JV8TVAamFTbR+Hzo341fDo2Nl1tjNQQRh/ZqGzJc8D8
-        BNkBcni6c0fn2meAvkljbxMHQrOvIrVn4sPOa+FaicO4vJ1I33XsYnbkDJkXsMwsNAswrqyqfD2n0
-        nvMZIQdZtanVYfNvj+p/ttFTyAjyLFbRX69yDI3GjgeN9XeaRMvgQUY+42NbnPE4fYVFZiW8tD4O6
-        SJtGgwlRAhsD0mR2GInW/31D9YYYdfAjnXgrA0678QoRplpxvqxdQ8+4uS4HFd0R6W9O7p30ABLcf
-        tH8SLUqg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4Pf9-005lbK-1b; Tue, 26 Jan 2021 14:50:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 04793300DB4;
-        Tue, 26 Jan 2021 15:49:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DBD9B2029059B; Tue, 26 Jan 2021 15:49:44 +0100 (CET)
-Date:   Tue, 26 Jan 2021 15:49:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com
-Subject: Re: [PATCH 03/12] perf/x86/intel: Add perf core PMU support for
- Sapphire Rapids
-Message-ID: <YBAsCE1dz7Xq/kFg@hirez.programming.kicks-ass.net>
-References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
- <1611088711-17177-4-git-send-email-kan.liang@linux.intel.com>
+        Tue, 26 Jan 2021 09:51:16 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92642C061A31
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:50:35 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id c18so7097638ljd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:50:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b6f1LvYnA5FB026vF4qzvowPNXCZxvMKvprMD5ct7zk=;
+        b=DNO3emq0sg1yGJui5VGqWLdncnYiEqU0KPFmhDvnstsqjSeS7b8hvHznoqrQHY+XSr
+         yZp/SYsBIjadcn9HN+QuFWFQtWsyu8QXadKPwo2wWhh3EtE7QkWGLm269oRP1LAYUu/S
+         Pwd/tIzVJlBBKAvh7Wu8OJS9Bu/UTTvDjd8WYtR9e/7gU/WVqkoXlmpAZhXwmrpSM/dK
+         f3XvrmFRNm3LpSVViZxKaVGoH0VBTgXmG+3G5HIOdZbbRSeIPWrunBhGoxDepef4MOHU
+         T6N8Hy9dW6yzemGneJyghsQpfUlfUVAbUNwJilajVJaish2yyW3GaG9LqAarEdgCmD5C
+         cWTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b6f1LvYnA5FB026vF4qzvowPNXCZxvMKvprMD5ct7zk=;
+        b=O1g2nSc8ULlGNRtqPasZuqYkLyx5vyxRiM0sH3soIq+GwggGulvZwO1AdQeSzPkOqm
+         Dkj7osLRajddwdsC/FkdU5Ex3Hso+e2D1/v3L+6qHeXUckJUxmX96rn+TErpT5bVmQFr
+         8tjQ0NVKXxJSISipm00qmSduxWbDdeGg4CuMAv9PhA3r3n0TJOn0ZGVWdqMNgkxAHVQX
+         MmFduuxTi8gfIe5fxGKB3jbAlkG+If3uTGbMlc06dBfsZzdD+ELq38hom1L3ry0Fs/S+
+         7uNxTmnoirHomgMetHpO712zVuNqXHc7qLXehnN6hBrr57Z+NTxJwEKx7x8B0iQ/Aq63
+         WNvA==
+X-Gm-Message-State: AOAM532W1Tukvx3PvcuDLbIFMKdY3vZyCTqPsTMMsVMN52HZoOK9eaHu
+        u12Z7gRan6G2w/0E+z9xt63eUZ6u4w6i9RZZxJle1w==
+X-Google-Smtp-Source: ABdhPJzrFkum4g7iaOZRLr9RsdK0/FQdTk4i3qqWYXYLKw/VBZRQbPjTjiU3XlNLJirttc3OXQuYiQBwIXWegbs4fN4=
+X-Received: by 2002:a2e:8746:: with SMTP id q6mr3098828ljj.326.1611672634129;
+ Tue, 26 Jan 2021 06:50:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611088711-17177-4-git-send-email-kan.liang@linux.intel.com>
+References: <20210125182153.212998-1-angelogioacchino.delregno@somainline.org> <20210125182153.212998-2-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210125182153.212998-2-angelogioacchino.delregno@somainline.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 26 Jan 2021 15:50:23 +0100
+Message-ID: <CACRpkdYeDw68MhBBWnLhd-1PKg9MkzP1FO_cijjvq-2fPBSQ-g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: Add bindings for Awinic AW9523/AW9523B
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 12:38:22PM -0800, kan.liang@linux.intel.com wrote:
+On Mon, Jan 25, 2021 at 7:21 PM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@somainline.org> wrote:
 
->  Add pebs_no_block to
->   explicitly indicate the previous platforms which don't support the new
->   block fields. Accessing the new block fields are ignored on those
->   platforms.
+> Add bindings for the Awinic AW9523/AW9523B I2C GPIO Expander driver.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+(...)
+> +  '#interrupt-cells':
+> +    description:
+> +      Specifies the PIN numbers and Flags, as defined in defined in
+> +      include/dt-bindings/interrupt-controller/irq.h
+> +    const: 2
 
-> @@ -5475,6 +5749,7 @@ __init int intel_pmu_init(void)
->  		x86_pmu.extra_regs = intel_icl_extra_regs;
->  		x86_pmu.pebs_aliases = NULL;
->  		x86_pmu.pebs_prec_dist = true;
-> +		x86_pmu.pebs_no_block = true;
->  		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
->  		x86_pmu.flags |= PMU_FL_NO_HT_SHARING;
->  
+Not really. Expand this to at least say in the description that the interrupt
+must be IRQ_TYPE_EDGE_BOTH.
 
-> @@ -198,6 +206,63 @@ static u64 load_latency_data(u64 status)
->  	if (dse.ld_locked)
->  		val |= P(LOCK, LOCKED);
->  
-> +	/*
-> +	 * Ice Lake and earlier models do not support block infos.
-> +	 */
-> +	if (x86_pmu.pebs_no_block) {
-> +		val |= P(BLK, NA);
-> +		return val;
-> +	}
+Preferably we should enforce it with the schema but I don't know if
+that is possible in any easy way.
 
-> @@ -2026,8 +2128,10 @@ void __init intel_ds_init(void)
->  	x86_pmu.bts  = boot_cpu_has(X86_FEATURE_BTS);
->  	x86_pmu.pebs = boot_cpu_has(X86_FEATURE_PEBS);
->  	x86_pmu.pebs_buffer_size = PEBS_BUFFER_SIZE;
-> -	if (x86_pmu.version <= 4)
-> +	if (x86_pmu.version <= 4) {
->  		x86_pmu.pebs_no_isolation = 1;
-> +		x86_pmu.pebs_no_block = 1;
-> +	}
->  
->  	if (x86_pmu.pebs) {
->  		char pebs_type = x86_pmu.intel_cap.pebs_trap ?  '+' : '-';
+> +examples:
+> +  # Example configuration to drive pins for a keyboard matrix
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        aw9523: gpio-expander@58 {
+> +                compatible = "awinic,aw9523-pinctrl";
+> +                reg = <0x58>;
+> +                interrupt-parent = <&tlmm>;
+> +                interrupts = <50 IRQ_TYPE_EDGE_FALLING>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +                gpio-ranges = <&tlmm 0 0 16>;
+> +                interrupt-controller;
+> +                #interrupt-cells = <2>;
+> +                reset-gpios = <&tlmm 51 GPIO_ACTIVE_HIGH>;
+> +
+> +                keyboard-matrix-col-pins {
+> +                        pins = "gpio8", "gpio9", "gpio10", "gpio11",
+> +                               "gpio12", "gpio13", "gpio14", "gpio15";
+> +                        function = "gpio";
+> +                        input-disable;
+> +                        output-low;
+> +                };
+> +
+> +                keyboard-matrix-row-pins {
+> +                        pins = "gpio0", "gpio1", "gpio2", "gpio3",
+> +                               "gpio4", "gpio5", "gpio6", "gpio7";
+> +                        function = "gpio";
+> +                        bias-pull-up;
+> +                        drive-open-drain;
+> +                        input-enable;
+> +                };
+> +        };
+> +    };
 
-> @@ -724,7 +729,8 @@ struct x86_pmu {
->  			pebs_broken		:1,
->  			pebs_prec_dist		:1,
->  			pebs_no_tlb		:1,
-> -			pebs_no_isolation	:1;
-> +			pebs_no_isolation	:1,
-> +			pebs_no_block		:1;
->  	int		pebs_record_size;
->  	int		pebs_buffer_size;
->  	int		max_pebs_events;
+This is fine, but what about adding an example consumer using
+<&aw9523 0 IRQ_TYPE_EDGE_BOTH>?
 
-I suppose the existing pebs_no_isolation set the bad precedent, but this
-is ofcourse a bit backwards. Since we're 0 initialized, new features
-should be 1, and not the other way around.
+Yours,
+Linus Walleij
