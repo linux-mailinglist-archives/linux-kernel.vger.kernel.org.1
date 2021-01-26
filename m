@@ -2,116 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1523043AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5AF3043B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391046AbhAZQWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 11:22:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392853AbhAZQVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:21:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611677982;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OkRiY5ow5UKClr4i0QoBZwnQcXWa51RD9uvqs2Ng6cs=;
-        b=QDV/4qnS79Sggec0Zqo3CHsTTHoeEEwK5Eym38ahXBDfrnym5hUDP/UorcHh3LuLaAAIuS
-        CpNznKsmsY9JbB/getKZJlqDoxazqyUyaKS+XYBWBlNrxV3b971czRr9WxdXuGtpH5bKwF
-        mMtJ7bhG1jLkO5hpYBMM0hbb30ScMwM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32-MdJ5HRgVMcuTlAbJ4OK0YA-1; Tue, 26 Jan 2021 11:19:40 -0500
-X-MC-Unique: MdJ5HRgVMcuTlAbJ4OK0YA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE7D91081B3C;
-        Tue, 26 Jan 2021 16:19:37 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 405696B8DD;
-        Tue, 26 Jan 2021 16:19:36 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 10:19:34 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Justin Forbes <jforbes@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Greg KH <greg@kroah.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210126161934.z6sng4irl5teonvj@treble>
-References: <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
- <20210125220757.vxdsf6sttpy46cq7@treble>
- <YA/PLdX5m9f4v+Yl@kroah.com>
- <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
- <YBAeYaDReAc9VscA@kroah.com>
- <20210126145155.kcfbnzfqg5qugvcl@treble>
- <YBAyGU7H8E98xKng@hirez.programming.kicks-ass.net>
- <20210126154651.itfrnhwfistia3ss@treble>
- <YBA9r13+1uuyDYuR@hirez.programming.kicks-ass.net>
- <CAFbkSA1CibJ6sp+LPLy3hpchLLH2B5__Lk31TLeVThXi5eZV7Q@mail.gmail.com>
+        id S2391113AbhAZQXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:23:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404348AbhAZQUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:20:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4DFE02074A;
+        Tue, 26 Jan 2021 16:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611678010;
+        bh=RnpgxvnAcnVE/Rm5Z3B2m9Dj3qyfImrkMIs90xCITRM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Bk86UcK9+VgTLQlmqFuIAYf6dwuXlEeCYuNpQpX/fc77VCDDtKnYouZuenyDAsanp
+         03hFSy6f95E4tFz9CkjBM4rfIDFnG1NMG8BXMuszla5XVKgJTizBfRfy+vhOalHe3r
+         JPW98Xb9gXkulKF0Wo9yrOIKAfmKuv9zMHmQj7ySGqxno26wm/aukSlAo2enHlgBDA
+         qpTUevUsI8x2r1u3BK9fHddqZYTsB1lwZO9zREhUuqKxm69ACDxgRI509HnyOZP7xn
+         6/r+CjmTJ5Gs1D0mc+O/LR2e+JTOuK0jmsomwIUZ5Ms+QPStMPZxnSXQM4KZLfliuq
+         q1ZckhFCQNAXA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 45F0661E3F;
+        Tue, 26 Jan 2021 16:20:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAFbkSA1CibJ6sp+LPLy3hpchLLH2B5__Lk31TLeVThXi5eZV7Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] bpf: Drop disabled LSM hooks from the sleepable set
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161167801027.27230.2221763931153263483.git-patchwork-notify@kernel.org>
+Date:   Tue, 26 Jan 2021 16:20:10 +0000
+References: <20210125063936.89365-1-mikko.ylinen@linux.intel.com>
+In-Reply-To: <20210125063936.89365-1-mikko.ylinen@linux.intel.com>
+To:     Mikko Ylinen <mikko.ylinen@linux.intel.com>
+Cc:     kpsingh@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        kpsingh@google.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:15:52AM -0600, Justin Forbes wrote:
-> On Tue, Jan 26, 2021 at 10:05 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Tue, Jan 26, 2021 at 09:46:51AM -0600, Josh Poimboeuf wrote:
-> > > On Tue, Jan 26, 2021 at 04:15:37PM +0100, Peter Zijlstra wrote:
-> > > > On Tue, Jan 26, 2021 at 08:51:55AM -0600, Josh Poimboeuf wrote:
-> > > > > User space mixes compiler versions all the time.  The C ABI is stable.
-> > > > >
-> > > > > What specifically is the harder issue you're referring to?
-> > > >
-> > > > I don't think the C ABI captures nearly enough. Imagine trying to mix a
-> > > > compiler with and without asm-goto support (ok, we fail to build without
-> > > > by now, but just imagine).
-> > > >
-> > > > No C ABI violated, but having that GCC extention vs not having it
-> > > > radically changes the kernel ABI.
-> > > >
-> > > > I think I'm with Greg here, just don't do it.
-> > >
-> > > Ok, thank you for an actual example.  asm goto is a good one.
-> > >
-> > > But it's not a cut-and-dry issue.  Otherwise how could modversions
-> > > possibly work?
-> > >
-> > > So yes, we should enforce GCC versions, but I still haven't seen a
-> > > reason it should be more than just "same compiler and *major* version".
-> >
-> > Why bother? rebuilding the kernel and all modules is a matter of 10
-> > minutes at most on a decently beefy build box.
-> >
-> > What actual problem are we trying to solve here?
+Hello:
+
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Mon, 25 Jan 2021 08:39:36 +0200 you wrote:
+> Some networking and keys LSM hooks are conditionally enabled
+> and when building the new sleepable BPF LSM hooks with those
+> LSM hooks disabled, the following build error occurs:
 > 
-> This is true for those of us used to working with source and building
-> by hand. For users who want everything packaged, rebuilding a kernel
-> package for install is considerably longer, and for distros providing
-> builds for multiple arches, we are looking at a couple of hours at
-> best.  From a Fedora standpoint, I am perfectly fine with it failing
-> if someone tries to build a module on gcc10 when the kernel was built
-> with gcc11.  It's tedious when the kernel was built with gcc11
-> yesterday, and a new gcc11 build today means that kernel needs to be
-> rebuilt.
+> BTFIDS  vmlinux
+> FAILED unresolved symbol bpf_lsm_socket_socketpair
+> 
+> [...]
 
-Right.  It's a problem for distro users.  The compiler and kernel are in
-separate packages, with separate release cadences.  The latest compiler
-version may not exactly match what was used to build the latest kernel.
+Here is the summary with links:
+  - [v2] bpf: Drop disabled LSM hooks from the sleepable set
+    https://git.kernel.org/bpf/bpf/c/78031381ae9c
 
--- 
-Josh
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
