@@ -2,70 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634BD304588
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E813304592
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392859AbhAZRkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:40:09 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:40834 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731409AbhAZIF0 (ORCPT
+        id S2393025AbhAZRnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:43:46 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35889 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732970AbhAZIHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:05:26 -0500
-Received: by mail-ot1-f54.google.com with SMTP id i20so15464834otl.7;
-        Tue, 26 Jan 2021 00:04:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gn3riWFOSuTtLdZEXF1Nsf86n3nO9ZsoSqLIAXg41vE=;
-        b=BcuuLS4QvnQ7VW4o4xodK3lekW9Lamer/2mPZYaqnTQN7uImCc3DijO5uQd9p4SL7U
-         3IuLSLejjvKWb4pI19+mUbbLbDIy77ystR8l8cmBceES1jEaIQ8aL0sgJJ7KjrH6IKY2
-         b+EfttboN1GR9wMh1qdDhov2RRfm0I8ICnfpy0JWRPGiegs7Un5CpEhysp+doOIENidn
-         A8gpOqNnu7uH1hs/8aA1k89D41EWYn1+MIrdMVsxuCfraCYywBJC6fkh5MkBrnNQuLPR
-         JN+v1Wf7FKYCP8F2E9Z6Af/fgiKWYAiOxTZ7XTMNiT6mB9wp3cK5t3N2Os2lV4+mFYM/
-         RPng==
-X-Gm-Message-State: AOAM533tN7vPYV43TrOEZUvZRe42fTBrSqvNKnlYZu2c5126ZuGY25Tp
-        Q+3dYh0/V5TYYOjwRigqYNalvZ6Dgteoat62UXo=
-X-Google-Smtp-Source: ABdhPJytIVD/4Xb2nil6CfBZHjJXQKq/Ujc3snRT0q1tZOrWGz9aNLYUvpR+IrZFMlEDPHDayYjctOwkb3DlnpFFBGc=
-X-Received: by 2002:a05:6830:15cc:: with SMTP id j12mr3178136otr.145.1611648217240;
- Tue, 26 Jan 2021 00:03:37 -0800 (PST)
+        Tue, 26 Jan 2021 03:07:51 -0500
+X-UUID: f9171628db3544a3b65753ff863172cd-20210126
+X-UUID: f9171628db3544a3b65753ff863172cd-20210126
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <henryc.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1072506722; Tue, 26 Jan 2021 16:03:56 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 26 Jan 2021 16:03:55 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 16:03:55 +0800
+From:   Henry Chen <henryc.chen@mediatek.com>
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ryan Case <ryandcase@chromium.org>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: [PATCH V8 00/13] Add driver for dvfsrc, support for interconnect
+Date:   Tue, 26 Jan 2021 16:03:42 +0800
+Message-ID: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-References: <20210106075112.1593084-1-geert@linux-m68k.org> <20210126055112.GA19582@xsang-OptiPlex-9020>
-In-Reply-To: <20210126055112.GA19582@xsang-OptiPlex-9020>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 26 Jan 2021 09:03:26 +0100
-Message-ID: <CAMuHMdUFsRSCDJeML+0i17ig6oFr+-cz660xyhkhkfg2UtPTzQ@mail.gmail.com>
-Subject: Re: [binfmt_elf] d97e11e25d: ltp.DS000.fail
-To:     oliver.sang@intel.com
-Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, ltp@lists.linux.it,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+This series is based on v5.11-rc1.
 
-On Tue, Jan 26, 2021 at 6:35 AM kernel test robot <oliver.sang@intel.com> wrote:
-> FYI, we noticed the following commit (built with gcc-9):
->
-> commit: d97e11e25dd226c44257284f95494bb06d1ebf5a ("[PATCH v2] binfmt_elf: Fix fill_prstatus() call in fill_note_info()")
-> url: https://github.com/0day-ci/linux/commits/Geert-Uytterhoeven/binfmt_elf-Fix-fill_prstatus-call-in-fill_note_info/20210106-155236
-> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+The patchsets add support for MediaTek hardware module named DVFSRC
+(dynamic voltage and frequency scaling resource collector). The DVFSRC is
+a HW module which is used to collect all the requests from both software
+and hardware and turn into the decision of minimum operating voltage and
+minimum DRAM frequency to fulfill those requests.
 
-My patch (which you applied on top of v5.11-rc2) is a build fix for
-a commit that is not part of v5.11-rc2.  Hence the test run is invalid.
+So, This series is to implement the dvfsrc driver to collect all the
+requests of operating voltage or DRAM bandwidth from other device drivers
+likes GPU/Camera through 3 frameworks basically:
 
-Gr{oetje,eeting}s,
+1. interconnect framework: to aggregate the bandwidth
+   requirements from different clients
 
-                        Geert
+[1] https://patchwork.kernel.org/cover/10766329/
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+There has a hw module "DRAM scheduler", which used to control the throughput.
+The DVFSRC will collect forecast data of dram bandwidth from
+SW consumers(camera/gpu...), and according the forecast to change the DRAM
+frequency
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+2. Regualtor framework: to handle the operating voltage requirement from user or
+   cosumer which not belong any power domain
+
+Changes in V8:
+* Fixed the dt_binding_check error of dvfsrc.yaml. (Rob)
+* Remove Kconfig dependency of DVFSRC
+
+Changes in V7:
+* Fixed the dt_binding_check error of dvfsrc.yaml. (Rob)
+* Fixed the checkpatch complains of "Signed-off-by: email name mismatch". (Georgi)
+* Fixed coding style of interconnect driver. (Georgi)
+* Upate comment of the years to 2021. (Georgi)
+
+Changes in V6:
+* Remove the performace state support, because the request from consumer can be
+replaced by using interconnect and regulator framework.
+* Update the DT patches and convert them to DT schema. (Georgi)
+* Modify the comment format and coding style. (Mark)
+
+Changes in V5:
+* Support more platform mt6873/mt8192
+* Drop the compatible and interconnect provider node and make the parent node an
+interconnect provider. (Rob/Georgi)
+* Make modification of interconnect driver from coding suggestion. (Georgi)
+* Move interconnect diagram into the commit text of patch. (Georgi)
+* Register the interconnect provider as a platform sub-device. (Georgi)
+
+Changes in V4:
+* Add acked TAG on dt-bindings patches. (Rob)
+* Declaration of emi_icc_aggregate since the prototype of aggregate function
+has changed meanwhile. (Georgi)
+* Used emi_icc_remove instead of icc_provider_del on probe. (Georgi)
+* Add dvfsrc regulator driver into series.
+* Bug fixed of mt8183_get_current_level.
+* Add mutex protection for pstate operation on dvfsrc_set_performance.
+
+Changes in V3:
+* Remove RFC from the subject prefix of the series
+* Combine dt-binding patch and move interconnect dt-binding document into
+dvfsrc. (Rob)
+* Remove unused header, add unit descirption to the bandwidth, rename compatible
+name on interconnect driver. (Georgi)
+* Fixed some coding style: check flow, naming, used readx_poll_timeout
+on dvfsrc driver. (Ryan)
+* Rename interconnect driver mt8183.c to mtk-emi.c
+* Rename interconnect header mtk,mt8183.h to mtk,emi.h
+* mtk-scpsys.c: Add opp table check first to avoid OF runtime parse failed
+
+Changes in RFC V2:
+* Remove the DT property dram_type. (Rob)
+* Used generic dts property 'opp-level' to get the performace state. (Stephen)
+* Remove unecessary dependency config on Kconfig. (Stephen)
+* Remove unused header file, fixed some coding style issue, typo,
+error handling on dvfsrc driver. (Nicolas/Stephen)
+* Remove irq handler on dvfsrc driver. (Stephen)
+* Remove init table on dvfsrc driver, combine hw init on trustzone.
+* Add interconnect support of mt8183 to aggregate the emi bandwidth.
+(Georgi)
+
+V7: https://patchwork.kernel.org/project/linux-mediatek/list/?series=411057
+V6: https://patchwork.kernel.org/project/linux-mediatek/list/?series=406077
+V5: https://patchwork.kernel.org/project/linux-mediatek/list/?series=348065
+V4: https://lore.kernel.org/patchwork/cover/1209284/
+V3: https://patchwork.kernel.org/cover/11118867/
+RFC V2: https://lore.kernel.org/patchwork/patch/1068113/
+RFC V1: https://lore.kernel.org/patchwork/cover/1028535/
+
