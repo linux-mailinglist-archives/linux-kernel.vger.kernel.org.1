@@ -2,99 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAF2304F2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D05304F30
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S317791AbhA0Bkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S2392420AbhA0BmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389138AbhAZSlA (ORCPT
+        with ESMTP id S2390273AbhAZSrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:41:00 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B2DC0613D6;
-        Tue, 26 Jan 2021 10:40:20 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id s15so10240431plr.9;
-        Tue, 26 Jan 2021 10:40:20 -0800 (PST)
+        Tue, 26 Jan 2021 13:47:52 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629ADC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:47:12 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id h15so7780321pli.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:47:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oMoEajyDR9iy/8AmtoE+xZAQV9/TdmV8a3AZX9/gsow=;
-        b=EF26dfb3eED5YtxaqteBfV8MDvCUudo3W9MhQH2ZK388/AzZVFdpsg8UO2AFxPTv7Z
-         GiZ99Fqrm5Igv+DWOpyDZ+Bs9WL9asQDedlewINodicAp/+Ch5Xjkav/6YKEKaC5F173
-         Tsw/HlEIFaCRywjFnzRNYPvgcZ+jbGREHvF/h9Mc3n+fkf10p3ZEWR/he+uUzaxz5ezd
-         Ep+I7+kb0kRhrx5LatHqduLET0e3RQlMQIddpg+sN2y6b+GMCXHj5DSjZQU3CLDmIirc
-         b5RqjJGcKLGw81K1hPXO3bMorPfm9OT5Bo5+UjqQclFOMs0vAPyELbZOWYpGjpuh5ILF
-         eaBQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=VPwgXgFqNGkyAT4I2faAQzFZ/NTwi7dZ5sVT5oD6JPw=;
+        b=eFfvlwAn3lbwGAz0xzWPehLR9zNPgwTdTEID8ALGkoxN7spGHtH4qzH9CBWG289rJR
+         sXkBAclZxO7YnFXuS0n8o8RZav4shQiR0om5sfhd+/AgxukvdCvNrWTdcn+RRCgVQjzw
+         pP57h+W7DnXg1JG172gXKXpZCm9lYltLhVmN6hDeVItBwLBw9tm5M7IUT/aKwuUY+Rux
+         sKpCl4kldAr7jM4sh4SkyAF+zaqlFXRRfUo8cEfn+RU5aI2FBUnn2RzwcUx97XPLC0gM
+         zcvWambS8Nz38JbWjTzxbRloqY0UoV366banFcYNV974OFZk5qy+ybdE4xjbvLgRSKVE
+         HAyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oMoEajyDR9iy/8AmtoE+xZAQV9/TdmV8a3AZX9/gsow=;
-        b=HgQ118wBlfoQsQkQ2JSa5CQUqclGScNEIgr1OsCjcjP7d+XJmWfbSaDkoR6BaXTm8z
-         zzwNToW5QLGORVXgouQdafU8VvYBApl4ZXHIlpNYVO3pDt08h8riuc5+5hbgKpiJff7G
-         AqtYxUHNY1kDslkAuuTEf1lLpCo5K2O7kC9yO+6r+NDRpLNr6ycQ+wn63nE9qgl+WjNq
-         wMpb7npI9PlBaePrAGJ2mJAgzW0R2T796qunoL7zyFDWGxcLMBYZgyMzZcEYfMQM0DV+
-         8ZgfS5sEgdGe0Vk3rsWrV3t2OPBB9Em4B74alf2zZlB0+pGUxXNsIFQGc01ZE4lOJwmJ
-         LknQ==
-X-Gm-Message-State: AOAM5324E7SexkIw/nRVJA8Vcv57gRZLvZsWpVJpXcUoRMsS35Vep7bN
-        ipBDrTtYDfRlRrJi3RdAQoA=
-X-Google-Smtp-Source: ABdhPJwl3jRKxfO70x4lMp4CvvCr4Oh4KYm73OCOVv3zzrkC17DlZ8JarQaGzAWHUtCJYPT1cFvfSw==
-X-Received: by 2002:a17:902:8213:b029:e0:1096:7eec with SMTP id x19-20020a1709028213b02900e010967eecmr4704370pln.50.1611686419832;
-        Tue, 26 Jan 2021 10:40:19 -0800 (PST)
-Received: from localhost.localdomain ([49.207.195.86])
-        by smtp.gmail.com with ESMTPSA id h3sm19097435pgm.67.2021.01.26.10.40.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 10:40:19 -0800 (PST)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=VPwgXgFqNGkyAT4I2faAQzFZ/NTwi7dZ5sVT5oD6JPw=;
+        b=rSEnH1Mp7Kk5IUq4QzpXLZ5+cWo5GpeIFuoxlUEIlBPRxKH0yNhILB0Z8kxkyu34wL
+         OXp0qxPWf3eLSCCbn469BLr5gaoWFgycXZZiLp2r7EEG1vKbIaYKEi1xFR/jleK3DNHB
+         SNucOdwHQVNUZuYl7FjuXV/9yKlsVt3yeE+qutTOGMdVeDiF4xYCDN9uACX4bxXN8dhi
+         Ijs1IP60ani2D41CuqYLeU7ivKl4oTXxyH3ZBWtNYSh/8fwmKLE5aTwLwGpvGsJBryoA
+         dt1eEDXHLsiGWncNM3pjm7p/2RRkFTleiBnA2UCPqTRg0GWO6/fMpoZtu/EmD36ly/fk
+         uL4g==
+X-Gm-Message-State: AOAM531WiuFuw+dgFA3GDaVLYztZ2hu7iYrWBDzChIuRHyCjF3xsKKJP
+        eEnpHdkmPnu6vmovXBKqu6xVmCEXrlRw30HnV+U=
+X-Google-Smtp-Source: ABdhPJzHyKhh/DfLKf34PQr3syLT4045ewNp5WVGOYs3bapKpv/AZtyGJ+VRiSPzC+TmayHn5mSwsQ==
+X-Received: by 2002:a17:90a:1503:: with SMTP id l3mr1180911pja.41.1611686831417;
+        Tue, 26 Jan 2021 10:47:11 -0800 (PST)
+Received: from [192.168.0.104] ([49.207.195.86])
+        by smtp.gmail.com with ESMTPSA id z3sm19281195pfb.157.2021.01.26.10.47.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 10:47:10 -0800 (PST)
+Subject: Re: [PATCH v3 12/12] [PATCH v3 12/12] usb: misc: usbtest: update to
+ use the, usb_control_msg_{send|recv}() API
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 10/12] usb: misc: trancevibrator: update to use usb_control_msg_send()
-Date:   Wed, 27 Jan 2021 00:10:10 +0530
-Message-Id: <20210126184010.914841-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+        Alan Stern <stern@rowland.harvard.edu>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Zqiang linux-usb @ vger . kernel . org" <qiang.zhang@windriver.com>,
+        linux-kernel@vger.kernel.org
 References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+ <20210126184043.915235-1-anant.thazhemadam@gmail.com>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <640bd2a0-89c2-b01b-4827-5d2f05b2fb90@gmail.com>
+Date:   Wed, 27 Jan 2021 00:17:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126184043.915235-1-anant.thazhemadam@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The newer usb_control_msg_{send|recv}() API are an improvement on the
-existing usb_control_msg() as it ensures that a short read/write is treated
-as an error, data can be used off the stack, and raw usb pipes need not be
-created in the calling functions.
-For this reason, the instance of usb_control_msg() has been replaced with
-usb_control_msg_send() and the return value checking condition has also
-been modified appropriately.
+Looks like the subject line got messed up for patch 12/12.
+I'm sorry about that. Do I have to resend the patch?
 
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
- drivers/usb/misc/trancevibrator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/misc/trancevibrator.c b/drivers/usb/misc/trancevibrator.c
-index a3dfc77578ea..c50807b4f4ef 100644
---- a/drivers/usb/misc/trancevibrator.c
-+++ b/drivers/usb/misc/trancevibrator.c
-@@ -59,11 +59,11 @@ static ssize_t speed_store(struct device *dev, struct device_attribute *attr,
- 	dev_dbg(&tv->udev->dev, "speed = %d\n", tv->speed);
- 
- 	/* Set speed */
--	retval = usb_control_msg(tv->udev, usb_sndctrlpipe(tv->udev, 0),
-+	retval = usb_control_msg_send(tv->udev, 0,
- 				 0x01, /* vendor request: set speed */
- 				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
- 				 tv->speed, /* speed value */
--				 0, NULL, 0, USB_CTRL_GET_TIMEOUT);
-+				 0, NULL, 0, USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
- 	if (retval) {
- 		tv->speed = old;
- 		dev_dbg(&tv->udev->dev, "retval = %d\n", retval);
--- 
-2.25.1
+Thanks,
+Anant
 
