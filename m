@@ -2,145 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4E330459F
+	by mail.lfdr.de (Postfix) with ESMTP id DF6783045A0
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393181AbhAZRp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:45:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47842 "EHLO
+        id S2393199AbhAZRp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:45:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389666AbhAZIKk (ORCPT
+        with ESMTP id S2389713AbhAZIMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:10:40 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC760C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:09:59 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id e15so1906027wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:09:59 -0800 (PST)
+        Tue, 26 Jan 2021 03:12:09 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BB3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:11:27 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id a14so7341612edu.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:11:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IKVzDfUlQORvUNQIyh1sGOYZQD9pBhXKJEodxKHGxUE=;
-        b=FIogEhBVacSyx3uxTnBOjRkSnqfQvJa/Qf5CS/5ZgsfB4pQr+sePDse0GY2rMFTiyl
-         f7VkQzsEhci/6CxECtBB5SMWVKuIV8sSvmOfqQzfEgKZMyZYM+KXR8rdGDegzssF92I7
-         4bFDwCVMi+SsBwHT5tbrlw958MYAG6fnvTptqZPcpVocBA8xtPjegGp/WFmT1t3hwmlV
-         fAk4ZTwy+v0y36yz0hxbKwx5jDq2EXlwiT+mERdbmDJV0s7fvFZWnrSzCSdx6DYGzgWG
-         qqwY2MkWxo2b8VKMqzBmi20cbBZzWr4402fu5eMeKXW6tq76fQ1cBIwAEaydSxcNlkev
-         hXhA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mjSxBujVARo+QaijZugtt/OwixE8PM6p8pEdlBa4l0Y=;
+        b=SwoanvFuO4q5YeAT1QOcDsEAyfEPUYgS6jCNDe33z3wdN2h+e9jFw3cU6o7o9oubU+
+         Iyi8WH7k0sMdXSG72WYE4/HmdTkH7768BlowO20d8o5arHsvMAr/zPUD1C7F0ieadwsj
+         oFZV0AiZZBRn67f2EY+sK3s4ly7DW5O3nM9gk4+QjQPnaDaqK4rXxHIXOBD75/M2JdcQ
+         yzxrloRspikWsf2dirrybsK3V8lkJJknBQr5mV7UscxUUz8fb8Iaq0VM3S0QOWcCk/O1
+         tz6GkhJYqk5b+pbanNcUJ95IbZQ8nsB19H5PJhiSDAAbwm9TQzZUYEnRzwsU8HHMTNi8
+         4vYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IKVzDfUlQORvUNQIyh1sGOYZQD9pBhXKJEodxKHGxUE=;
-        b=pJJgTSU+CI0YtobENEsquCFBhtu08bSQIA+yPfvqu1FS62jn91aH1Y9n47jZOXmWvQ
-         RBMVnqFMHwldH6FcJlrdwAGHgZy4XxxBiDUAsEyVpdtbVOYVU8cqhauyU8FOHSkQoxhj
-         zdbykiCF4uoWx7cv/BNNdjr+x1Tmkl9MqgMa4VLJO6e/s26SzVzbn5ucShkYotsKvVRZ
-         RjBTX/Qi7/MPP30cWttFuiW+rpZTUrYikGTAhm58fyB2+msxX3qyGORgxaZDBbyi3W/X
-         C4PuuhAi9FNEwVon7Ko79WX2WGWZFRy/8zZOAPmhX2ZURD7GQ7+Lp8fOWRTWDDncDo/I
-         0KOg==
-X-Gm-Message-State: AOAM5301OD3yMnYMsTk2f4fJuz/Zy+8mHEN/RldlHeSjIWEIIrKo31mp
-        kOL02p4fj0uoZF/eMZCIFZasBw==
-X-Google-Smtp-Source: ABdhPJzxiu4+Dwy4IN/+uDif4C1jKhZe+OrFq076G7xg19pOJbsxiSm/zf1EhIGBd+IGBWHNbYNy3g==
-X-Received: by 2002:a1c:1d12:: with SMTP id d18mr3381888wmd.121.1611648597861;
-        Tue, 26 Jan 2021 00:09:57 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:485d:4b34:2d87:12d5])
-        by smtp.gmail.com with ESMTPSA id t25sm2061228wmj.39.2021.01.26.00.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 00:09:57 -0800 (PST)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Brunet?= <jbrunet@baylibre.com>
-Subject: [PATCH] Revert "arm64: dts: amlogic: add missing ethernet reset ID"
-Date:   Tue, 26 Jan 2021 09:09:51 +0100
-Message-Id: <20210126080951.2383740-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mjSxBujVARo+QaijZugtt/OwixE8PM6p8pEdlBa4l0Y=;
+        b=LCARAVMk0uJQYorEDxCYtAL7diOvMo4XELjp2tjQss4F4mXk98WHm2JncQaS0qcD/A
+         oHskoRxstY85vn+/qTRTcNrTxQ+NnDc4AFp0Kt19D6FGdEd7JLNXZ6XxoffH5HkACq3a
+         f4mtFiwcdORzQLDpAuXEqQAcOt/dd8QlX8c64zTg/Y6hYLuT4YqRWc5AhW27W1PcWPji
+         WBTsOXhvyZyr9UNU4BN1f7+5iqw76aQvK1fcz/lIGTKI6xiFrdM6/V4+JTombl4Sr7el
+         rzK3hn1Gx8IGEA0e1S9gzTKLj88MVcxOwMFChAHeecBgvPh4BK5HnVjMg5+PLd7tkGFK
+         XIrA==
+X-Gm-Message-State: AOAM530f4b/GvauFcqazPmETPCWRaE9F4zJSlhM5yXFCwRLdiRdr2vmR
+        yqXVuGIklKEOvse1/di4JAzWSVs2CitY3p1YlLu5wA==
+X-Google-Smtp-Source: ABdhPJwXtpWI1CE9MpaeUPaWUTUWY/N7Daiw2l3vGgEE0JYI4PC20eke3VA8O/uYmjY6v/ZlXXxJA/PQSl5oEJK+9bE=
+X-Received: by 2002:a05:6402:3088:: with SMTP id de8mr3539602edb.221.1611648686529;
+ Tue, 26 Jan 2021 00:11:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210125183156.702907356@linuxfoundation.org>
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 26 Jan 2021 13:41:14 +0530
+Message-ID: <CA+G9fYsQi5x1QqgC0GvJqUO2BRwTdD6P9RskhH5UzXOxmj9JnA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/58] 4.19.171-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been reported on IRC and in KernelCI boot tests, this change breaks
-internal PHY support on the Amlogic G12A/SM1 Based boards.
+On Tue, 26 Jan 2021 at 00:12, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.171 release.
+> There are 58 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 27 Jan 2021 18:31:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.171-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-We suspect the added signal to reset more than the Ethernet MAC but also
-the MDIO/(RG)MII mux used to redirect the MAC signals to the internal PHY.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-This reverts commit f3362f0c18174a1f334a419ab7d567a36bd1b3f3 while we find
-and acceptable solution to cleanly reset the Ethernet MAC.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Reported-by: Corentin Labbe <clabbe@baylibre.com>
-Acked-by: Jérôme Brunet <jbrunet@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
-Hi Kevin,
+Summary
+------------------------------------------------------------------------
 
-This has been reported to also break on 5.10, when this lands on 5.11, I'll send another
-patch for 5.10 because meson-axg.dtsi needs a conflict resolution on 5.11.
+kernel: 4.19.171-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 9b9e817bbee7dcb514ceba2fe100ad324cb7179b
+git describe: v4.19.170-59-g9b9e817bbee7
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.170-59-g9b9e817bbee7
 
-Jerome gave me his ack off-list.
+No regressions (compared to build v4.19.170)
 
-Neil
+No fixes (compared to build v4.19.170)
 
+Ran 45655 total tests in the following environments and test suites.
 
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi        | 2 --
- arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 --
- arch/arm64/boot/dts/amlogic/meson-gx.dtsi         | 3 ---
- 3 files changed, 7 deletions(-)
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index ba1c6dfdc4b6..d945c84ab697 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -280,8 +280,6 @@ ethmac: ethernet@ff3f0000 {
- 				      "timing-adjustment";
- 			rx-fifo-depth = <4096>;
- 			tx-fifo-depth = <2048>;
--			resets = <&reset RESET_ETHERNET>;
--			reset-names = "stmmaceth";
- 			power-domains = <&pwrc PWRC_AXG_ETHERNET_MEM_ID>;
- 			status = "disabled";
- 		};
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-index 9c90d562ada1..851eeb5e9de1 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-@@ -224,8 +224,6 @@ ethmac: ethernet@ff3f0000 {
- 				      "timing-adjustment";
- 			rx-fifo-depth = <4096>;
- 			tx-fifo-depth = <2048>;
--			resets = <&reset RESET_ETHERNET>;
--			reset-names = "stmmaceth";
- 			status = "disabled";
- 
- 			mdio0: mdio {
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-index 726b91d3a905..0edd137151f8 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-@@ -13,7 +13,6 @@
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/power/meson-gxbb-power.h>
--#include <dt-bindings/reset/amlogic,meson-gxbb-reset.h>
- #include <dt-bindings/thermal/thermal.h>
- 
- / {
-@@ -576,8 +575,6 @@ ethmac: ethernet@c9410000 {
- 			interrupt-names = "macirq";
- 			rx-fifo-depth = <4096>;
- 			tx-fifo-depth = <2048>;
--			resets = <&reset RESET_ETHERNET>;
--			reset-names = "stmmaceth";
- 			power-domains = <&pwrc PWRC_GXBB_ETHERNET_MEM_ID>;
- 			status = "disabled";
- 		};
--- 
-2.25.1
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* ltp-fs-tests
+* network-basic-tests
+* v4l2-compliance
+* ltp-open-posix-tests
+* ltp-tracing-tests
+* kvm-unit-tests
+* rcutorture
+* fwts
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
 
+--=20
+Linaro LKFT
+https://lkft.linaro.org
