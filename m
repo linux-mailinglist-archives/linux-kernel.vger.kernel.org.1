@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488AA303BD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CA4303C20
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405260AbhAZLjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:39:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        id S2405367AbhAZLjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:39:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404186AbhAZKje (ORCPT
+        with ESMTP id S2404178AbhAZKkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:39:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A098FC06174A;
-        Tue, 26 Jan 2021 02:38:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Pxo8uZRUhENPW3XIRCXJ8iQA/Z1MSNpaDogrCKSFXlU=; b=nZ8BLIiuTqNMm7dM+EeDAmkWHE
-        +llp6DlJXADF0aQXp2gSslLaAHK5VGfegLyT8qy8MjpqkAhUVoLbR3SwxM7rgeGME8CDJ+SBXa8tz
-        KkXYO9bjdaHDVUSGBBzWLJAA37eyawbJaToXgRh2TWQx8+LK9qk97afTxANeYU0IPMLxyS3ZdGdin
-        EKW+2wQQm38mw+GCh68EvLxIEUauM1wrOQj+vj82zdakEo5sI0KLq+f5j+skM0Op6tGcf+/jdOB5F
-        O3OmbicpjZkUB1E6Tr95rA63CFV254b+tDtJ9YsBDDAGVQJrwRBxMPwgkGE05XgTYt/8XeWkqnwcY
-        G4ovpHag==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4Li6-005RqZ-Dm; Tue, 26 Jan 2021 10:36:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Tue, 26 Jan 2021 05:40:39 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB5AC06174A;
+        Tue, 26 Jan 2021 02:39:57 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 834793059C6;
-        Tue, 26 Jan 2021 11:36:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7465E20F042C2; Tue, 26 Jan 2021 11:36:33 +0100 (CET)
-Date:   Tue, 26 Jan 2021 11:36:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Xu, Like" <like.xu@intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Like Xu <like.xu@linux.intel.com>, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Wang, Wei W" <wei.w.wang@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf/intel: Remove Perfmon-v4 counter_freezing support
-Message-ID: <YA/wsQQqbGD1pCDR@hirez.programming.kicks-ass.net>
-References: <20201109021254.79755-1-like.xu@linux.intel.com>
- <20201110151257.GP2611@hirez.programming.kicks-ass.net>
- <20201110153721.GQ2651@hirez.programming.kicks-ass.net>
- <CABPqkBS+-g0qbsruAMfOJf-Zfac8nz9v2LCWfrrvVd+ptoLxZg@mail.gmail.com>
- <2ce24056-0711-26b3-a62c-3bedc88d7aa7@intel.com>
- <9a85e154-d552-3478-6e99-3f693b3da7ed@redhat.com>
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id B900223E6C;
+        Tue, 26 Jan 2021 11:39:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611657595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dCH/YXfZ9HXdQBHPo7Nn9zVU+J0dd/QGNvh+wOZ/2X0=;
+        b=GKqOOoubkXGqrd/zE5rlnqsPTy9r0oLk3z+IM3Sf/2UoHZvkZLtvwOhunJfmhZwOa6B0aK
+        cdugxcwYILhWGaAagQO7wh0vXI4z0begDwW+Die9587dy0ps0+RVeAl6opeJ7UERxokhLv
+        UX9LiZSc46WBwqVpsZdf7Ik5uNyVZGk=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a85e154-d552-3478-6e99-3f693b3da7ed@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 26 Jan 2021 11:39:54 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
+ builtin_platform_driver()
+In-Reply-To: <20210126100256.GA20547@e121166-lin.cambridge.arm.com>
+References: <20210120105246.23218-1-michael@walle.cc>
+ <20210126100256.GA20547@e121166-lin.cambridge.arm.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <1a36ef741c5ab2a6e90b38c58944aa25@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:51:39AM +0100, Paolo Bonzini wrote:
-> What is the state of this work?  I was expecting a new version that doesn't
-> use counter_freezing.  However, I see that counter_freezing is still in
-> there, so this patch from Peter has never been applied.
+Am 2021-01-26 11:02, schrieb Lorenzo Pieralisi:
+> On Wed, Jan 20, 2021 at 11:52:46AM +0100, Michael Walle wrote:
+>> fw_devlink will defer the probe until all suppliers are ready. We 
+>> can't
+>> use builtin_platform_driver_probe() because it doesn't retry after 
+>> probe
+>> deferral. Convert it to builtin_platform_driver().
+>> 
+>> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+> 
+> I will have to drop this Fixes: tag if you don't mind, it is not
+> in the mainline.
 
-Bah, I forgot about it. Lemme go find it.
+That commit is in Greg's for-next tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=e590474768f1cc04852190b61dec692411b22e2a
+
+I was under the impression there are other commits with this
+particular fixes tag, too. Either it was removed from
+for-next queues or I was confused.
+
+But I'm fine with removing the tag, assuming this will end
+up together with the "driver core: Set fw_devlink=on by default"
+commit in 5.11.
+
+-michael
