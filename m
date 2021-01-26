@@ -2,146 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A19303F52
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCCE303F57
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405534AbhAZNwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:52:31 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:42721 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405000AbhAZNwV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:52:21 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id BBD105C0114;
-        Tue, 26 Jan 2021 08:51:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 26 Jan 2021 08:51:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=VKiELK44/clfmPnkaIaZL4Nw3WJ
-        m8IoUYvNKtK5zkDM=; b=lxj2Iicf5HYw5jsMZHILmC1AdXAc8psIN6EGe49AINU
-        AkPzShEEOPU4dPsRYvHkTR12UIQ5C7/BSY5Asmv778Um34rNXkCTeB3ooEj4CVpJ
-        QXdusUrJunHKxaaViPKkFEaWOtw4ME/JSQyfydbmwUEFaj1+3Frn2G17rSv1kL3B
-        7vOTH/teNwHK+9OSez3qhvbcNv4CUhUthGZdfWyRUkvVUzvRrvvK4n9vuMr+Fo/x
-        hPQgPioyDUqe2SSzrkSBOxiA5y8jnpbAJRjp2lzx0Gnj7q0yv9QNCiamx02lGQzr
-        DLNv2IejI10E9wa15ol95Y1IwVdCTdBoi55hnklup2Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=VKiELK
-        44/clfmPnkaIaZL4Nw3WJm8IoUYvNKtK5zkDM=; b=NFrD6SIqFfPIwvf9YMFyQp
-        Mv9mubkf64Er0dqpA83l1j63Co2IaZOE8/864vEHE9Jbr3CziUp+vImv77VCZ/rC
-        akNGSCy/DnTGhvy8xWL/9wQga7ATsMzoRZ/xg0Qld1hXudjCKPxZtBuVkFG9PxuD
-        JWSlEOcZvzf7Zb87nqCeVRsKOeCZ72ALITQBr0Vk17HXx31KEFEGt+0a/T3mVf3g
-        sOgVhi91k3dKQEsPPZehVsE6zzj9xw6s2deSqpCWkjhW86RhNfKlcwdWvbQBfd1N
-        y3PnS4PB9RuqSiULqGpkus1W0DMmHjF3bkHiWFnFmNmxFvWxALZ2UI4iezrvm9nw
-        ==
-X-ME-Sender: <xms:Yh4QYDzmJ-0emHPEMq1-TYQJqCarpQvpZo467mQfGjA95EqriM_F1g>
-    <xme:Yh4QYLQLHWK2HrZs7pZT-ZtqmtcfNOoPXu_DwYcGmzBA-ar9f30CPVdeX7UdYd9xD
-    7O4UWoazYNTvQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehgdehiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:Yx4QYNULMrijJqLEnXWG89WcCZjSK3yDD-REk6caGDYMehDOPc58VA>
-    <xmx:Yx4QYNjTL0dJkBzI6hSD3u4RnRt9sQYenes0U1LgFAIiZIOCMRzUXQ>
-    <xmx:Yx4QYFAHFR8oz23cWU1u2m5Yh3vNeDUj1A40U6-OnEUj6kriNGi4Xg>
-    <xmx:Yx4QYPDqcOMYpSAiFtNreykdH8M3fzvmxsAZkyXCImU3DPj8bb5uQA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8E0C31080057;
-        Tue, 26 Jan 2021 08:51:30 -0500 (EST)
-Date:   Tue, 26 Jan 2021 14:51:29 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Justin Forbes <jforbes@redhat.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <YBAeYaDReAc9VscA@kroah.com>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
- <20210125212755.jfwlqogpcarmxdgt@treble>
- <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
- <20210125220757.vxdsf6sttpy46cq7@treble>
- <YA/PLdX5m9f4v+Yl@kroah.com>
- <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
+        id S2405507AbhAZNxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:53:25 -0500
+Received: from sauhun.de ([88.99.104.3]:53436 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404923AbhAZNxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:53:22 -0500
+Received: from localhost (p54b33782.dip0.t-ipconnect.de [84.179.55.130])
+        by pokefinder.org (Postfix) with ESMTPSA id 2C35A2C0514;
+        Tue, 26 Jan 2021 14:52:31 +0100 (CET)
+Date:   Tue, 26 Jan 2021 14:52:27 +0100
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm: smp: remove unused variable
+Message-ID: <20210126135227.yiiqg7ci3gxhqzpf@the-dreams.de>
+References: <20201228120147.59387-1-wsa+renesas@sang-engineering.com>
+ <CAMuHMdWD-8YxdrTmaTW7YTOFj+8hHM5LvegnC274QOTOO_gXcg@mail.gmail.com>
+ <20210126104155.GF1551@shell.armlinux.org.uk>
+ <20210126130240.GA2413@kunai>
+ <20210126134057.GH1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
+In-Reply-To: <20210126134057.GH1551@shell.armlinux.org.uk>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 06:44:44AM -0600, Justin Forbes wrote:
-> On Tue, Jan 26, 2021 at 2:21 AM Greg KH <greg@kroah.com> wrote:
-> >
-> > On Mon, Jan 25, 2021 at 04:07:57PM -0600, Josh Poimboeuf wrote:
-> > > On Tue, Jan 26, 2021 at 06:44:35AM +0900, Masahiro Yamada wrote:
-> > > > > > If people use a different compiler, they must be
-> > > > > > prepared for any possible problem.
-> > > > > >
-> > > > > > Using different compiler flags for in-tree and out-of-tree
-> > > > > > is even more dangerous.
-> > > > > >
-> > > > > > For example, CONFIG_GCC_PLUGIN_RANDSTRUCT is enabled
-> > > > > > for in-tree build, and then disabled for out-of-tree modules,
-> > > > > > the struct layout will mismatch, won't it?
-> > > > >
-> > > > > If you read the patch you'll notice that it handles that case, when it's
-> > > > > caused by GCC mismatch.
-> > > > >
-> > > > > However, as alluded to in the [1] footnote, it doesn't handle the case
-> > > > > where the OOT build system doesn't have gcc-plugin-devel installed.
-> > > > > Then CONFIG_GCC_PLUGIN_RANDSTRUCT gets silently disabled and the build
-> > > > > succeeds!  That happens even without a GCC mismatch.
-> > > >
-> > > >
-> > > > Ah, sorry.
-> > > >
-> > > > I responded too early before reading the patch fully.
-> > > >
-> > > > But, I do not like to make RANDSTRUCT a special case.
-> > > >
-> > > > I'd rather want to stop building for any plugin.
-> > >
-> > > Other than RANDSTRUCT there doesn't seem to be any problem with
-> > > disabling them (and printing a warning) in the OOT build.  Why not give
-> > > users that option?  It's harmless, and will make distro's (and their
-> > > users') lives easier.
-> > >
-> > > Either GCC mismatch is ok, or it's not.  Let's not half-enforce it.
-> >
-> > As I said earlier, it's not ok, we can not support it at all.
-> >
-> 
-> Support and enforce are 2 completely different things.  To shed a bit
-> more light on this, the real issue that prompted this was breaking CI
-> systems.  As we enabled gcc plugins in Fedora, and the toolchain folks
-> went through 3 different snapshots of gcc 11 in a week. Any CI process
-> that built an out of tree module failed. I don't think this is nearly
-> as much of a concern for stable distros, as it is for CI in
-> development cycles.
 
-It's better to have an obvious break like this than to silently accept
-things and then have a much harder issue to debug at runtime, right?
+> What I'm saying is... don't expect me to always review patches that
+> are for fixing code that other people have contributed - I wish those
+> who introduce regressions would stick around and attend to breakage
+> that they cause, instead of hoping that someone else will do that
+> for them. It's a reasonable ask.
 
-Don't allow things that we know we will not support, this sounds like an
-issue with your CI systems, not with the kernel build system, why not
-just fix that?  :)
+Yes, I am much with you here.
 
-thnaks,
+> Thanks - I'll get around to it in due course. Since I'm no longer
+> supported as 32-bit ARM maintainer, I only apply patches once or maybe
+> twice per kernel release. Quite how long this will be sustainable for,
+> I've no idea (it depends whether I get any actual paying work, and
+> how much.)
 
-greg k-h
+I didn't know that, thanks for the heads up. I understand that problem
+and hope there will be income for the work you do.
+
